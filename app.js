@@ -388,7 +388,7 @@ app.post('/api/launch', async (req, res) => {
 app.get('/api/ai/game-info', async (req, res) => {
   const title = req.query.title;
   if (!title) return res.status(400).json({ error: 'Missing title' });
-  const token = process.env.GITHUB_PRIVATE_KEY || process.env.GITHUB_TOKEN;
+  const token = process.env.GITHUB_PAT_TOKEN || process.env.GITHUB_TOKEN;
   const endpoint = "https://models.github.ai/inference";
   const model = "openai/gpt-4.1";
   if (!token) {

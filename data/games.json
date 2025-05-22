@@ -242,12 +242,11 @@
         }
     },
     "choplifter": {
-        "title": "Choplifter",
-        "overview": "",
+        "title": "Choplifter!",
         "description": "",
-        "cover_image_path": "",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/scwtt3.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Choplifter (1459).zip"
+            "c64": ""
         }
     },
     "aufwiedersehenmonty": {

@@ -1,5 +1,5 @@
 # retronode
-Manage retro games and emulators. Done in NodeJS and HTML/JS/CSS and using Github code pilot. An experiement really, but happy to let other people get involved if they wish. 
+Manage retro games and emulators. Done in NodeJS and HTML/JS/CSS and using Github code pilot. An experiment more than anything . It's been an afternoon's work. Happy to let other people get involved if they wish. 
 
 Microsoft's Visual Studio Github Copilot is free/open source now - and it's an amazing experience.
 

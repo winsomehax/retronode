@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retronode - Emulators</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f5f5; color: #222; font-family: 'Roboto', Arial, sans-serif; margin: 0; padding: 0; min-height: 100vh; }
+        .main-title { margin-top: 48px; font-weight: 500; letter-spacing: 1px; }
+        .fab-btn { position: fixed; bottom: 36px; right: 36px; z-index: 1001; }
+        .modal { max-width: 480px; }
+        #backBtn { position: fixed; top: 24px; left: 24px; z-index: 1000; display: none; }
+    </style>
+</head>
+<body>
+    <ul id="navDrawer" class="sidenav">
+        <li><a href="games.html" class="blue-text text-darken-2" id="navGames"><i class="material-icons left">sports_esports</i>Games</a></li>
+        <li><a href="platforms.html" class="blue-text text-darken-2" id="navPlatforms"><i class="material-icons left">dns</i>Platforms</a></li>
+    </ul>
+    <div id="topNav" style="position:fixed;top:0;left:0;width:100vw;z-index:2000;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.04);padding:12px 0;display:flex;align-items:center;">
+        <a href="#" data-target="navDrawer" class="sidenav-trigger" style="margin-left:16px;margin-right:16px;"><i class="material-icons">menu</i></a>
+    </div>
+    <div class="container" style="margin-top:100px;max-width:1100px;">
+        <h4 class="main-title green-text text-darken-2" style="margin-bottom:24px;">Emulators</h4>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+            <div class="input-field" style="margin:0;flex:1;">
+                <input id="searchInput" type="text" class="validate" placeholder="Search emulators...">
+                <label for="searchInput" class="active" style="left:0;">Search</label>
+            </div>
+            <div class="input-field" style="margin:0;width:220px;">
+                <select id="platformFilter">
+                    <option value="">All Platforms</option>
+                </select>
+                <label for="platformFilter" class="active">Filter by Platform</label>
+            </div>
+        </div>
+        <table class="highlight responsive-table">
+            <thead>
+                <tr>
+                    <th id="sortName" style="cursor:pointer;">Name <i class="material-icons" id="sortNameIcon" style="font-size:1rem;vertical-align:middle;">unfold_more</i></th>
+                    <th id="sortPlatform" style="cursor:pointer;">Platform <i class="material-icons" id="sortPlatformIcon" style="font-size:1rem;vertical-align:middle;">unfold_more</i></th>
+                    <th>Description</th>
+                    <th>Version</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="emulatorsTableBody"></tbody>
+        </table>
+    </div>
+    <div id="crudDialog" class="modal">
+        <div class="modal-content">
+            <h5 id="crudDialogTitle"></h5>
+            <form id="crudForm"></form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn-flat">Cancel</a>
+            <a href="#!" id="crudFormSubmit" class="btn green">Save</a>
+        </div>
+    </div>
+    <button id="backBtn" class="btn-floating btn-large waves-effect waves-light green">
+        <i class="material-icons">arrow_back</i>
+    </button>
+    <!-- Add FAB for adding new emulators -->
+    <a id="addEmulatorBtn" class="btn-floating btn-large waves-effect waves-light blue fab-btn" title="Add Emulator">
+        <i class="material-icons">add</i>
+    </a>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        let emulators = [];
+        let platforms = {};
+        let sortField = 'name';
+        let sortAsc = true;
+        let searchTerm = '';
+        let platformFilter = '';
+
+        function renderPlatformFilter() {
+            const select = document.getElementById('platformFilter');
+            select.innerHTML = '<option value="">All Platforms</option>' +
+                Object.entries(platforms).map(([pid, p]) => `<option value="${pid}">${p.name}</option>`).join('');
+            M.FormSelect.init(select);
+            select.onchange = function() {
+                platformFilter = select.value;
+                renderEmulatorsTable();
+            };
+        }
+
+        function renderEmulatorsTable() {
+            const tbody = document.getElementById('emulatorsTableBody');
+            tbody.innerHTML = '';
+            let filtered = emulators.filter(em => {
+                const matchesSearch = !searchTerm || (em.name || em.emulator_id).toLowerCase().includes(searchTerm) || (em.description || '').toLowerCase().includes(searchTerm);
+                const matchesPlatform = !platformFilter || em.platform === platformFilter;
+                return matchesSearch && matchesPlatform;
+            });
+            filtered.sort((a, b) => {
+                if (sortField === 'name') {
+                    return sortAsc ? (a.name || a.emulator_id).localeCompare(b.name || b.emulator_id) : (b.name || b.emulator_id).localeCompare(a.name || a.emulator_id);
+                } else if (sortField === 'platform') {
+                    const aPlatform = platforms[a.platform]?.name || a.platform || '';
+                    const bPlatform = platforms[b.platform]?.name || b.platform || '';
+                    return sortAsc ? aPlatform.localeCompare(bPlatform) : bPlatform.localeCompare(aPlatform);
+                }
+                return 0;
+            });
+            filtered.forEach((em, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${em.name || em.emulator_id}</td>
+                    <td>${platforms[em.platform]?.name || em.platform || ''}</td>
+                    <td>${em.description || ''}</td>
+                    <td>${em.version || ''}</td>
+                    <td style="white-space:nowrap;">
+                        <button class="btn-flat blue-text edit-emulator-btn" data-idx="${emulators.indexOf(em)}" title="Edit"><i class="material-icons">edit</i></button>
+                        <button class="btn-flat red-text delete-emulator-btn" data-idx="${emulators.indexOf(em)}" title="Delete"><i class="material-icons">delete</i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            document.querySelectorAll('.edit-emulator-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    const idx = btn.getAttribute('data-idx');
+                    openEmulatorDialog('edit', emulators[idx], idx);
+                };
+            });
+            document.querySelectorAll('.delete-emulator-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    const idx = btn.getAttribute('data-idx');
+                    if (confirm('Delete this emulator?')) deleteEmulator(idx);
+                };
+            });
+            document.getElementById('sortNameIcon').textContent = sortField === 'name' ? (sortAsc ? 'arrow_upward' : 'arrow_downward') : 'unfold_more';
+            document.getElementById('sortPlatformIcon').textContent = sortField === 'platform' ? (sortAsc ? 'arrow_upward' : 'arrow_downward') : 'unfold_more';
+        }
+
+        document.getElementById('searchInput').oninput = function() {
+            searchTerm = this.value.trim().toLowerCase();
+            renderEmulatorsTable();
+        };
+        document.getElementById('sortName').onclick = function() {
+            if (sortField === 'name') sortAsc = !sortAsc; else { sortField = 'name'; sortAsc = true; }
+            renderEmulatorsTable();
+        };
+        document.getElementById('sortPlatform').onclick = function() {
+            if (sortField === 'platform') sortAsc = !sortAsc; else { sortField = 'platform'; sortAsc = true; }
+            renderEmulatorsTable();
+        };
+
+        const addEmulatorBtn = document.getElementById('addEmulatorBtn');
+        if (addEmulatorBtn) {
+            addEmulatorBtn.onclick = function(e) {
+                e.preventDefault();
+                openEmulatorDialog('add');
+            };
+        }
+
+        function openEmulatorDialog(mode, emulator = {}, idx = null) {
+            document.getElementById('crudDialogTitle').textContent = mode === 'edit' ? 'Edit Emulator' : 'Add Emulator';
+            const platformOptions = Object.entries(platforms).map(([pid, p]) =>
+                `<option value="${pid}" ${emulator.platform === pid ? 'selected' : ''}>${p.name}</option>`
+            ).join('');
+            document.getElementById('crudForm').innerHTML = `
+                <div class="input-field">
+                    <input id="emulatorName" type="text" value="${emulator.name || ''}" required>
+                    <label for="emulatorName" class="active">Name</label>
+                </div>
+                <div class="input-field">
+                    <input id="emulatorId" type="text" value="${emulator.emulator_id || ''}" required>
+                    <label for="emulatorId" class="active">Emulator ID</label>
+                </div>
+                <div class="input-field">
+                    <input id="emulatorVersion" type="text" value="${emulator.version || ''}">
+                    <label for="emulatorVersion" class="active">Version</label>
+                </div>
+                <div class="input-field">
+                    <input id="emulatorDescription" type="text" value="${emulator.description || ''}">
+                    <label for="emulatorDescription" class="active">Description</label>
+                </div>
+                <div class="input-field">
+                    <select id="emulatorPlatform">
+                        ${platformOptions}
+                    </select>
+                    <label for="emulatorPlatform" class="active">Platform</label>
+                </div>
+            `;
+            M.FormSelect.init(document.getElementById('emulatorPlatform'));
+            const modalElem = document.getElementById('crudDialog');
+            let modalInstance = M.Modal.getInstance(modalElem);
+            if (modalInstance) modalInstance.destroy();
+            modalInstance = M.Modal.init(modalElem, {
+                onOpenEnd: () => {
+                    const saveBtn = document.getElementById('crudFormSubmit');
+                    if (saveBtn) {
+                        const newBtn = saveBtn.cloneNode(true);
+                        saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+                        newBtn.onclick = function(e) {
+                            e.preventDefault();
+                            submitEmulatorForm(mode, idx);
+                        };
+                    }
+                }
+            });
+            modalInstance.open();
+        }
+
+        function submitEmulatorForm(mode, idx) {
+            const name = document.getElementById('emulatorName').value.trim();
+            const emulator_id = document.getElementById('emulatorId').value.trim();
+            const version = document.getElementById('emulatorVersion').value.trim();
+            const description = document.getElementById('emulatorDescription').value.trim();
+            const platform = document.getElementById('emulatorPlatform').value;
+            if (!name || !emulator_id || !platform) { M.toast({html: 'Name, Emulator ID, and Platform are required'}); return; }
+            const emulatorData = { name, emulator_id, version, description, platform };
+            if (mode === 'add') {
+                fetch('/api/emulators', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ platformId: platform, emulator: emulatorData })
+                }).then(r => r.json()).then(resp => {
+                    if (resp.success) {
+                        emulators.push(emulatorData);
+                        renderEmulatorsTable();
+                        M.Modal.getInstance(document.getElementById('crudDialog')).close();
+                        M.toast({html: 'Emulator added!'});
+                    } else {
+                        M.toast({html: 'Failed to add emulator'});
+                    }
+                });
+            } else if (mode === 'edit') {
+                fetch(`/api/emulators/${platform}/${emulator_id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(emulatorData)
+                }).then(r => r.json()).then(resp => {
+                    if (resp.success) {
+                        emulators[idx] = emulatorData;
+                        renderEmulatorsTable();
+                        M.Modal.getInstance(document.getElementById('crudDialog')).close();
+                        M.toast({html: 'Emulator updated!'});
+                    } else {
+                        M.toast({html: 'Failed to update emulator'});
+                    }
+                });
+            }
+        }
+
+        function deleteEmulator(idx) {
+            const em = emulators[idx];
+            fetch(`/api/emulators/${em.platform}/${em.emulator_id}`, {
+                method: 'DELETE'
+            }).then(r => r.json()).then(resp => {
+                if (resp.success) {
+                    emulators.splice(idx, 1);
+                    renderEmulatorsTable();
+                    M.toast({html: 'Emulator deleted!'});
+                } else {
+                    M.toast({html: 'Failed to delete emulator'});
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+            var sidenavs = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(sidenavs, {edge: 'left'});
+        });
+
+        Promise.all([
+            fetch('/api/emulators').then(r => r.json()),
+            fetch('/api/platforms').then(r => r.json())
+        ]).then(([emulatorsData, platformsData]) => {
+            // Flatten emulators into a single array with platform info
+            emulators = [];
+            Object.entries(emulatorsData).forEach(([pid, emus]) => {
+                emus.forEach(em => {
+                    emulators.push({ ...em, platform: pid });
+                });
+            });
+            platforms = platformsData;
+            renderPlatformFilter();
+            renderEmulatorsTable();
+        });
+    </script>
+</body>
+</html>

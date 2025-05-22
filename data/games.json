@@ -1,0 +1,885 @@
+{
+    "greenberet": {
+        "title": "Green Beret (Rush'n Attack)",
+        "description": "Rush'n Attack is a side-scrolling action platformer where players control a special ops soldier infiltrating enemy bases to rescue POWs and defeat foes using mainly a combat knife.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/co7s8y.jpg",
+        "platforms": {
+            "c64": "",
+            "amiga": "",
+            "atarist": "",
+            "spectrum": ""
+        }
+    },
+    "supermariobros": {
+        "title": "Super Mario Bros.",
+        "description": "A remaster of the original Super Mario Bros., released exclusively as part of the Super Mario All-Stars bundle.Rating: 91.5",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/scknvr.jpg",
+        "platforms": {}
+    },
+    "greatgianasistersiii": {
+        "title": "The Great Giana Sisters III",
+        "description": "A fan-made sequel to the classic platformer, featuring new levels and challenges for Giana.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "hoverbovver": {
+        "title": "Hover Bovver",
+        "description": "Hover Bovver is a lawn-mowing action game where players must mow lawns while avoiding angry homeowners and a pursuing dog.",
+        "cover_image_path": "https://ia802903.us.archive.org/27/items/Hover_Bovver_1983_Llamasoft/Hover_Bovver_1983_Llamasoft_screenshot.gif",
+        "platforms": {}
+    },
+    "montyontherun": {
+        "title": "Monty on the Run",
+        "overview": "",
+        "description": "Guide Monty Mole through a series of platforming challenges as he escapes the law.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Monty on the Run (4967).zip"
+        }
+    },
+    "lasersquad": {
+        "title": "Laser Squad",
+        "overview": "",
+        "description": "A tactical turn-based strategy game where you command a squad in various missions.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Laser Squad (4267).zip"
+        }
+    },
+    "brucelee": {
+        "title": "Bruce Lee",
+        "description": "Bruce Lee is a video game designed by Ron J. Fortier, with graphics by Kelly Day and music by John A. Fitzpatrick. It was originally developed for the Atari 8-bit family and published in 1984 by Datasoft, along with a port for the Commodore 64. The game was converted to the ZX Spectrum and Amstrad CPC and published by U.S. Gold in the same year. An MSX version was published in 1985 by Comptiq.Bruce Lee is a platform game/beat 'em up hybrid, in which the player controls Bruce Lee.Rating: 79.0",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/sc9dwl.jpg",
+        "platforms": {}
+    },
+    "spyvsspyiitheislandcaper": {
+        "title": "Spy vs Spy II - The Island Caper",
+        "overview": "",
+        "description": "Outwit your rival spy in this trap-filled, split-screen action game sequel.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Spy vs Spy II - The Island Caper (7269).zip"
+        }
+    },
+    "superpipeline": {
+        "title": "Super Pipeline",
+        "overview": "",
+        "description": "Protect your pipeline from saboteurs and keep the oil flowing in this arcade-style game.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Super Pipeline (7600).zip"
+        }
+    },
+    "zorkiithewizardoffrobozz": {
+        "title": "Zork II - The Wizard of Frobozz",
+        "overview": "",
+        "description": "The second part of the legendary text adventure series. Explore, solve puzzles, and survive.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Zork II - The Wizard of Frobozz  (8912).zip"
+        }
+    },
+    "thegreatgianasistersiii": {
+        "title": "Great Giana Sisters III, The",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Great Giana Sisters III, The (3276).zip"
+        }
+    },
+    "knucklebuster": {
+        "title": "Knuckle Buster",
+        "overview": "",
+        "description": "A fast-paced action game where you must fight your way through waves of enemies.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Knuckle Buster (4169).zip"
+        }
+    },
+    "montymole": {
+        "title": "Monty Mole",
+        "overview": "",
+        "description": "Help Monty Mole escape from the coal mines in this classic platform adventure.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Monty Mole (4966).zip"
+        }
+    },
+    "alteregomaleversion": {
+        "title": "Alter Ego - Male Version",
+        "description": "Alter Ego - Male Version is a life simulation game released in 1986 where players navigate the experiences and choices of a male character from infancy to old age, shaping his personality and destiny.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "elite": {
+        "title": "Elite",
+        "overview": "",
+        "description": "A groundbreaking space trading and combat simulator. Explore, trade, and fight your way to Elite status.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Elite (2475).zip"
+        }
+    },
+    "blackthunder": {
+        "title": "Black Thunder",
+        "description": "Black Thunder is a very fast side scrolling game similar to Suicide Express. The gaming is straight forward just steer and shoot. Cool voices and great music.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/y7qngawydd99275ntcts.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "jumpman": {
+        "title": "Jumpman",
+        "overview": "",
+        "description": "Navigate platforms, avoid hazards, and defuse bombs in this classic action game.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Jumpman (4000).zip"
+        }
+    },
+    "pottypigeon": {
+        "title": "Potty Pigeon",
+        "overview": "",
+        "description": "Guide your pigeon to collect twigs and build a nest while avoiding dangers.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Potty Pigeon (5849).zip"
+        }
+    },
+    "spellbound": {
+        "title": "Spellbound",
+        "overview": "",
+        "description": "Solve puzzles and cast spells as Magic Knight in this adventure game.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Spellbound (7181).zip"
+        }
+    },
+    "paradroid": {
+        "title": "Paradroid",
+        "overview": "",
+        "description": "Take control of robots and clear the spaceship decks in this top-down action classic.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Paradroid (5553).zip"
+        }
+    },
+    "sanxion": {
+        "title": "Sanxion",
+        "overview": "",
+        "description": "Pilot your ship through scrolling levels, shooting enemies and dodging obstacles.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Sanxion (6565).zip"
+        }
+    },
+    "zorktheundiscoveredunderground": {
+        "title": "Zork - The Undiscovered Underground",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Zork - The Undiscovered Underground (8907).zip"
+        }
+    },
+    "neuromancer": {
+        "title": "Neuromancer",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Neuromancer (5183).zip"
+        }
+    },
+    "ghostbustersii": {
+        "title": "Ghostbusters II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Ghostbusters II (3134).zip"
+        }
+    },
+    "microprosesoccer": {
+        "title": "Microprose Soccer",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Microprose Soccer (4802).zip"
+        }
+    },
+    "wintergames": {
+        "title": "Winter Games",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Winter Games (8620).zip"
+        }
+    },
+    "jetsetwilly": {
+        "title": "Jet Set Willy",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Jet Set Willy (3926).zip"
+        }
+    },
+    "uridium+": {
+        "title": "Uridium+",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Uridium+ (8332).zip"
+        }
+    },
+    "choplifter": {
+        "title": "Choplifter",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Choplifter (1459).zip"
+        }
+    },
+    "aufwiedersehenmonty": {
+        "title": "Auf Wiedersehen Monty",
+        "description": "Monty On the Run is a platform-style game featuring Monty Mole, a coal thief fleeing across Europe to escape the Intermole agency. Players navigate Monty through 80 screens representing European landmarks, using various movement techniques like super-leaps and ceiling suspension. The goal is to collect Eurocheques and plane tickets while avoiding hazards. The game incorporates unique elements such as drunkenness effects from wine bottles and aerial combat sequences. As the third main entry in the Monty Mole series, it builds upon the gameplay mechanics of its predecessors while introducing new challenges and environments.Rating: 94.1",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/co91yo.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "returnofheracles": {
+        "title": "Return of Heracles",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Return of Heracles (13529).zip"
+        }
+    },
+    "poolofradiance": {
+        "title": "Pool of Radiance",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Pool of Radiance (5824).zip"
+        }
+    },
+    "forbiddenforest": {
+        "title": "Forbidden Forest",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Forbidden Forest (2864).zip"
+        }
+    },
+    "greatgianasistersthe": {
+        "title": "The Great Giana Sisters",
+        "description": "After falling into a dark, deep sleep, little Giana finds herself in a mysterious dreamworld where everything is strange and different. Many fascinating creatures lurk in this place full of traps and complicated mazes.But Giana must possess the magical diamond before she can return!Two players can enjoy this fun-filled game with over 30 completely different levels.The five-voiced musical sounds and the ever-changing graphics will make you want to play THE GREAT GIANA SISTERS over and over again.Rating: 74.3",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/co6aem.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "archoniiadept": {
+        "title": "Archon II - Adept",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Archon II - Adept (380).zip"
+        }
+    },
+    "lightforce": {
+        "title": "Lightforce",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Lightforce (4381).zip"
+        }
+    },
+    "lastninjathe": {
+        "title": "Last Ninja , The",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Last Ninja , The (4284).zip"
+        }
+    },
+    "uridium": {
+        "title": "Uridium",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Uridium (8331).zip"
+        }
+    },
+    "maniacmansion": {
+        "title": "Maniac Mansion",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Maniac Mansion (4576).zip"
+        }
+    },
+    "missionimpossible": {
+        "title": "Mission Impossible",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Mission Impossible (9664).zip"
+        }
+    },
+    "archon": {
+        "title": "Archon",
+        "description": "Archon is a 1983 action-strategy game where players battle for control of a chess-like board using fantastical creatures with real-time combat encounters.",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "supremacy": {
+        "title": "Supremacy",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Supremacy (7673).zip"
+        }
+    },
+    "zorkiiithedungeonmaster": {
+        "title": "Zork III - The Dungeon Master",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Zork III - The Dungeon Master  (8913).zip"
+        }
+    },
+    "alteredbeast": {
+        "title": "Altered Beast",
+        "description": "Originally released by Sega in arcades in 1988, Altered Beast is a side-scrolling beat 'em up later ported to various home platforms, including the Commodore 64 (C64). In this game, you play as a resurrected warrior chosen by Zeus to rescue his daughter Athena from the underworld ruler Neff. The gameplay involves battling hordes of undead and mythological monsters across five stages set in ancient Greece. Collecting spirit orbs transforms you into powerful beast forms such as a werewolf, allowing for special attacks and abilities.  The C64 adaptation replicates the core action and challenge of the arcade original, with graphics and sound optimized for Commodore’s hardware. Despite technical limitations, it captures the essence of this cult classic—offering fans of action games a nostalgic adventure through myth and legend.",
+        "cover_image_path": "https://upload.wikimedia.org/wikipedia/en/f/fd/PS2_Altered_Beast_Cover.jpg",
+        "platforms": {}
+    },
+    "turricaniithefinalfight": {
+        "title": "Turrican II - The Final Fight",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Turrican II - The Final Fight (8234).zip"
+        }
+    },
+    "leaderboardgolf": {
+        "title": "Leaderboard Golf",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Leaderboard Golf (4316).zip"
+        }
+    },
+    "creatures": {
+        "title": "Creatures",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Creatures (1786).zip"
+        }
+    },
+    "ghostbusters": {
+        "title": "Ghostbusters",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Ghostbusters (3133).zip"
+        }
+    },
+    "amcattackofthemutantcamels": {
+        "title": "Attack of the Mutant Camels",
+        "description": "The player controls a small jetplane and has the task of killing giant yellow camels before they reach the home base. Doing so requires several dozens of shots. The camels retaliate by shooting fireballs from their mouth.Each camel required several shots to destroy; if a camel reached the base, the game was over. Once all camels on a level had been killed, the player had to survive a \"hyperspace\" sequence which required avoiding high-speed missiles. Upon successful completion, the next level presented a new wave of camels, with slightly harder gameplay.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/scr8r3.jpg",
+        "platforms": {}
+    },
+    "spyvsspy": {
+        "title": "Spy vs Spy",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Spy vs Spy (7268).zip"
+        }
+    },
+    "spacesentinel": {
+        "title": "Space Sentinel",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Space Sentinel (7099).zip"
+        }
+    },
+    "summergames": {
+        "title": "Summer Games",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Summer Games (7545).zip"
+        }
+    },
+    "zorkithegreatundergroundempire": {
+        "title": "Zork",
+        "description": "Zork is one of the earliest interactive fiction computer games, with roots drawn from the original genre game, Colossal Cave Adventure. The first version of Zork was written in 1977–1979 using the MDL programming language on a DEC PDP-10 computer.Rating: 69.8",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/c8bzoelzitended2f5z6.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "commando": {
+        "title": "Commando",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Commando (1602).zip"
+        }
+    },
+    "turrican": {
+        "title": "Turrican",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Turrican (8233).zip"
+        }
+    },
+    "uridium2": {
+        "title": "Uridium 2",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Uridium 2 (8333).zip"
+        }
+    },
+    "superpipelineii": {
+        "title": "Super Pipeline II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Super Pipeline II (7601).zip"
+        }
+    },
+    "spindizzy": {
+        "title": "Spindizzy",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Spindizzy (15264).zip"
+        }
+    },
+    "thrustii": {
+        "title": "Thrust II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Thrust II (7898).zip"
+        }
+    },
+    "delta": {
+        "title": "Delta",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Delta (2092).zip"
+        }
+    },
+    "skateordie!": {
+        "title": "Skate or Die!",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Skate or Die! (6849).zip"
+        }
+    },
+    "suicideexpress": {
+        "title": "Suicide Express",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Suicide Express (7538).zip"
+        }
+    },
+    "boulderdash+": {
+        "title": "Boulder Dash +",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Boulder Dash + (993).zip"
+        }
+    },
+    "lazyjones": {
+        "title": "Lazy Jones",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Lazy Jones (4310).zip"
+        }
+    },
+    "williamwobbler": {
+        "title": "William Wobbler",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/William Wobbler (8607).zip"
+        }
+    },
+    "alteregofemaleversion": {
+        "title": "Alter Ego",
+        "description": "Alter Ego - Female Version is a text-based life simulation game released in 1986, where players guide a female character through various life stages by making choices that shape her personality and experiences.",
+        "cover_image_path": "",
+        "platforms": {}
+    },
+    "zorkquestiassaultonegrethcastle": {
+        "title": "Zork Quest I - Assault on Egreth Castle",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Zork Quest I - Assault on Egreth Castle (8915).zip"
+        }
+    },
+    "creaturesiitorturetrouble": {
+        "title": "Creatures II - Torture Trouble",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Creatures II - Torture Trouble (1787).zip"
+        }
+    },
+    "paradroidmetaledition": {
+        "title": "Paradroid - Metal Edition",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Paradroid - Metal Edition (5555).zip"
+        }
+    },
+    "lastninjaii": {
+        "title": "Last Ninja II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Last Ninja II (4285).zip"
+        }
+    },
+    "thrustgold": {
+        "title": "Thrust Gold",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Thrust Gold (13439).zip"
+        }
+    },
+    "californiagames": {
+        "title": "California Games",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/California Games (1227).zip"
+        }
+    },
+    "worldgames": {
+        "title": "World Games",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/World Games (8721).zip"
+        }
+    },
+    "jumpmanii": {
+        "title": "Jumpman II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Jumpman II (17360).zip"
+        }
+    },
+    "boulderdashconstructionkit": {
+        "title": "Boulder Dash Construction Kit",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Boulder Dash Construction Kit (1007).zip"
+        }
+    },
+    "lastninjaiii": {
+        "title": "Last Ninja III",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Last Ninja III (4286).zip"
+        }
+    },
+    "dropzone": {
+        "title": "Dropzone",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Dropzone (2362).zip"
+        }
+    },
+    "returnofthemutantcamels": {
+        "title": "Return of the Mutant Camels",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Return of the Mutant Camels (6321).zip"
+        }
+    },
+    "boulderdash": {
+        "title": "Boulder Dash",
+        "description": "Boulder Dash was originally released in 1984 for Atari 8-bit computers. It was developed and published by First Star Software, and spawned a series of sequels, re-releases, and spinoffs. It also did a great deal to establish and influence the mining genre of video games, which can be seen in modern games such as Minecraft, Spelunky, and Terraria.Rating: 72.7",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/co7jgs.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "thrust": {
+        "title": "Thrust",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Thrust (7897).zip"
+        }
+    },
+    "paradroidcompetitionedition": {
+        "title": "Paradroid - Competition Edition",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Paradroid - Competition Edition (5554).zip"
+        }
+    },
+    "jetsetwillyiithefinalfrontier": {
+        "title": "Jet Set Willy II - The Final Frontier",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Jet Set Willy II - The Final Frontier (3927).zip"
+        }
+    },
+    "impossiblemissionii": {
+        "title": "Impossible Mission II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Impossible Mission II (3732).zip"
+        }
+    },
+    "wasteland": {
+        "title": "Wasteland",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Wasteland (8515).zip"
+        }
+    },
+    "elite128": {
+        "title": "Elite 128",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Elite 128 (2476).zip"
+        }
+    },
+    "slicks": {
+        "title": "Slicks",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Slicks (6918).zip"
+        }
+    },
+    "turricaniii": {
+        "title": "Turrican III",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Turrican III (11975).zip"
+        }
+    },
+    "zorkquestiithecrystalofdoom": {
+        "title": "Zork Quest II - The Crystal of Doom",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Zork Quest II - The Crystal of Doom (8916).zip"
+        }
+    },
+    "beyondtheforbiddenforest": {
+        "title": "Beyond the Forbidden Forest",
+        "description": "Great atmosphere, weird clever graphics and amazingly spooky music. This is a genuinely unsettling game but a brilliant one. Nothing else like it. Get this game anyway you can.(Broozor - Lemon64.com)",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/lsr0dfaphikq262ig7im.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "wizball": {
+        "title": "Wizball",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Wizball (8669).zip"
+        }
+    },
+    "raidonbungelingbay": {
+        "title": "Raid on Bungeling Bay",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Raid on Bungeling Bay (6175).zip"
+        }
+    },
+    "lastv8the": {
+        "title": "Last V8, The",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Last V8, The (4293).zip"
+        }
+    },
+    "wayoftheexplodingfistthe": {
+        "title": "Way of the Exploding Fist, The",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Way of the Exploding Fist, The (8526).zip"
+        }
+    },
+    "bubblebobbleii": {
+        "title": "Bubble Bobble II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Bubble Bobble II (16192).zip"
+        }
+    },
+    "boulderdashdeluxekit": {
+        "title": "Boulder Dash Deluxe Kit",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Boulder Dash Deluxe Kit (1009).zip"
+        }
+    },
+    "sentinelthe": {
+        "title": "Sentinel, The",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Sentinel, The (6709).zip"
+        }
+    },
+    "racingdestructionset": {
+        "title": "Racing Destruction Set",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Racing Destruction Set (6154).zip"
+        }
+    },
+    "aztecchallenge": {
+        "title": "Aztec Challenge",
+        "description": "In the Aztec empire you were chosen for sacrifice.A forthcoming violent death you can only escape when a risky obstacle course face - the \"Aztec Challenge\".But that is no picnic: at the beginning it will be from \"all sides\" . pelted with spears, while one has to work its almost endless way to the templeOnce there it is not friendly: trapdoors, falling boulders, snakes and spiders waiting for new victims.it is a moral imperative and a two-player mode - unfortunately alternate the players then only from.the game features 7 breathtaking levels (plus end bonus), in which a good reactivity is required. The graph corresponds unfortunately only the ordinary 1984, but does not spoil the good game idea. Moreover, good acoustics for the right mood makes.Ideal: one has reached a higher level, you do not have to start again when all lives are exhausted.Rating: 75.1",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/bi6swt2b9qowicfstpee.jpg",
+        "platforms": {
+            "c64": ""
+        }
+    },
+    "lasersquadii": {
+        "title": "Laser Squad II",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Laser Squad II (4268).zip"
+        }
+    },
+    "bubblebobble": {
+        "title": "Bubble Bobble",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Bubble Bobble (1138).zip"
+        }
+    },
+    "manicminer": {
+        "title": "Manic Miner",
+        "overview": "",
+        "description": "",
+        "cover_image_path": "",
+        "platforms": {
+            "c64": "/home/gdo/ROMs/c64/Manic Miner (4580).zip"
+        }
+    }
+}

@@ -14,3 +14,5 @@ TWITCH_CLIENT_ID=""
 TWITCH_SECRET=""
 
 Stuff like EmulationStation is great, but it's written in C++ and very complex. I wanted to see if it was possible to knock something up in NodeJS that was simple to maintain.
+
+

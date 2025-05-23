@@ -13,9 +13,67 @@
         .fab-btn { position: fixed; bottom: 36px; right: 36px; z-index: 1001; }
         .hidden { display: none; }
         #backBtn { position: fixed; top: 24px; left: 24px; z-index: 1000; display: none; }
-        .cover-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; background: #eee; }
+        .cover-thumb { 
+            width: 48px; 
+            height: 48px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            background: #eee;
+            transition: filter 0.3s ease-out;
+        }
+        .cover-thumb.loading {
+            filter: blur(5px);
+        }
+        .cover-thumb.loaded {
+            filter: none;
+        }
         .modal { max-width: 480px; }
+        /* Loading indicator styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .loading-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        /* Error message styles */
+        .error-message {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f44336;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 2001;
+            display: none;
+        }
+        .error-message.visible {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translate(-50%, 100%); }
+            to { transform: translate(-50%, 0); }
+        }
     </style>
+    <!-- Import our modules -->
+    <script type="module" src="/js/imageLoader.js"></script>
+    <script type="module" src="/js/state.js"></script>
 </head>
 <body>
     <ul id="navDrawer" class="sidenav">
@@ -82,240 +140,174 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-        let games = [];
-        let platforms = {};
-        let sortField = 'title';
-        let sortAsc = true;
-        let searchTerm = '';
-        let platformFilter = '';
+        const state = {
+            games: [],
+            platforms: {},
+            currentPage: 1,
+            itemsPerPage: 10,
+            totalItems: 0,
+            searchTerm: '',
+            platformFilter: '',
+            sortField: 'title',
+            sortAsc: true,
+            error: null,
+            isLoading: false
+        };
+
+        // Safe string compare function that handles undefined/null values
+        function safeCompare(a, b) {
+            // Handle null, undefined, or empty values
+            if (!a && !b) return 0;
+            if (!a) return -1;
+            if (!b) return 1;
+            
+            // Convert to strings, trimming whitespace
+            const strA = String(a).trim();
+            const strB = String(b).trim();
+            
+            // Case-insensitive comparison
+            return strA.toLowerCase().localeCompare(strB.toLowerCase());
+        }
+
+        // Get platform names for a game
+        function getPlatformNames(game) {
+            if (!game?.platforms) return '';
+            return Object.keys(game.platforms)
+                .map(pid => {
+                    const platform = state.platforms[pid];
+                    return platform?.name || pid;
+                })
+                .filter(name => name && name.trim())
+                .sort()
+                .join(', ');
+        }
+
+        async function renderGamesTable() {
+            const tableBody = document.getElementById('gamesTableBody');
+            if (!tableBody) return;
+
+            // Clear existing content
+            tableBody.innerHTML = '';
+
+            const state = retroNodeState.state;
+
+            // Make sure we have games to display
+            if (!Array.isArray(state.games)) {
+                console.warn('No games available to display');
+                return;
+            }
+
+            // Filter games
+            let filtered = state.games.filter(game => {
+                if (!game || typeof game !== 'object') return false;
+                
+                const title = (game.title || '').toLowerCase();
+                const description = (game.description || '').toLowerCase();
+                const searchStr = state.searchTerm.toLowerCase();
+                
+                const matchesSearch = !searchStr || 
+                    title.includes(searchStr) || 
+                    description.includes(searchStr);
+                
+                const matchesPlatform = !state.platformFilter || 
+                    (game.platforms && state.platformFilter in game.platforms);
+                
+                return matchesSearch && matchesPlatform;
+            });
+
+            // Sort games
+            filtered.sort((a, b) => {
+                if (!a || !b) return 0;
+                const sortMod = state.sortAsc ? 1 : -1;
+                
+                try {
+                    switch (state.sortField) {
+                        case 'title':
+                            return sortMod * safeCompare(a.title, b.title);
+                        case 'platforms':
+                            return sortMod * safeCompare(getPlatformNames(a), getPlatformNames(b));
+                        default:
+                            return 0;
+                    }
+                } catch (err) {
+                    console.error('Error during sort:', err);
+                    return 0;
+                }
+            });
+
+            // Calculate pagination
+            state.totalItems = filtered.length;
+            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+            const endIndex = startIndex + state.itemsPerPage;
+            const paginatedGames = filtered.slice(startIndex, endIndex);
+
+            // Show loading state
+            if (state.isLoading) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="center-align">
+                            <div class="progress">
+                                <div class="indeterminate"></div>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            // Show error state if any
+            if (state.error) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="center-align">
+                            <div class="red-text">${state.error}</div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            // Render each game row
+            paginatedGames.forEach((game, idx) => {
+                if (!game) return;
+                const platformNames = getPlatformNames(game);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="width:60px;">
+                        <img src="${game.cover_image_path || '/img/default-cover.png'}" 
+                             alt="${game.title || 'No title'}" 
+                             class="cover-thumb"
+                             onerror="this.src='/img/default-cover.png'">
+                    </td>
+                    <td>${game.title || 'No title'}</td>
+                    <td>${game.description || 'No description'}</td>
+                    <td>${platformNames || 'No platforms'}</td>
+                    <td style="white-space:nowrap;">
+                        <button class="btn-flat blue-text" onclick="openGameDialog('edit', retroNodeState.state.games[${startIndex + idx}], ${startIndex + idx})" title="Edit">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button class="btn-flat blue-text igdb-btn" data-title="${encodeURIComponent(game.title)}" data-row="${idx}" title="Find in IGDB">
+                            <i class="material-icons">image_search</i>
+                        </button>
+                        <button class="btn-flat red-text" onclick="deleteGame(${startIndex + idx})" title="Delete">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Update pagination controls
+            updatePagination();
+        }
 
         function renderPlatformFilter() {
             const select = document.getElementById('platformFilter');
             select.innerHTML = '<option value="">All Platforms</option>' +
-                Object.entries(platforms).map(([pid, p]) => `<option value="${pid}">${p.name}</option>`).join('');
+                Object.entries(state.platforms).map(([pid, p]) => `<option value="${pid}">${p.name}</option>`).join('');
             M.FormSelect.init(select);
             select.onchange = function() {
-                platformFilter = select.value;
+                state.platformFilter = select.value;
                 renderGamesTable();
             };
-        }
-
-        function renderGamesTable() {
-            // Remove any existing preview image
-            let previewImg = document.getElementById('coverPreviewImg');
-            if (!previewImg) {
-                previewImg = document.createElement('img');
-                previewImg.id = 'coverPreviewImg';
-                previewImg.style.position = 'fixed';
-                previewImg.style.zIndex = '3000';
-                previewImg.style.display = 'none';
-                previewImg.style.maxWidth = '320px';
-                previewImg.style.maxHeight = '80vh';
-                previewImg.style.boxShadow = '0 4px 24px rgba(0,0,0,0.25)';
-                previewImg.style.borderRadius = '10px';
-                previewImg.style.background = '#fff';
-                previewImg.style.pointerEvents = 'none';
-                document.body.appendChild(previewImg);
-            }
-            const tbody = document.getElementById('gamesTableBody');
-            tbody.innerHTML = '';
-            let filtered = games.filter(game => {
-                const matchesSearch = !searchTerm || game.title.toLowerCase().includes(searchTerm) || (game.description || '').toLowerCase().includes(searchTerm);
-                const matchesPlatform = !platformFilter || (game.platforms && game.platforms[platformFilter]);
-                return matchesSearch && matchesPlatform;
-            });
-            filtered.sort((a, b) => {
-                if (sortField === 'title') {
-                    return sortAsc ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
-                } else if (sortField === 'platforms') {
-                    const aPlatforms = Object.keys(a.platforms || {}).map(pid => platforms[pid]?.name || pid).join(', ');
-                    const bPlatforms = Object.keys(b.platforms || {}).map(pid => platforms[pid]?.name || pid).join(', ');
-                    return sortAsc ? aPlatforms.localeCompare(bPlatforms) : bPlatforms.localeCompare(aPlatforms);
-                }
-                return 0;
-            });
-            filtered.forEach((game, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${game.cover_image_path || ''}" alt="cover" class="cover-thumb game-cover-thumb" data-cover="${game.cover_image_path || ''}" onerror="this.style.display='none'"></td>
-                    <td>${game.title}</td>
-                    <td>${game.description || ''}</td>
-                    <td>${Object.keys(game.platforms || {}).map(pid => platforms[pid]?.name || pid).join(', ')}</td>
-                    <td style="white-space:nowrap;">
-                        <button class="btn-floating btn-small waves-effect waves-light green play-game-btn" data-idx="${games.indexOf(game)}" title="Play" style="margin-right:4px;"><i class="material-icons">play_arrow</i></button>
-                        <button class="btn-flat blue-text edit-game-btn" data-idx="${games.indexOf(game)}" title="Edit"><i class="material-icons">edit</i></button>
-                        <button class="btn-flat red-text delete-game-btn" data-idx="${games.indexOf(game)}" title="Delete"><i class="material-icons">delete</i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            // Add hover listeners for cover preview
-            document.querySelectorAll('.game-cover-thumb').forEach(img => {
-                img.addEventListener('mouseenter', function(e) {
-                    const src = this.getAttribute('data-cover');
-                    if (!src) return;
-                    previewImg.src = src;
-                    previewImg.style.display = 'block';
-                    // Position near mouse, but keep on screen
-                    const move = ev => {
-                        let x = ev.clientX + 24;
-                        let y = ev.clientY - 24;
-                        if (x + previewImg.width > window.innerWidth - 16) x = window.innerWidth - previewImg.width - 16;
-                        if (y + previewImg.height > window.innerHeight - 16) y = window.innerHeight - previewImg.height - 16;
-                        if (y < 0) y = 0;
-                        previewImg.style.left = x + 'px';
-                        previewImg.style.top = y + 'px';
-                    };
-                    move(e);
-                    window.addEventListener('mousemove', move);
-                    this._moveHandler = move;
-                });
-                img.addEventListener('mouseleave', function() {
-                    previewImg.style.display = 'none';
-                    window.removeEventListener('mousemove', this._moveHandler);
-                });
-            });
-            // Attach event listeners
-            document.querySelectorAll('.edit-game-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    const idx = btn.getAttribute('data-idx');
-                    openGameDialog('edit', games[idx], idx);
-                };
-            });
-            document.querySelectorAll('.delete-game-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    const idx = btn.getAttribute('data-idx');
-                    if (confirm('Delete this game?')) deleteGame(idx);
-                };
-            });
-            document.querySelectorAll('.play-game-btn').forEach(btn => {
-                btn.onclick = async (e) => {
-                    e.preventDefault();
-                    const idx = btn.getAttribute('data-idx');
-                    const game = games[idx];
-                    // Get all platform/ROM pairs for this game
-                    const platformRoms = Object.entries(game.platforms || {})
-                        .filter(([pid, rom]) => rom && rom.trim())
-                        .map(([pid, rom]) => ({
-                            platformId: pid,
-                            platformName: platforms[pid]?.name || pid,
-                            romPath: rom
-                        }));
-                    if (!platformRoms.length) {
-                        M.toast({html: 'No ROMs available for this game!'});
-                        return;
-                    }
-                    // Fetch emulators for all platforms
-                    const resp = await fetch('/api/emulators');
-                    const emulatorsByPlatform = await resp.json();
-                    // Build a list of (platform, emulator, rom) options
-                    let launchOptions = [];
-                    platformRoms.forEach(pr => {
-                        const emus = emulatorsByPlatform[pr.platformId] || [];
-                        emus.forEach(em => {
-                            launchOptions.push({
-                                platformId: pr.platformId,
-                                platformName: pr.platformName,
-                                emulatorId: em.emulator_id,
-                                emulatorName: em.name || em.emulator_id,
-                                romPath: pr.romPath
-                            });
-                        });
-                    });
-                    if (!launchOptions.length) {
-                        M.toast({html: 'No emulators found for this game\'s platforms!'});
-                        return;
-                    }
-                    // Show a Materialize modal to select emulator/ROM
-                    const modalId = 'playEmulatorModal';
-                    let modalElem = document.getElementById(modalId);
-                    if (!modalElem) {
-                        modalElem = document.createElement('div');
-                        modalElem.id = modalId;
-                        modalElem.className = 'modal';
-                        document.body.appendChild(modalElem);
-                    }
-                    modalElem.innerHTML = `
-                        <div class="modal-content">
-                            <h5>Select Emulator & ROM</h5>
-                            <div class="input-field">
-                                <select id="emulatorSelect">
-                                    ${launchOptions.map((opt, i) => `<option value="${i}">${opt.platformName} - ${opt.emulatorName} (${opt.romPath.split('/').pop()})</option>`).join('')}
-                                </select>
-                                <label for="emulatorSelect">Emulator & ROM</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#!" class="modal-close btn-flat">Cancel</a>
-                            <a href="#!" id="launchEmulatorBtn" class="btn green">Launch</a>
-                        </div>
-                    `;
-                    M.FormSelect.init(modalElem.querySelector('select'));
-                    let modalInstance = M.Modal.getInstance(modalElem);
-                    if (modalInstance) modalInstance.destroy();
-                    modalInstance = M.Modal.init(modalElem, {
-                        onOpenEnd: () => {
-                            const launchBtn = document.getElementById('launchEmulatorBtn');
-                            if (launchBtn) {
-                                launchBtn.onclick = async function() {
-                                    const selectedIdx = document.getElementById('emulatorSelect').value;
-                                    const opt = launchOptions[selectedIdx];
-                                    if (!opt) return;
-                                    modalInstance.close();
-                                    // Launch emulator (call backend)
-                                    const launchResp = await fetch('/api/launch', {
-                                        method: 'POST',
-                                        headers: {'Content-Type': 'application/json'},
-                                        body: JSON.stringify({
-                                            emulatorId: opt.emulatorId,
-                                            platformId: opt.platformId,
-                                            gameTitle: game.title,
-                                            romPath: opt.romPath
-                                        })
-                                    });
-                                    const launchData = await launchResp.json();
-                                    if (launchData.success) {
-                                        M.toast({html: 'Launching emulator...'});
-                                    } else {
-                                        M.toast({html: 'Failed to launch emulator: ' + (launchData.error || 'Unknown error')});
-                                    }
-                                };
-                            }
-                        }
-                    });
-                    modalInstance.open();
-                };
-            });
-            document.querySelectorAll('.igdb-btn').forEach(btn => {
-                btn.onclick = async function(e) {
-                    e.preventDefault();
-                    // Hide all IGDB rows first
-                    document.querySelectorAll('.igdb-results-row').forEach(row => { row.style.display = 'none'; row.querySelector('.igdb-results-container').innerHTML = ''; });
-                    const rowIdx = parseInt(btn.getAttribute('data-row-idx'));
-                    // Find the IGDB row after this game row
-                    const igdbRow = tbody.querySelectorAll('.igdb-results-row')[rowIdx];
-                    const container = igdbRow.querySelector('.igdb-results-container');
-                    container.innerHTML = '<div class="progress"><div class="indeterminate"></div></div>';
-                    igdbRow.style.display = '';
-                    const title = decodeURIComponent(btn.getAttribute('data-title'));
-                    const igdbResp = await fetch('/api/igdb/game', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ title })
-                    });
-                    const igdbData = await igdbResp.json();
-                    if (igdbData && igdbData.results && igdbData.results.length) {
-                        showIgdbResultsInline(igdbData.results, container, igdbRow);
-                    } else {
-                        container.innerHTML = '<div class="card-panel yellow lighten-4">No IGDB results found.</div>';
-                    }
-                };
-            });
-            // Update sort icons
-            document.getElementById('sortTitleIcon').textContent = sortField === 'title' ? (sortAsc ? 'arrow_upward' : 'arrow_downward') : 'unfold_more';
-            document.getElementById('sortPlatformIcon').textContent = sortField === 'platforms' ? (sortAsc ? 'arrow_upward' : 'arrow_downward') : 'unfold_more';
         }
 
         function openGameDialog(mode, game = {}, idx = null) {
@@ -569,7 +561,7 @@
                     body: JSON.stringify(gameData)
                 }).then(r => r.json()).then(resp => {
                     if (resp.success) {
-                        games.push(gameData);
+                        state.games.push(gameData);
                         renderGamesTable();
                         M.Modal.getInstance(document.getElementById('crudDialog')).close();
                         M.toast({html: 'Game added!'});
@@ -578,13 +570,13 @@
                     }
                 });
             } else if (mode === 'edit') {
-                fetch('/api/games/' + encodeURIComponent(games[idx].title), {
+                fetch('/api/games/' + encodeURIComponent(state.games[idx].title), {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(gameData)
                 }).then(r => r.json()).then(resp => {
                     if (resp.success) {
-                        games[idx] = gameData;
+                        state.games[idx] = gameData;
                         renderGamesTable();
                         M.Modal.getInstance(document.getElementById('crudDialog')).close();
                         M.toast({html: 'Game updated!'});
@@ -596,11 +588,11 @@
         }
 
         function deleteGame(idx) {
-            fetch('/api/games/' + encodeURIComponent(games[idx].title), {
+            fetch('/api/games/' + encodeURIComponent(state.games[idx].title), {
                 method: 'DELETE'
             }).then(r => r.json()).then(resp => {
                 if (resp.success) {
-                    games.splice(idx, 1);
+                    state.games.splice(idx, 1);
                     renderGamesTable();
                     M.toast({html: 'Game deleted!'});
                 } else {
@@ -792,17 +784,21 @@
             M.Sidenav.init(sidenavs, {edge: 'left'});
         });
 
+        // Search handler
         document.getElementById('searchInput').oninput = function() {
-            searchTerm = this.value.trim().toLowerCase();
+            state.searchTerm = this.value.trim().toLowerCase();
             renderGamesTable();
         };
 
+        // Sort handlers
         document.getElementById('sortTitle').onclick = function() {
-            if (sortField === 'title') sortAsc = !sortAsc; else { sortField = 'title'; sortAsc = true; }
+            if (state.sortField === 'title') state.sortAsc = !state.sortAsc;
+            else { state.sortField = 'title'; state.sortAsc = true; }
             renderGamesTable();
         };
         document.getElementById('sortPlatform').onclick = function() {
-            if (sortField === 'platforms') sortAsc = !sortAsc; else { sortField = 'platforms'; sortAsc = true; }
+            if (state.sortField === 'platforms') state.sortAsc = !state.sortAsc;
+            else { state.sortField = 'platforms'; state.sortAsc = true; }
             renderGamesTable();
         };
 
@@ -815,15 +811,34 @@
             };
         }
 
-        Promise.all([
-            fetch('/api/games').then(r => r.json()),
-            fetch('/api/platforms').then(r => r.json())
-        ]).then(([gamesData, platformsData]) => {
-            games = Array.isArray(gamesData) ? gamesData : Object.values(gamesData);
-            platforms = platformsData;
-            renderPlatformFilter();
-            renderGamesTable();
+        // Initialize state management
+const retroNodeState = new RetroNodeState();
+
+// Subscribe to state changes
+retroNodeState.subscribe((newState) => {
+    renderGamesTable();
+    renderPlatformFilter();
+});
+
+// Load initial data
+Promise.all([
+    fetch('/api/games').then(r => r.json()),
+    fetch('/api/platforms').then(r => r.json())
+]).then(([gamesResponse, platformsData]) => {
+    if (gamesResponse.success && Array.isArray(gamesResponse.data)) {
+        retroNodeState.setState({
+            games: gamesResponse.data,
+            totalItems: gamesResponse.pagination?.total || gamesResponse.data.length,
+            platforms: platformsData
         });
+    } else {
+        console.error('Unexpected games data format:', gamesResponse);
+        retroNodeState.setState({
+            games: [],
+            error: 'Failed to load games data'
+        });
+    }
+});
 
         // Patch the IGDB button handler to show results inline under the relevant game row
         let openIgdbRow = null;
@@ -843,7 +858,7 @@
                 // Insert a new row for IGDB results
                 const igdbRow = document.createElement('tr');
                 igdbRow.className = 'igdb-inline-row';
-                igdbRow.innerHTML = `<td colspan="5"><div class="igdb-inline-section" style="margin-left:32px;"><div class="progress"><div class="indeterminate"></div></div></div></td>`;
+                igdbRow.innerHTML = `<td colspan="5"><div class="igdb-inline-section" style="margin-left:32px;"><div class="progress"><div class="indeterminate"></div></td>`;
                 tr.parentNode.insertBefore(igdbRow, tr.nextSibling);
                 openIgdbRow = igdbRow;
                 // Fetch IGDB results
@@ -993,6 +1008,55 @@
                 }
             }
         });
+
+        function updatePagination() {
+            // Calculate total pages
+            const totalPages = Math.ceil(state.totalItems / state.itemsPerPage);
+            
+            // Add pagination controls
+            const paginationContainer = document.createElement('div');
+            paginationContainer.className = 'pagination center-align';
+            paginationContainer.style.marginTop = '20px';
+            
+            // Previous button
+            const prevBtn = document.createElement('a');
+            prevBtn.className = `waves-effect waves-light btn-flat ${state.currentPage === 1 ? 'disabled' : ''}`;
+            prevBtn.innerHTML = '<i class="material-icons">chevron_left</i>';
+            prevBtn.onclick = () => {
+                if (state.currentPage > 1) {
+                    state.currentPage--;
+                    renderGamesTable();
+                }
+            };
+            
+            // Next button
+            const nextBtn = document.createElement('a');
+            nextBtn.className = `waves-effect waves-light btn-flat ${state.currentPage === totalPages ? 'disabled' : ''}`;
+            nextBtn.innerHTML = '<i class="material-icons">chevron_right</i>';
+            nextBtn.onclick = () => {
+                if (state.currentPage < totalPages) {
+                    state.currentPage++;
+                    renderGamesTable();
+                }
+            };
+            
+            // Page numbers
+            const pageSpan = document.createElement('span');
+            pageSpan.style.margin = '0 16px';
+            pageSpan.textContent = `Page ${state.currentPage} of ${totalPages}`;
+            
+            paginationContainer.appendChild(prevBtn);
+            paginationContainer.appendChild(pageSpan);
+            paginationContainer.appendChild(nextBtn);
+            
+            // Replace any existing pagination
+            const existingPagination = document.querySelector('.pagination');
+            if (existingPagination) {
+                existingPagination.replaceWith(paginationContainer);
+            } else {
+                document.getElementById('gamesTableBody').parentElement.after(paginationContainer);
+            }
+        }
     </script>
 </body>
 </html>

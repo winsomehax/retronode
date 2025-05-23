@@ -29,11 +29,11 @@ const gameValidation = {
   ],
 
   update: [
-    param('title')
+    param('gameId') // Changed from 'title' to 'gameId'
       .exists()
-      .withMessage('Title parameter is required')
+      .withMessage('Game ID route parameter is required')
       .notEmpty()
-      .withMessage('Title parameter cannot be empty')
+      .withMessage('Game ID route parameter cannot be empty')
       .trim()
       .escape(),
     body('title')
@@ -63,11 +63,11 @@ const gameValidation = {
   ],
 
   updateCover: [
-    body('title')
+    param('gameId') // Should validate the gameId from the route parameter
       .exists()
-      .withMessage('Title field is required')
+      .withMessage('Game ID route parameter is required')
       .notEmpty()
-      .withMessage('Game title cannot be empty')
+      .withMessage('Game ID route parameter cannot be empty')
       .trim()
       .escape(),
     body('imageUrl')
@@ -81,11 +81,11 @@ const gameValidation = {
   ],
 
   delete: [
-    param('title')
+    param('gameId') // Changed from 'title' to 'gameId'
       .exists()
-      .withMessage('Title parameter is required')
+      .withMessage('Game ID route parameter is required')
       .notEmpty()
-      .withMessage('Title parameter cannot be empty')
+      .withMessage('Game ID route parameter cannot be empty')
       .trim()
       .escape()
   ]

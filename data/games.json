@@ -467,12 +467,12 @@
     },
     "commando": {
         "title": "Commando",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "description": "Several levels await your super-tough Commando in this arcade conversion. Armed with only a standard rifle and a few grenades you must take on hordes of enemies. Some are wandering around in the open, while others have picked out hiding places, which you must approach from certain angles. Trees, rivers and bridges create a varied combat-like terrain and must be incorporated into your thinking. Extra grenades can be collected, and will definitely be required, as they allow you to kill from distance and thus avoid some enemy shots.Rating: 71.7",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/uvus8ivzpt7emijfotwi.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Commando (1602).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T14:30:37.433Z"
     },
     "turrican": {
         "title": "Turrican",

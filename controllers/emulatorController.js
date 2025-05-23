@@ -14,10 +14,14 @@ class EmulatorController {
     try {
       const platformsJson = await readJsonFile(PATHS.PLATFORMS);
       const emulators = {};
+      console.log('[Emulators BE] Starting getEmulators. platformsJson keys:', Object.keys(platformsJson));
       
       Object.entries(platformsJson).forEach(([pid, platform]) => {
+        console.log(`[Emulators BE] Processing platformId: ${pid}`);
         if (Array.isArray(platform.emulators)) {
+          console.log(`[Emulators BE] Found emulators array for ${pid}:`, platform.emulators.length, 'items');
           emulators[pid] = platform.emulators.map(e => ({
+            // Log individual emulator structure if needed, but mapping implies it's an array
             emulator_id: e.emulator_id,
             name: e.name || e.emulator_id,
             description: e.description,
@@ -25,15 +29,20 @@ class EmulatorController {
             command: e.command,
             args: e.args
           }));
+        } else {
+          console.log(`[Emulators BE] No emulators array or not an array for ${pid}. platform.emulators:`, platform.emulators);
+          emulators[pid] = []; // Ensure platformId key exists even if no emulators
         }
       });
 
+      console.log('[Emulators BE] Final emulators object being sent to FE:', JSON.stringify(emulators, null, 2));
       res.json({
         success: true,
         data: emulators
       });
     } catch (err) {
       next(err);
+      console.error('[Emulators BE] Error in getEmulators:', err);
     }
   }
 

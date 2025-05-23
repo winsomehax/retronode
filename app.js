@@ -36,6 +36,18 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
+// --- BEGIN DEBUGGING MIDDLEWARE ---
+// This middleware will log the body of PUT/POST requests to /api/games
+// BEFORE the validation and controller logic runs.
+app.use('/api/games', (req, res, next) => {
+  if (req.method === 'POST' || req.method === 'PUT') {
+    console.log(`[App.js DEBUG] Path: ${req.originalUrl}, Method: ${req.method}`);
+    console.log('[App.js DEBUG] Request body BEFORE validation:', JSON.stringify(req.body, null, 2));
+    console.log(`[App.js DEBUG] req.body.title value: "${req.body.title}" (Type: ${typeof req.body.title})`);
+  }
+  next();
+});
+// --- END DEBUGGING MIDDLEWARE ---
 // Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'games.html'));
@@ -44,9 +56,9 @@ app.get('/', (req, res) => {
 // Games routes
 app.get('/api/games', gameController.getGames);
 app.post('/api/games', gameValidation.create, validate, gameController.createGame);
-app.put('/api/games/:title', gameValidation.update, validate, gameController.updateGame);
-app.delete('/api/games/:title', gameValidation.delete, validate, gameController.deleteGame);
-app.post('/api/games/update-cover', gameValidation.updateCover, validate, gameController.updateCover);
+app.put('/api/games/:gameId', gameValidation.update, validate, gameController.updateGame);
+app.delete('/api/games/:gameId', gameValidation.delete, validate, gameController.deleteGame);
+app.put('/api/games/:gameId/cover', gameValidation.updateCover, validate, gameController.updateCover);
 
 // Platform routes
 app.get('/api/platforms', platformController.getPlatforms);
@@ -82,4 +94,3 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-

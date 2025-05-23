@@ -115,35 +115,26 @@ class GameController {
 
   async updateGame(req, res, next) {
     try {
-      // Correctly extract the route parameter. Let's assume it's named 'id' in your route definition.
-      // The route in app.js is '/api/games/:title', so we use req.params.title
-      const identifierFromRoute = req.params.title; 
+      // Assuming the route in app.js is '/api/games/:gameId', where gameId is the game's unique key.
+      const { gameId } = req.params;
       const updatedGame = req.body;
       const gamesJson = await readJsonFile(PATHS.GAMES);
 
-      console.log(`[GameController.updateGame] Received request to update game with identifier from route: "${identifierFromRoute}"`);
-      console.log(`[GameController.updateGame] Keys found in games.json: ${Object.keys(gamesJson).length > 0 ? Object.keys(gamesJson).join(', ').substring(0, 500) + '...' : 'No keys found or empty object'}`);
-      const gameExists = gamesJson.hasOwnProperty(identifierFromRoute);
-      console.log(`[GameController.updateGame] Does gamesJson have property "${identifierFromRoute}"? ${gameExists}`);
-
       // Use gameId directly as the key if games.json is keyed by these identifiers
-      if (!gamesJson[identifierFromRoute]) {
-        const errorMessage = `Game not found with identifier: "${identifierFromRoute}". Backend check 'gamesJson.hasOwnProperty("${identifierFromRoute}")' returned: ${gameExists}.`;
-        console.error(`[GameController.updateGame] ${errorMessage} Throwing 404.`);
+      if (!gamesJson[gameId]) {
+        const errorMessage = `Game not found with identifier: "${gameId}"`;
         throw new AppError(errorMessage, 404);
       }
 
       const gameDataToSave = {
         ...updatedGame,
         updated_at: new Date().toISOString(),
-        created_at: gamesJson[identifierFromRoute].created_at
+        created_at: gamesJson[gameId].created_at // Preserve original creation date
       };
-      gamesJson[identifierFromRoute] = gameDataToSave;
+      gamesJson[gameId] = gameDataToSave;
 
       await writeJsonFile(PATHS.GAMES, gamesJson);
-      
-      // Ensure the response data includes the 'id' which is the key
-      const responseData = { ...gameDataToSave, id: identifierFromRoute };
+      const responseData = { ...gameDataToSave, id: gameId };
 
       res.json({
         success: true,
@@ -156,46 +147,43 @@ class GameController {
 
   async deleteGame(req, res, next) {
     try {
-      // Correctly extract the route parameter.
-      // The route in app.js is '/api/games/:title', so we use req.params.title
-      const identifierFromRoute = req.params.title; 
+      // Assuming the route in app.js is '/api/games/:gameId', where gameId is the game's unique key.
+      const { gameId } = req.params;
       const gamesJson = await readJsonFile(PATHS.GAMES);
 
-      if (!gamesJson[identifierFromRoute]) {
+      if (!gamesJson[gameId]) {
         throw new AppError('Game not found', 404);
       }
 
-      delete gamesJson[identifierFromRoute];
+      delete gamesJson[gameId];
       await writeJsonFile(PATHS.GAMES, gamesJson);
       res.json({
         success: true,
-        message: 'Game deleted successfully'
+        message: `Game ${gameId} deleted successfully`
       });
     } catch (err) {
       next(err);
     }
   }
 
+  // Assumes route like PUT /api/games/:gameId/cover
   async updateCover(req, res, next) {
     try {
-      const { title, imageUrl } = req.body;
+      const { gameId } = req.params;
+      const { imageUrl } = req.body;
       const gamesJson = await readJsonFile(PATHS.GAMES);
 
-      const gameKey = Object.keys(gamesJson).find(
-        key => (gamesJson[key].title || '').toLowerCase() === title.toLowerCase()
-      );
-
-      if (!gameKey) {
+      if (!gamesJson[gameId]) {
         throw new AppError('Game not found', 404);
       }
 
-      gamesJson[gameKey].cover_image_path = imageUrl;
-      gamesJson[gameKey].updated_at = new Date().toISOString();
+      gamesJson[gameId].cover_image_path = imageUrl;
+      gamesJson[gameId].updated_at = new Date().toISOString();
 
       await writeJsonFile(PATHS.GAMES, gamesJson);
       res.json({
         success: true,
-        data: gamesJson[gameKey]
+        data: gamesJson[gameId]
       });
     } catch (err) {
       next(err);

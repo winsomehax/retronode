@@ -51,28 +51,24 @@ class PlatformController {
 
   async updatePlatform(req, res, next) {
     try {
-      const { name } = req.params;
+      const { platformId } = req.params; // Assuming route is now /api/platforms/:platformId
       const updatedPlatform = req.body;
       const platformsJson = await readJsonFile(PATHS.PLATFORMS);
 
-      const platformKey = Object.keys(platformsJson).find(
-        key => (platformsJson[key].name || '').toLowerCase() === name.toLowerCase()
-      );
-
-      if (!platformKey) {
+      if (!platformsJson[platformId]) {
         throw new AppError('Platform not found', 404);
       }
 
-      platformsJson[platformKey] = {
+      platformsJson[platformId] = {
         ...updatedPlatform,
         updated_at: new Date().toISOString(),
-        created_at: platformsJson[platformKey].created_at
+        created_at: platformsJson[platformId].created_at // Preserve original creation date
       };
 
       await writeJsonFile(PATHS.PLATFORMS, platformsJson);
       res.json({
         success: true,
-        data: platformsJson[platformKey]
+        data: platformsJson[platformId]
       });
     } catch (err) {
       next(err);
@@ -81,22 +77,18 @@ class PlatformController {
 
   async deletePlatform(req, res, next) {
     try {
-      const { name } = req.params;
+      const { platformId } = req.params; // Assuming route is now /api/platforms/:platformId
       const platformsJson = await readJsonFile(PATHS.PLATFORMS);
 
-      const platformKey = Object.keys(platformsJson).find(
-        key => (platformsJson[key].name || '').toLowerCase() === name.toLowerCase()
-      );
-
-      if (!platformKey) {
+      if (!platformsJson[platformId]) {
         throw new AppError('Platform not found', 404);
       }
 
-      delete platformsJson[platformKey];
+      delete platformsJson[platformId];
       await writeJsonFile(PATHS.PLATFORMS, platformsJson);
       res.json({
         success: true,
-        message: 'Platform deleted successfully'
+        message: `Platform ${platformId} deleted successfully`
       });
     } catch (err) {
       next(err);

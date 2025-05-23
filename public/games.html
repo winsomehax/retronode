@@ -578,12 +578,27 @@
         }
 
         function submitGameForm(mode, originalIndex) { // idx renamed to originalIndex
-            const title = document.getElementById('gameTitle').value.trim();
-            const description = document.getElementById('gameDescription').value.trim();
-            const cover = document.getElementById('gameCover').value.trim();
+            const gameTitleElement = document.getElementById('gameTitle');
+            console.log('[submitGameForm] gameTitleElement:', gameTitleElement);
+            const rawTitleValue = gameTitleElement ? gameTitleElement.value : 'ELEMENT_NOT_FOUND';
+            console.log('[submitGameForm] Raw title value from input:', `"${rawTitleValue}"`);
+
+            const title = rawTitleValue === 'ELEMENT_NOT_FOUND' ? '' : rawTitleValue.trim();
+            console.log('[submitGameForm] Trimmed title value:', `"${title}"`);
+
+            const descriptionElement = document.getElementById('gameDescription');
+            const description = descriptionElement ? descriptionElement.value.trim() : '';
+            const coverElement = document.getElementById('gameCover');
+            const cover = coverElement ? coverElement.value.trim() : '';
+            
             const platformSelect = document.getElementById('gamePlatforms');
-            const selectedPlatforms = Array.from(platformSelect.selectedOptions).map(opt => opt.value);
-            if (!title) { M.toast({html: 'Title is required'}); return; }
+            const selectedPlatforms = platformSelect ? Array.from(platformSelect.selectedOptions).map(opt => opt.value) : [];
+
+            console.log('[submitGameForm] About to check if title is empty. Current title:', `"${title}"`);
+            if (!title) { 
+                M.toast({html: 'Title is required'}); 
+                console.log('[submitGameForm] Title was empty. Submission aborted.');return; }
+            console.log('[submitGameForm] Title is NOT empty. Proceeding to create gameData.');
             const gameData = {
                 title,
                 description,
@@ -591,6 +606,9 @@
                 platforms: {}
             };
             selectedPlatforms.forEach(pid => { gameData.platforms[pid] = '' }); // ROM path left blank for now
+            
+            console.log(`[submitGameForm - ${mode.toUpperCase()}] Game data to be sent:`, JSON.stringify(gameData, null, 2));
+            console.log(`[submitGameForm - ${mode.toUpperCase()}] Value of title being sent: "${gameData.title}" (length: ${gameData.title ? gameData.title.length : 'N/A'})`);
             if (mode === 'add') {
                 fetch('/api/games', {
                     method: 'POST',

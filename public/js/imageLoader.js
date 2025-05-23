@@ -1,4 +1,4 @@
-// Progressive image loader
+// Progressive image loader.
 class ImageLoader {
   constructor() {
     this.observerSupported = 'IntersectionObserver' in window;

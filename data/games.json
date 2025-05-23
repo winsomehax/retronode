@@ -416,9 +416,12 @@
     },
     "amcattackofthemutantcamels": {
         "title": "Attack of the Mutant Camels",
-        "description": "The player controls a small jetplane and has the task of killing giant yellow camels before they reach the home base. Doing so requires several dozens of shots. The camels retaliate by shooting fireballs from their mouth.Each camel required several shots to destroy; if a camel reached the base, the game was over. Once all camels on a level had been killed, the player had to survive a \"hyperspace\" sequence which required avoiding high-speed missiles. Upon successful completion, the next level presented a new wave of camels, with slightly harder gameplay.",
+        "description": "The player controls a small jetplane and has the task of killing giant yellow camels before they reach the home base. Doing so requires several dozens of shots. The camels retaliate by shooting fireballs from their mouth.Each camel required several shots to destroy; if a camel reached the base, the game was over. Once all camels on a level had been killed, the player had to survive a",
         "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/scr8r3.jpg",
-        "platforms": {}
+        "platforms": {
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T11:14:29.490Z"
     },
     "spyvsspy": {
         "title": "Spy vs Spy",

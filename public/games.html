@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retronode - Games</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -28,6 +29,10 @@
             filter: none;
         }
         .modal { max-width: 480px; }
+        .modal .modal-content {
+            max-height: 70vh; /* Adjust as needed, e.g., 65vh or 75vh */
+            overflow-y: auto;
+        }
         /* Loading indicator styles */
         .loading-overlay {
             position: fixed;
@@ -144,6 +149,19 @@
         import retroNodeState from '/js/state.js'; // Import the default exported instance
 
         // Safe string compare function that handles undefined/null values
+        // Helper function to show toast and log to console
+        function showToastAndLog(message, level = 'info', duration = 4000) {
+            const logMessage = `Toast [${level.toUpperCase()}]: ${message}`;
+            if (level === 'error') {
+                console.error(logMessage);
+            } else if (level === 'warn') {
+                console.warn(logMessage);
+            } else {
+                console.log(logMessage);
+            }
+            M.toast({html: message, displayLength: duration});
+        }
+
         function safeCompare(a, b) {
             // Handle null, undefined, or empty values
             if (!a && !b) return 0;
@@ -160,11 +178,20 @@
 
         // Get platform names for a game
         function getPlatformNames(game) {
-            if (!game?.platforms) return '';
-            return Object.keys(game.platforms)
+            if (!game?.platforms || typeof game.platforms !== 'object') return '';
+            const platformIds = Object.keys(game.platforms); // e.g., ["c64", "amiga"]
+
+            // Ensure retroNodeState.state.platforms is an array
+            if (!Array.isArray(retroNodeState.state.platforms)) {
+                console.warn('getPlatformNames: retroNodeState.state.platforms is not an array.');
+                return platformIds.join(', '); // Fallback to showing IDs
+            }
+
+            return platformIds
                 .map(pid => {
-                    const platform = retroNodeState.state.platforms[pid]; // Use retroNodeState
-                    return platform?.name || pid;
+                    // Find the platform object in the global state by its ID
+                    const platformObject = retroNodeState.state.platforms.find(p => p.id === pid);
+                    return platformObject?.name || pid; // Use platform name if found, otherwise fallback to pid
                 })
                 .filter(name => name && name.trim())
                 .sort()
@@ -292,27 +319,40 @@
         function renderPlatformFilter() {
             const select = document.getElementById('platformFilter');
             const currentGlobalState = retroNodeState.state;
-
-            select.innerHTML = '<option value="">All Platforms</option>' +
-                Object.entries(currentGlobalState.platforms || {}).map(([pid, p]) => `<option value="${pid}">${p.name}</option>`).join('');
+            
+            let platformOptionsHtml = '';
+            // Ensure platforms is an array and each platform object has 'id' and 'name'
+            if (Array.isArray(currentGlobalState.platforms)) {
+                platformOptionsHtml = currentGlobalState.platforms
+                    .map(p => {
+                        // Defensive check for p.id and p.name
+                        const id = p && p.id !== undefined ? p.id : '';
+                        const name = p && p.name !== undefined ? p.name : 'Unnamed Platform';
+                        return `<option value="${id}">${name}</option>`;
+                    })
+                    .join('');
+            }
+            select.innerHTML = '<option value="">All Platforms</option>' + platformOptionsHtml;
             
             // Preserve current selection if possible
             const currentFilterValue = currentGlobalState.platformFilter || "";
             select.value = currentFilterValue;
-
             M.FormSelect.init(select);
-
-            select.onchange = function() {
-                retroNodeState.setState({ platformFilter: this.value, currentPage: 1 });
-            };
         }
 
         function openGameDialog(mode, game = {}, originalIndex = null) { // idx renamed to originalIndex
             document.getElementById('crudDialogTitle').textContent = mode === 'edit' ? 'Edit Game' : 'Add Game';
             // Platform selection: multi-select
-            const platformOptions = Object.entries(retroNodeState.state.platforms || {}).map(([pid, p]) =>
-                `<option value="${pid}" ${game.platforms && game.platforms[pid] ? 'selected' : ''}>${p.name}</option>`
-            ).join('');
+            let platformOptions = '';
+            if (Array.isArray(retroNodeState.state.platforms)) {
+                platformOptions = retroNodeState.state.platforms.map(p_obj => { // p_obj is like {id: "c64", name: "Commodore 64"}
+                    const platformId = p_obj.id;
+                    const platformName = p_obj.name;
+                    // Check if this platformId is in the game's platforms object
+                    const isSelected = game.platforms && game.platforms.hasOwnProperty(platformId);
+                    return `<option value="${platformId}" ${isSelected ? 'selected' : ''}>${platformName}</option>`;
+                }).join('');
+            }
             document.getElementById('crudForm').innerHTML = `
                 <div class="input-field">
                     <input id="gameTitle" type="text" value="${game.title || ''}" required>
@@ -558,9 +598,14 @@
                     body: JSON.stringify(gameData)
                 }).then(r => r.json()).then(resp => {
                     if (resp.success && resp.data) {
-                        const newGamesList = [...retroNodeState.state.games, resp.data];
+                        // Ensure the new game object uses its primary key as 'id'
+                        const newGameWithProperId = {
+                            ...resp.data,
+                            id: resp.data._id || resp.data.id // Prioritize _id
+                        };
+                        const newGamesList = [...retroNodeState.state.games, newGameWithProperId];
                         retroNodeState.setState({ 
-                            games: newGamesList, 
+                            games: newGamesList,
                             totalItems: newGamesList.length // Update totalItems
                         });
                         M.Modal.getInstance(document.getElementById('crudDialog')).close();
@@ -579,26 +624,63 @@
                     return;
                 }
                 const gameToUpdate = retroNodeState.state.games[originalIndex];
-                // Determine API endpoint: use ID if available, otherwise fall back to title (be cautious if titles can change)
-                const endpointIdentifier = gameToUpdate.id || encodeURIComponent(gameToUpdate.title_key || gameToUpdate.title); // Prefer a title_key if title can change
+                console.log('[submitGameForm] Full game object being updated:', JSON.stringify(gameToUpdate, null, 2)); // Log the whole object
+                // --- Add these detailed logs ---
+                console.log('[submitGameForm] Inspecting gameToUpdate.id directly:');
+                console.log('[submitGameForm] gameToUpdate.id value:', gameToUpdate ? gameToUpdate.id : 'gameToUpdate is falsy');
+                console.log('[submitGameForm] typeof gameToUpdate.id:', gameToUpdate ? typeof gameToUpdate.id : 'gameToUpdate is falsy');
+                console.log('[submitGameForm] Boolean(gameToUpdate.id):', gameToUpdate ? Boolean(gameToUpdate.id) : 'gameToUpdate is falsy');
+                let endpointIdentifier;
+
+                if (gameToUpdate && gameToUpdate.id) {
+                    endpointIdentifier = gameToUpdate.id;
+                    console.log(`[submitGameForm] Attempting to update game using ID: ${endpointIdentifier}`);
+                } else if (gameToUpdate && gameToUpdate.title_key) {
+                    endpointIdentifier = encodeURIComponent(gameToUpdate.title_key);
+                    console.warn(`[submitGameForm] Game "${gameToUpdate.title}" (index: ${originalIndex}) is missing an ID. Using title_key: ${endpointIdentifier}`);
+                } else if (gameToUpdate && gameToUpdate.title) {
+                    endpointIdentifier = encodeURIComponent(gameToUpdate.title);
+                    console.error(`[submitGameForm] Game "${gameToUpdate.title}" (index: ${originalIndex}) is missing an ID and title_key. Using title: ${endpointIdentifier}. This is less reliable.`);
+                } else {
+                    M.toast({html: 'Error: Cannot identify game to update. Game data might be incomplete.'});
+                    console.error("[submitGameForm] Cannot determine endpointIdentifier for game update:", gameToUpdate);
+                    return;
+                }
                 
                 fetch(`/api/games/${endpointIdentifier}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(gameData)
-                }).then(r => r.json()).then(resp => {
-                    if (resp.success && resp.data) {
-                        const updatedGamesList = [...retroNodeState.state.games];
-                        updatedGamesList[originalIndex] = resp.data; // Update with data from API
-                        retroNodeState.setState({ games: updatedGamesList });
-                        M.Modal.getInstance(document.getElementById('crudDialog')).close();
-                        M.toast({html: 'Game updated!'});
+                })
+                .then(async response => {
+                    if (response.ok) {
+                        const resp = await response.json();
+                        if (resp.success && resp.data) {
+                            const updatedGameWithProperId = {
+                                ...resp.data,
+                                id: resp.data._id || resp.data.id
+                            };
+                            const updatedGamesList = [...retroNodeState.state.games];
+                            updatedGamesList[originalIndex] = updatedGameWithProperId;
+                            retroNodeState.setState({ games: updatedGamesList });
+                            M.Modal.getInstance(document.getElementById('crudDialog')).close();
+                            showToastAndLog('Game updated!');
+                        } else {
+                            // Backend responded with success:false or missing data
+                            console.error("[submitGameForm] Backend reported failure (JSON response):", resp);
+                            showToastAndLog(resp.message || 'Failed to update game (JSON error)', 'error');
+                        }
                     } else {
-                        M.toast({html: resp.message || 'Failed to update game'});
+                        // Handle HTTP errors (like 404, 500) that are not JSON `success:false`
+                        const errorText = await response.text(); // Get raw error text
+                        console.error(`[submitGameForm] Backend HTTP error ${response.status}:`, errorText);
+                        // Try to parse as JSON for a message, otherwise use the raw text
+                        try { const errJson = JSON.parse(errorText); showToastAndLog(errJson.message || errorText, 'error'); }
+                        catch (e) { showToastAndLog(errorText || `HTTP error ${response.status}`, 'error'); }
                     }
                 }).catch(err => {
                     console.error("Update game error:", err);
-                    M.toast({html: 'Error updating game.'});
+                    showToastAndLog('Error updating game (Network or other failure).', 'error');
                 });
             }
         }
@@ -892,6 +974,12 @@
             };
         }
 
+        // Platform filter handler (moved out of renderPlatformFilter to avoid re-binding issues)
+        document.getElementById('platformFilter').onchange = function() {
+            retroNodeState.setPlatformFilter(this.value); // Use the state manager method
+        };
+
+
 // Subscribe to state changes
 retroNodeState.subscribe((newGlobalState) => { // newGlobalState is retroNodeState.state
     renderGamesTable();
@@ -911,39 +999,22 @@ retroNodeState.subscribe((newGlobalState) => { // newGlobalState is retroNodeSta
     // renderGamesTable should call retroNodeState.setState({ totalItems: filtered.length }) if it changed.
 });
 
-// Load initial data
-Promise.all([
-    fetch('/api/games').then(r => r.json()),
-    fetch('/api/platforms').then(r => r.json())
-]).then(([gamesResponse, platformsData]) => {
-    if (gamesResponse.success && Array.isArray(gamesResponse.data)) {
-        retroNodeState.setState({
-            games: gamesResponse.data,
-            totalItems: gamesResponse.pagination?.total || gamesResponse.data.length,
-            platforms: platformsData,
-            // Initialize other state properties if not already done in state.js
-            currentPage: 1,
-            itemsPerPage: 10, // Or from a config
-            searchTerm: '',
-            platformFilter: '',
-            sortField: 'title', // Default sort
-            sortAsc: true
-        });
-    } else {
-        console.error('Unexpected games data format:', gamesResponse);
-        retroNodeState.setState({
-            games: [],
-            error: 'Failed to load games data'
-        });
-        }
-    }).catch(error => {
-        console.error("Failed to load initial data:", error);
-        retroNodeState.setState({
-            games: [],
-            platforms: {},
-            error: 'Critical error loading page data. Please try again.'
-        });
-    });
+// Load initial data using methods from retroNodeState
+// This ensures the data processing logic within RetroNodeState (like extracting platforms from .data) is used.
+async function loadInitialData() {
+    try {
+        // Set loading true if you have a global loading indicator tied to retroNodeState.isLoading
+        // retroNodeState.setState({ isLoading: true }); 
+        await Promise.all([
+            retroNodeState.loadGames(),   // loadGames will set its own loading/error states
+            retroNodeState.loadPlatforms() // loadPlatforms will set its own error state if any
+        ]);
+    } catch (error) {
+        console.error("Failed to load initial data via retroNodeState methods:", error);
+        // retroNodeState.setState({ error: 'Critical error loading page data.', isLoading: false });
+    }
+}
+loadInitialData();
 
         // Patch the IGDB button handler to show results inline under the relevant game row
         let openIgdbRow = null;

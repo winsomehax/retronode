@@ -94,16 +94,19 @@ class GameController {
         throw new AppError('Game already exists', 400);
       }
 
-      gamesJson[key] = {
+      const newGameData = {
         ...game,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+      gamesJson[key] = newGameData;
 
       await writeJsonFile(PATHS.GAMES, gamesJson);
+      // Ensure the response data includes the 'id' which is the key
+      const responseData = { ...newGameData, id: key };
       res.status(201).json({
         success: true,
-        data: gamesJson[key]
+        data: responseData
       });
     } catch (err) {
       next(err);
@@ -112,28 +115,39 @@ class GameController {
 
   async updateGame(req, res, next) {
     try {
-      const { title } = req.params;
+      // Correctly extract the route parameter. Let's assume it's named 'id' in your route definition.
+      // The route in app.js is '/api/games/:title', so we use req.params.title
+      const identifierFromRoute = req.params.title; 
       const updatedGame = req.body;
       const gamesJson = await readJsonFile(PATHS.GAMES);
 
-      const gameKey = Object.keys(gamesJson).find(
-        key => (gamesJson[key].title || '').toLowerCase() === title.toLowerCase()
-      );
+      console.log(`[GameController.updateGame] Received request to update game with identifier from route: "${identifierFromRoute}"`);
+      console.log(`[GameController.updateGame] Keys found in games.json: ${Object.keys(gamesJson).length > 0 ? Object.keys(gamesJson).join(', ').substring(0, 500) + '...' : 'No keys found or empty object'}`);
+      const gameExists = gamesJson.hasOwnProperty(identifierFromRoute);
+      console.log(`[GameController.updateGame] Does gamesJson have property "${identifierFromRoute}"? ${gameExists}`);
 
-      if (!gameKey) {
-        throw new AppError('Game not found', 404);
+      // Use gameId directly as the key if games.json is keyed by these identifiers
+      if (!gamesJson[identifierFromRoute]) {
+        const errorMessage = `Game not found with identifier: "${identifierFromRoute}". Backend check 'gamesJson.hasOwnProperty("${identifierFromRoute}")' returned: ${gameExists}.`;
+        console.error(`[GameController.updateGame] ${errorMessage} Throwing 404.`);
+        throw new AppError(errorMessage, 404);
       }
 
-      gamesJson[gameKey] = {
+      const gameDataToSave = {
         ...updatedGame,
         updated_at: new Date().toISOString(),
-        created_at: gamesJson[gameKey].created_at
+        created_at: gamesJson[identifierFromRoute].created_at
       };
+      gamesJson[identifierFromRoute] = gameDataToSave;
 
       await writeJsonFile(PATHS.GAMES, gamesJson);
+      
+      // Ensure the response data includes the 'id' which is the key
+      const responseData = { ...gameDataToSave, id: identifierFromRoute };
+
       res.json({
         success: true,
-        data: gamesJson[gameKey]
+        data: responseData
       });
     } catch (err) {
       next(err);
@@ -142,18 +156,16 @@ class GameController {
 
   async deleteGame(req, res, next) {
     try {
-      const { title } = req.params;
+      // Correctly extract the route parameter.
+      // The route in app.js is '/api/games/:title', so we use req.params.title
+      const identifierFromRoute = req.params.title; 
       const gamesJson = await readJsonFile(PATHS.GAMES);
 
-      const gameKey = Object.keys(gamesJson).find(
-        key => (gamesJson[key].title || '').toLowerCase() === title.toLowerCase()
-      );
-
-      if (!gameKey) {
+      if (!gamesJson[identifierFromRoute]) {
         throw new AppError('Game not found', 404);
       }
 
-      delete gamesJson[gameKey];
+      delete gamesJson[identifierFromRoute];
       await writeJsonFile(PATHS.GAMES, gamesJson);
       res.json({
         success: true,

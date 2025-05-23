@@ -139,20 +139,9 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        const state = {
-            games: [],
-            platforms: {},
-            currentPage: 1,
-            itemsPerPage: 10,
-            totalItems: 0,
-            searchTerm: '',
-            platformFilter: '',
-            sortField: 'title',
-            sortAsc: true,
-            error: null,
-            isLoading: false
-        };
+    <script type="module">
+         // Import RetroNodeState if it's a named export from /js/state.js
+        import retroNodeState from '/js/state.js'; // Import the default exported instance
 
         // Safe string compare function that handles undefined/null values
         function safeCompare(a, b) {
@@ -174,7 +163,7 @@
             if (!game?.platforms) return '';
             return Object.keys(game.platforms)
                 .map(pid => {
-                    const platform = state.platforms[pid];
+                    const platform = retroNodeState.state.platforms[pid]; // Use retroNodeState
                     return platform?.name || pid;
                 })
                 .filter(name => name && name.trim())
@@ -189,28 +178,28 @@
             // Clear existing content
             tableBody.innerHTML = '';
 
-            const state = retroNodeState.state;
+            const currentGlobalState = retroNodeState.state; // Use a consistent variable name
 
             // Make sure we have games to display
-            if (!Array.isArray(state.games)) {
+            if (!Array.isArray(currentGlobalState.games)) {
                 console.warn('No games available to display');
                 return;
             }
 
             // Filter games
-            let filtered = state.games.filter(game => {
+            let filtered = currentGlobalState.games.filter(game => {
                 if (!game || typeof game !== 'object') return false;
                 
                 const title = (game.title || '').toLowerCase();
                 const description = (game.description || '').toLowerCase();
-                const searchStr = state.searchTerm.toLowerCase();
+                const searchStr = (currentGlobalState.searchTerm || '').toLowerCase();
                 
                 const matchesSearch = !searchStr || 
                     title.includes(searchStr) || 
                     description.includes(searchStr);
                 
-                const matchesPlatform = !state.platformFilter || 
-                    (game.platforms && state.platformFilter in game.platforms);
+                const matchesPlatform = !currentGlobalState.platformFilter || 
+                    (game.platforms && currentGlobalState.platformFilter in game.platforms);
                 
                 return matchesSearch && matchesPlatform;
             });
@@ -218,10 +207,10 @@
             // Sort games
             filtered.sort((a, b) => {
                 if (!a || !b) return 0;
-                const sortMod = state.sortAsc ? 1 : -1;
+                const sortMod = currentGlobalState.sortAsc ? 1 : -1;
                 
                 try {
-                    switch (state.sortField) {
+                    switch (currentGlobalState.sortField) {
                         case 'title':
                             return sortMod * safeCompare(a.title, b.title);
                         case 'platforms':
@@ -236,13 +225,13 @@
             });
 
             // Calculate pagination
-            state.totalItems = filtered.length;
-            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
-            const endIndex = startIndex + state.itemsPerPage;
+            // totalItems should be updated in retroNodeState when games list changes or filters change
+            const startIndex = (currentGlobalState.currentPage - 1) * currentGlobalState.itemsPerPage;
+            const endIndex = startIndex + currentGlobalState.itemsPerPage;
             const paginatedGames = filtered.slice(startIndex, endIndex);
 
             // Show loading state
-            if (state.isLoading) {
+            if (currentGlobalState.isLoading) {
                 tableBody.innerHTML = `
                     <tr>
                         <td colspan="5" class="center-align">
@@ -255,19 +244,20 @@
             }
 
             // Show error state if any
-            if (state.error) {
+            if (currentGlobalState.error) {
                 tableBody.innerHTML = `
                     <tr>
                         <td colspan="5" class="center-align">
-                            <div class="red-text">${state.error}</div>
+                            <div class="red-text">${currentGlobalState.error}</div>
                         </td>
                     </tr>`;
                 return;
             }
 
             // Render each game row
-            paginatedGames.forEach((game, idx) => {
+            paginatedGames.forEach((game, loopIdx) => { // Renamed idx to loopIdx for clarity
                 if (!game) return;
+                const originalGameIndex = retroNodeState.state.games.indexOf(game); // Get index from master list
                 const platformNames = getPlatformNames(game);
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -275,19 +265,19 @@
                         <img src="${game.cover_image_path || '/img/default-cover.png'}" 
                              alt="${game.title || 'No title'}" 
                              class="cover-thumb"
-                             onerror="this.src='/img/default-cover.png'">
+                             onerror="if (this.src !== window.location.origin + '/img/default-cover.png') { this.src='/img/default-cover.png'; } else { this.onerror=null; /* Optionally: this.style.display='none'; */ }">
                     </td>
                     <td>${game.title || 'No title'}</td>
                     <td>${game.description || 'No description'}</td>
                     <td>${platformNames || 'No platforms'}</td>
                     <td style="white-space:nowrap;">
-                        <button class="btn-flat blue-text" onclick="openGameDialog('edit', retroNodeState.state.games[${startIndex + idx}], ${startIndex + idx})" title="Edit">
+                        <button class="btn-flat blue-text edit-game-btn" data-original-index="${originalGameIndex}" title="Edit">
                             <i class="material-icons">edit</i>
                         </button>
-                        <button class="btn-flat blue-text igdb-btn" data-title="${encodeURIComponent(game.title)}" data-row="${idx}" title="Find in IGDB">
+                        <button class="btn-flat blue-text igdb-btn" data-title="${encodeURIComponent(game.title)}" data-row-idx="${loopIdx}" title="Find in IGDB">
                             <i class="material-icons">image_search</i>
                         </button>
-                        <button class="btn-flat red-text" onclick="deleteGame(${startIndex + idx})" title="Delete">
+                        <button class="btn-flat red-text delete-game-btn" data-original-index="${originalGameIndex}" title="Delete">
                             <i class="material-icons">delete</i>
                         </button>
                     </td>
@@ -301,19 +291,26 @@
 
         function renderPlatformFilter() {
             const select = document.getElementById('platformFilter');
+            const currentGlobalState = retroNodeState.state;
+
             select.innerHTML = '<option value="">All Platforms</option>' +
-                Object.entries(state.platforms).map(([pid, p]) => `<option value="${pid}">${p.name}</option>`).join('');
+                Object.entries(currentGlobalState.platforms || {}).map(([pid, p]) => `<option value="${pid}">${p.name}</option>`).join('');
+            
+            // Preserve current selection if possible
+            const currentFilterValue = currentGlobalState.platformFilter || "";
+            select.value = currentFilterValue;
+
             M.FormSelect.init(select);
+
             select.onchange = function() {
-                state.platformFilter = select.value;
-                renderGamesTable();
+                retroNodeState.setState({ platformFilter: this.value, currentPage: 1 });
             };
         }
 
-        function openGameDialog(mode, game = {}, idx = null) {
+        function openGameDialog(mode, game = {}, originalIndex = null) { // idx renamed to originalIndex
             document.getElementById('crudDialogTitle').textContent = mode === 'edit' ? 'Edit Game' : 'Add Game';
             // Platform selection: multi-select
-            const platformOptions = Object.entries(platforms).map(([pid, p]) =>
+            const platformOptions = Object.entries(retroNodeState.state.platforms || {}).map(([pid, p]) =>
                 `<option value="${pid}" ${game.platforms && game.platforms[pid] ? 'selected' : ''}>${p.name}</option>`
             ).join('');
             document.getElementById('crudForm').innerHTML = `
@@ -355,7 +352,7 @@
                         saveBtn.parentNode.replaceChild(newBtn, saveBtn);
                         newBtn.onclick = function(e) {
                             e.preventDefault();
-                            submitGameForm(mode, idx);
+                            submitGameForm(mode, originalIndex); // Pass originalIndex
                         };
                     }
                 }
@@ -540,7 +537,7 @@
             }, 100);
         }
 
-        function submitGameForm(mode, idx) {
+        function submitGameForm(mode, originalIndex) { // idx renamed to originalIndex
             const title = document.getElementById('gameTitle').value.trim();
             const description = document.getElementById('gameDescription').value.trim();
             const cover = document.getElementById('gameCover').value.trim();
@@ -560,48 +557,83 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(gameData)
                 }).then(r => r.json()).then(resp => {
-                    if (resp.success) {
-                        state.games.push(gameData);
-                        renderGamesTable();
+                    if (resp.success && resp.data) {
+                        const newGamesList = [...retroNodeState.state.games, resp.data];
+                        retroNodeState.setState({ 
+                            games: newGamesList, 
+                            totalItems: newGamesList.length // Update totalItems
+                        });
                         M.Modal.getInstance(document.getElementById('crudDialog')).close();
                         M.toast({html: 'Game added!'});
                     } else {
-                        M.toast({html: 'Failed to add game'});
+                        M.toast({html: resp.message || 'Failed to add game'});
                     }
+                }).catch(err => {
+                    console.error("Add game error:", err);
+                    M.toast({html: 'Error adding game.'});
                 });
-            } else if (mode === 'edit') {
-                fetch('/api/games/' + encodeURIComponent(state.games[idx].title), {
+            } else if (mode === 'edit') { // originalIndex is the index in retroNodeState.state.games
+                if (originalIndex === null || originalIndex < 0 || originalIndex >= retroNodeState.state.games.length) {
+                    M.toast({html: 'Error: Invalid game reference for update.'});
+                    console.error("Invalid originalIndex for edit:", originalIndex);
+                    return;
+                }
+                const gameToUpdate = retroNodeState.state.games[originalIndex];
+                // Determine API endpoint: use ID if available, otherwise fall back to title (be cautious if titles can change)
+                const endpointIdentifier = gameToUpdate.id || encodeURIComponent(gameToUpdate.title_key || gameToUpdate.title); // Prefer a title_key if title can change
+                
+                fetch(`/api/games/${endpointIdentifier}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(gameData)
                 }).then(r => r.json()).then(resp => {
-                    if (resp.success) {
-                        state.games[idx] = gameData;
-                        renderGamesTable();
+                    if (resp.success && resp.data) {
+                        const updatedGamesList = [...retroNodeState.state.games];
+                        updatedGamesList[originalIndex] = resp.data; // Update with data from API
+                        retroNodeState.setState({ games: updatedGamesList });
                         M.Modal.getInstance(document.getElementById('crudDialog')).close();
                         M.toast({html: 'Game updated!'});
                     } else {
-                        M.toast({html: 'Failed to update game'});
+                        M.toast({html: resp.message || 'Failed to update game'});
                     }
+                }).catch(err => {
+                    console.error("Update game error:", err);
+                    M.toast({html: 'Error updating game.'});
                 });
             }
         }
 
-        function deleteGame(idx) {
-            fetch('/api/games/' + encodeURIComponent(state.games[idx].title), {
+        function deleteGame(originalIndex) { // idx renamed to originalIndex
+            if (originalIndex === null || originalIndex < 0 || originalIndex >= retroNodeState.state.games.length) {
+                M.toast({html: 'Error: Invalid game reference for delete.'});
+                console.error("Invalid originalIndex for delete:", originalIndex);
+                return;
+            }
+            const gameToDelete = retroNodeState.state.games[originalIndex];
+            const endpointIdentifier = gameToDelete.id || encodeURIComponent(gameToDelete.title_key || gameToDelete.title);
+
+            fetch(`/api/games/${endpointIdentifier}`, {
                 method: 'DELETE'
             }).then(r => r.json()).then(resp => {
                 if (resp.success) {
-                    state.games.splice(idx, 1);
-                    renderGamesTable();
+                    const newGamesList = retroNodeState.state.games.filter((_, i) => i !== originalIndex);
+                    retroNodeState.setState({ 
+                        games: newGamesList,
+                        totalItems: newGamesList.length // Update totalItems
+                    });
                     M.toast({html: 'Game deleted!'});
                 } else {
-                    M.toast({html: 'Failed to delete game'});
+                    M.toast({html: resp.message || 'Failed to delete game'});
                 }
+            }).catch(err => {
+                console.error("Delete game error:", err);
+                M.toast({html: 'Error deleting game.'});
             });
         }
 
         async function showIgdbResults(results) {
+            // This function seems to be for a separate IGDB modal, not the inline one.
+            // Ensure it correctly interacts with the main form if it's intended to populate it.
             const modal = document.getElementById('igdbResultsModal');
             const container = document.getElementById('igdbResultsContainer');
             container.innerHTML = '';
@@ -784,23 +816,72 @@
             M.Sidenav.init(sidenavs, {edge: 'left'});
         });
 
+        // Event delegation for table actions (Edit, Delete)
+        document.getElementById('gamesTableBody').addEventListener('click', function(event) {
+            const target = event.target;
+            const editButton = target.closest('.edit-game-btn');
+            const deleteButton = target.closest('.delete-game-btn');
+
+            if (editButton) {
+                event.preventDefault(); 
+                const originalIndex = parseInt(editButton.getAttribute('data-original-index'), 10);
+                if (!isNaN(originalIndex) && originalIndex >= 0 && originalIndex < retroNodeState.state.games.length) {
+                    const gameToEdit = retroNodeState.state.games[originalIndex];
+                    openGameDialog('edit', gameToEdit, originalIndex);
+                } else {
+                    console.error('Invalid original index for edit:', editButton.getAttribute('data-original-index'));
+                    M.toast({html: 'Error: Could not find game to edit.'});
+                }
+                return;
+            }
+
+            if (deleteButton) {
+                event.preventDefault(); 
+                const originalIndex = parseInt(deleteButton.getAttribute('data-original-index'), 10);
+                 if (!isNaN(originalIndex) && originalIndex >= 0 && originalIndex < retroNodeState.state.games.length) {
+                    const gameToDelete = retroNodeState.state.games[originalIndex];
+                    if (confirm(`Are you sure you want to delete "${gameToDelete.title || 'this game'}"?`)) {
+                        deleteGame(originalIndex);
+                    }
+                } else {
+                    console.error('Invalid original index for delete:', deleteButton.getAttribute('data-original-index'));
+                    M.toast({html: 'Error: Could not find game to delete.'});
+                }
+                return;
+            }
+        });
+
         // Search handler
         document.getElementById('searchInput').oninput = function() {
-            state.searchTerm = this.value.trim().toLowerCase();
-            renderGamesTable();
+            retroNodeState.setState({ 
+                searchTerm: this.value.trim().toLowerCase(),
+                currentPage: 1 // Reset to first page on new search
+            });
         };
 
         // Sort handlers
         document.getElementById('sortTitle').onclick = function() {
-            if (state.sortField === 'title') state.sortAsc = !state.sortAsc;
-            else { state.sortField = 'title'; state.sortAsc = true; }
-            renderGamesTable();
+            const currentSortField = retroNodeState.state.sortField;
+            const currentSortAsc = retroNodeState.state.sortAsc;
+            let newSortField = 'title';
+            let newSortAsc = true;
+            if (currentSortField === 'title') {
+                newSortAsc = !currentSortAsc;
+            }
+            retroNodeState.setState({ sortField: newSortField, sortAsc: newSortAsc, currentPage: 1 });
         };
         document.getElementById('sortPlatform').onclick = function() {
-            if (state.sortField === 'platforms') state.sortAsc = !state.sortAsc;
-            else { state.sortField = 'platforms'; state.sortAsc = true; }
-            renderGamesTable();
+            const currentSortField = retroNodeState.state.sortField;
+            const currentSortAsc = retroNodeState.state.sortAsc;
+            let newSortField = 'platforms';
+            let newSortAsc = true;
+            if (currentSortField === 'platforms') {
+                newSortAsc = !currentSortAsc;
+            }
+            retroNodeState.setState({ sortField: newSortField, sortAsc: newSortAsc, currentPage: 1 });
         };
+
+        // Update sort icons based on state (to be called in retroNodeState.subscribe or renderGamesTable)
 
         // Ensure addGameBtn exists before attaching handler
         const addGameBtn = document.getElementById('addGameBtn');
@@ -811,13 +892,23 @@
             };
         }
 
-        // Initialize state management
-const retroNodeState = new RetroNodeState();
-
 // Subscribe to state changes
-retroNodeState.subscribe((newState) => {
+retroNodeState.subscribe((newGlobalState) => { // newGlobalState is retroNodeState.state
     renderGamesTable();
     renderPlatformFilter();
+    // Update sort icons
+    const titleIcon = document.getElementById('sortTitleIcon');
+    const platformIcon = document.getElementById('sortPlatformIcon');
+    if (titleIcon) {
+        titleIcon.textContent = newGlobalState.sortField === 'title' ? (newGlobalState.sortAsc ? 'arrow_drop_up' : 'arrow_drop_down') : 'unfold_more';
+    }
+    if (platformIcon) {
+        platformIcon.textContent = newGlobalState.sortField === 'platforms' ? (newGlobalState.sortAsc ? 'arrow_drop_up' : 'arrow_drop_down') : 'unfold_more';
+    }
+    // Update totalItems in state if filters change (renderGamesTable calculates filtered.length)
+    // This might be better done directly after filtering in renderGamesTable if it's the sole source of truth for filtered length.
+    // For now, renderGamesTable updates its local calculation. If totalItems in global state needs to reflect filtered count,
+    // renderGamesTable should call retroNodeState.setState({ totalItems: filtered.length }) if it changed.
 });
 
 // Load initial data
@@ -829,7 +920,14 @@ Promise.all([
         retroNodeState.setState({
             games: gamesResponse.data,
             totalItems: gamesResponse.pagination?.total || gamesResponse.data.length,
-            platforms: platformsData
+            platforms: platformsData,
+            // Initialize other state properties if not already done in state.js
+            currentPage: 1,
+            itemsPerPage: 10, // Or from a config
+            searchTerm: '',
+            platformFilter: '',
+            sortField: 'title', // Default sort
+            sortAsc: true
         });
     } else {
         console.error('Unexpected games data format:', gamesResponse);
@@ -837,8 +935,15 @@ Promise.all([
             games: [],
             error: 'Failed to load games data'
         });
-    }
-});
+        }
+    }).catch(error => {
+        console.error("Failed to load initial data:", error);
+        retroNodeState.setState({
+            games: [],
+            platforms: {},
+            error: 'Critical error loading page data. Please try again.'
+        });
+    });
 
         // Patch the IGDB button handler to show results inline under the relevant game row
         let openIgdbRow = null;
@@ -1011,39 +1116,38 @@ Promise.all([
 
         function updatePagination() {
             // Calculate total pages
-            const totalPages = Math.ceil(state.totalItems / state.itemsPerPage);
+            const { currentPage, totalItems, itemsPerPage } = retroNodeState.state;
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1; // Ensure at least 1 page
             
             // Add pagination controls
             const paginationContainer = document.createElement('div');
             paginationContainer.className = 'pagination center-align';
             paginationContainer.style.marginTop = '20px';
-            
+
             // Previous button
             const prevBtn = document.createElement('a');
-            prevBtn.className = `waves-effect waves-light btn-flat ${state.currentPage === 1 ? 'disabled' : ''}`;
+            prevBtn.className = `waves-effect waves-light btn-flat ${currentPage === 1 ? 'disabled' : ''}`;
             prevBtn.innerHTML = '<i class="material-icons">chevron_left</i>';
             prevBtn.onclick = () => {
-                if (state.currentPage > 1) {
-                    state.currentPage--;
-                    renderGamesTable();
+                if (currentPage > 1) {
+                    retroNodeState.setState({ currentPage: currentPage - 1 });
                 }
             };
             
             // Next button
             const nextBtn = document.createElement('a');
-            nextBtn.className = `waves-effect waves-light btn-flat ${state.currentPage === totalPages ? 'disabled' : ''}`;
+            nextBtn.className = `waves-effect waves-light btn-flat ${currentPage >= totalPages ? 'disabled' : ''}`;
             nextBtn.innerHTML = '<i class="material-icons">chevron_right</i>';
             nextBtn.onclick = () => {
-                if (state.currentPage < totalPages) {
-                    state.currentPage++;
-                    renderGamesTable();
+                if (currentPage < totalPages) {
+                    retroNodeState.setState({ currentPage: currentPage + 1 });
                 }
             };
             
             // Page numbers
             const pageSpan = document.createElement('span');
             pageSpan.style.margin = '0 16px';
-            pageSpan.textContent = `Page ${state.currentPage} of ${totalPages}`;
+            pageSpan.textContent = `Page ${currentPage} of ${totalPages}`;
             
             paginationContainer.appendChild(prevBtn);
             paginationContainer.appendChild(pageSpan);

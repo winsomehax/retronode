@@ -1,5 +1,5 @@
 // Simple state management for RetroNode
-class RetroNodeState {
+export class RetroNodeState {
   constructor() {
     this.state = {
       games: [],

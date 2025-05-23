@@ -5,7 +5,7 @@ export class RetroNodeState {
       games: [], // Should be an array of game objects
       platforms: [], // Should be an array of platform objects
       currentPage: 1,
-      itemsPerPage: 10,
+      itemsPerPage: 100, // Increased default items per page
       totalItems: 0,
       isLoading: false,
       searchTerm: '',

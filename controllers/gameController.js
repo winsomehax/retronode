@@ -18,7 +18,7 @@ class GameController {
       ]);
 
       const page = Math.max(1, parseInt(req.query.page) || 1);
-      const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 10));
+      const limit = Math.min(200, Math.max(1, parseInt(req.query.limit) || 100)); // Increased cap and default if not provided
       const search = (req.query.search || '').toLowerCase();
       const platformFilter = req.query.platform;
       

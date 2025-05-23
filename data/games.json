@@ -135,12 +135,12 @@
     },
     "jumpman": {
         "title": "Jumpman",
-        "overview": "",
-        "description": "Navigate platforms, avoid hazards, and defuse bombs in this classic action game.",
-        "cover_image_path": "",
+        "description": "Jumpman is a platform game written by Randy Glover and released by Epyx in 1983. Originally developed for the Atari 8-bit family, versions were also released for the Commodore 64, Apple II, IBM PC, and ColecoVision.Rating: 70.9",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/i8wrodptavc9xoiaqjjr.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Jumpman (4000).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T11:27:16.733Z"
     },
     "pottypigeon": {
         "title": "Potty Pigeon",
@@ -225,12 +225,13 @@
     },
     "jetsetwilly": {
         "title": "Jet Set Willy",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "description": "Jet Set Willy is a flip-screen platform game in which the player moves the protagonist, Willy, from room to room in his mansion collecting objects. Unlike the screen-by-screen style of its prequel, the player can explore the mansion at will.Rating: 78.0",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/d3elojvynfi9j68ezy4y.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Jet Set Willy (3926).zip"
-        }
+            "c64": "",
+            "spectrum": ""
+        },
+        "updated_at": "2025-05-23T11:25:11.353Z"
     },
     "uridium+": {
         "title": "Uridium+",
@@ -374,9 +375,15 @@
     },
     "alteredbeast": {
         "title": "Altered Beast",
-        "description": "Originally released by Sega in arcades in 1988, Altered Beast is a side-scrolling beat 'em up later ported to various home platforms, including the Commodore 64 (C64). In this game, you play as a resurrected warrior chosen by Zeus to rescue his daughter Athena from the underworld ruler Neff. The gameplay involves battling hordes of undead and mythological monsters across five stages set in ancient Greece. Collecting spirit orbs transforms you into powerful beast forms such as a werewolf, allowing for special attacks and abilities.  The C64 adaptation replicates the core action and challenge of the arcade original, with graphics and sound optimized for Commodore’s hardware. Despite technical limitations, it captures the essence of this cult classic—offering fans of action games a nostalgic adventure through myth and legend.",
+        "description": "Originally released by Sega in arcades in 1988, Altered Beast is a side-scrolling beat &#x27;em up later ported to various home platforms, including the Commodore 64 (C64). In this game, you play as a resurrected warrior chosen by Zeus to rescue his daughter Athena from the underworld ruler Neff. The gameplay involves battling hordes of undead and mythological monsters across five stages set in ancient Greece. Collecting spirit orbs transforms you into powerful beast forms such as a werewolf, allowing for special attacks and abilities.  The C64 adaptation replicates the core action and challenge of the arcade original, with graphics and sound optimized for Commodore’s hardware. Despite technical limitations, it captures the essence of this cult classic—offering fans of action games a nostalgic adventure through myth and legend.",
         "cover_image_path": "https://upload.wikimedia.org/wikipedia/en/f/fd/PS2_Altered_Beast_Cover.jpg",
-        "platforms": {}
+        "platforms": {
+            "c64": "",
+            "amiga": "",
+            "atarist": "",
+            "spectrum": ""
+        },
+        "updated_at": "2025-05-23T11:19:12.671Z"
     },
     "turricaniithefinalfight": {
         "title": "Turrican II - The Final Fight",
@@ -646,12 +653,12 @@
     },
     "boulderdashconstructionkit": {
         "title": "Boulder Dash Construction Kit",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "description": "A standalone level creator for the popular Boulder Dash game.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_cover_big/jdsajsucqwn5smzmjjhd.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Boulder Dash Construction Kit (1007).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T11:24:40.561Z"
     },
     "lastninjaiii": {
         "title": "Last Ninja III",
@@ -707,22 +714,22 @@
         }
     },
     "jetsetwillyiithefinalfrontier": {
-        "title": "Jet Set Willy II - The Final Frontier",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "title": "Jet Set Willy II",
+        "description": "Jet Set Willy II: The Final Frontier is a platform game released in 1985 by Software Projects for a variety of 8-bit home computers. It was the only official sequel to Jet Set Willy, one of the most successful and popular home computer games ever released. Officially, Jet Set Willy II: The Final Frontier is the last of the Miner Willy series, although numerous unofficial sequels, remakes, homages and updates have been released, even up to this day.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_cover_big/co50ja.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Jet Set Willy II - The Final Frontier (3927).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T11:26:42.198Z"
     },
     "impossiblemissionii": {
         "title": "Impossible Mission II",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "description": "You have 8 hours to prevent Elvin, a psychotic genius from destroying the world in this sequel to the highly successful Impossible Mission. Enter Elvin&#x27;s tower fortress, avoid his robots, assemble security combinations for each tower, recover musical sequences and tie them together into a full melody to reach Elvin&#x27;s central control room.Rating: 55.1",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/fdiqdfz4mlcz2gekldam.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Impossible Mission II (3732).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T11:26:24.807Z"
     },
     "wasteland": {
         "title": "Wasteland",

@@ -1,5 +1,5 @@
 # retronode
-Manage retro games and emulators. Done in NodeJS and HTML/JS/CSS and using Github code pilot. An experiment more than anything . It's been an afternoon's work. Happy to let other people get involved if they wish. 
+Manage retro games and emulators. Done in NodeJS and HTML/JS/CSS and using Github code pilot/Gemini Code Assist. An experiment more than anything . It's been an afternoon's work. Happy to let other people get involved if they wish. 
 
 Microsoft's Visual Studio Github Copilot is free/open source now - and it's an amazing experience. Sadly Microsoft put a 50 chat per month limit on it unless you pay for copilot pro. So I've switched to Gemini Code Assist - which is also impressive, but as yet lacks "agent" mode
 

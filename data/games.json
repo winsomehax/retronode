@@ -407,12 +407,12 @@
     },
     "creatures": {
         "title": "Creatures",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "description": "Creatures is a biological simulation. You start with six eggs of Norns, cute little creatures who live in an imaginary world. Your task is to give them knowledge about the world they live in, learn them how to speak, how to use toys, an elevator, how to eat etc. They will eventually grow older, reproduce themselves and die. The game uses its own genetics system, as well as biochemical and neurological calculations to determine the evolution of Norns and the way their DNA would develop in their descendants.",
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/23706-1.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Creatures (1786).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-24T11:55:09.414Z"
     },
     "ghostbusters": {
         "title": "Ghostbusters",
@@ -594,13 +594,13 @@
         }
     },
     "creaturesiitorturetrouble": {
-        "title": "Creatures II - Torture Trouble",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "title": "Creatures II: Torture Trouble",
+        "description": "The game is composed of three islands, each with a set of stages that have to be completed. During torture screens, interludes, and island hoppin&#x27; levels, bonus coins can be gathered for extra lives.",
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/6727-1.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Creatures II - Torture Trouble (1787).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-24T11:59:23.477Z"
     },
     "paradroidmetaledition": {
         "title": "Paradroid - Metal Edition",
@@ -836,12 +836,12 @@
     },
     "boulderdashdeluxekit": {
         "title": "Boulder Dash Deluxe",
-        "description": "Boulder Dash® Deluxe takes you, together with the game character called Rockford™ into a myriad of new and exciting challenges. Dig through spectacular caves with 3D elements; avoid falling boulders; collect valuable gems and avoid nefarious enemies along the way. Discover treasure chests with rare collectibles and strong power-ups. Boulder Dash Deluxe includes 180 new exciting and unique levels. Plus, dig through 9 brand new worlds with high-end graphics and their own textures, dive into the Classic 1984 World with its caves or enjoy The Liepa World; a set consisting of 20 of the most mind-bending levels designed by the creator of the original 1984 Boulder Dash version and video game legend Peter Liepa. And, if that’s not enough, you will be challenged by 15 new special opponents ranging from Octopus to Snow Tiger. Boulder Dash® Deluxe truly is the pinnacle in 35+ years of Boulder Dash®! While providing classic Boulder Dash® core gameplay mechanics and features, Boulder Dash® Deluxe introduces exciting new elements such as diagonal movement, which opens up new and intriguing puzzles while creating a very different and organic look for the caves. On top of legendary previous versions, Boulder Dash® Deluxe features include:180 all-new levels with advanced features!Includes 20 levels from the original 1984 Boulder Dash version9 exciting, brand spanking new worlds with high-end graphics, having their own, unique textures, go to Macmarnua Sea or Urath Castle – or back in time to the Classic 1984 World with its caves15 new special opponents like Octopus, Shark Polar bear, and Snow tiger will keep your mind agile and you on your toesThe Liepa World, a premium world by videogame legend Peter Liepa who returned to the game he created 35 years ago with 20 of the most mind-bending levels yet!Full character customization of your game character Rockford™, e.g. shirt, pants, shoes, eyewear, headgear, hair, and facial hairLanguages:  English, Spanish, French, German, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Traditional Chinese!",
+        "description": "Boulder Dash® Deluxe takes you, together with the game character called Rockford™ into a myriad of new and exciting challenges. Dig through spectacular caves with 3D elements; avoid falling boulders; collect valuable gems and avoid nefarious enemies along the way. Discover treasure chests with rare collectibles and strong power-ups. Boulder Dash Deluxe includes 180 new exciting and unique levels. Plus, dig through 9 brand new worlds with high-end graphics and their own textures, dive into the Classic 1984 World with its caves or enjoy The Liepa World; a set consisting of 20 of the most mind-bending levels designed by the creator of the original 1984 Boulder Dash version and video game legend Peter Liepa.",
         "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/104435-1.jpg",
         "platforms": {
             "c64": ""
         },
-        "updated_at": "2025-05-23T21:54:24.901Z"
+        "updated_at": "2025-05-24T11:56:14.179Z"
     },
     "sentinelthe": {
         "title": "Sentinel, The",

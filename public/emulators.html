@@ -10,7 +10,8 @@
     <style>
         body { background: #f5f5f5; color: #222; font-family: 'Roboto', Arial, sans-serif; margin: 0; padding: 0; min-height: 100vh; }
         .main-title { margin-top: 48px; font-weight: 500; letter-spacing: 1px; }
-        .fab-btn { position: fixed; bottom: 36px; right: 36px; z-index: 1001; }
+        .fab-main { position: fixed; bottom: 36px; right: 36px; z-index: 1001; }
+        .fab-secondary { position: fixed; bottom: 100px; right: 36px; z-index: 1001; }
         .modal { max-width: 480px; }
         .modal .modal-content {
             max-height: 70vh;
@@ -47,15 +48,8 @@
     </style>
 </head>
 <body>
-    <ul id="navDrawer" class="sidenav">
-        <li><a href="games.html" class="blue-text text-darken-2" id="navGames"><i class="material-icons left">games</i>Games</a></li>
-        <li><a href="platforms.html" class="green-text text-darken-2" id="navPlatforms"><i class="material-icons left">dns</i>Platforms</a></li>
-    </ul>
-    <div id="topNav" style="position:fixed;top:0;left:0;width:100vw;z-index:2000;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.04);padding:12px 0;display:flex;align-items:center;">
-        <a href="#" data-target="navDrawer" class="sidenav-trigger" style="margin-left:16px;margin-right:16px;"><i class="material-icons">menu</i></a>
-    </div>
-
-    <div class="container" style="margin-top:100px;max-width:1100px;">
+    <!-- Sidenav and TopNav removed -->
+    <div class="container" style="margin-top:48px;max-width:1100px;">
         <h4 class="main-title green-text text-darken-2" style="margin-bottom:24px;">Emulators</h4>
 
         <div id="emulatorsContainer">
@@ -106,7 +100,12 @@
         </div>
     </div>
 
-    <a id="addEmulatorBtn" class="btn-floating btn-large waves-effect waves-light green fab-btn" title="Add Emulator">
+    <!-- FAB for navigating back to Games page -->
+    <a id="goToGamesBtn" class="btn-floating btn-large waves-effect waves-light blue fab-secondary" href="games.html" title="Back to Games">
+        <i class="material-icons">games</i>
+    </a>
+    <!-- FAB for adding new emulators -->
+    <a id="addEmulatorBtn" class="btn-floating btn-large waves-effect waves-light green fab-main" title="Add Emulator">
         <i class="material-icons">add</i>
     </a>
 
@@ -129,7 +128,7 @@
             if (type === 'error') colorClass = 'red';
             if (type === 'success') colorClass = 'green';
             M.toast({html: message, classes: colorClass, displayLength: duration});
-            console.log(`[Toast FE - ${type.toUpperCase()}]: ${message}`);
+            // console.log(`[Toast FE - ${type.toUpperCase()}]: ${message}`); // Removed general log
         }
 
         async function fetchPlatforms() {
@@ -138,7 +137,7 @@
                 const apiData = await response.json();
                 if (apiData.success && typeof apiData.data === 'object') {
                     state.platforms = Object.entries(apiData.data).map(([id, plat]) => ({ id, name: plat.name }));
-                    console.log('[Emulators FE] Platforms loaded for modal:', state.platforms);
+                    // console.log('[Emulators FE] Platforms loaded for modal:', state.platforms); // Removed general log
                 } else {
                     showToast('Could not load platforms for selection.', 'error');
                 }
@@ -148,7 +147,7 @@
         }
 
         async function loadAndDisplayEmulators() {
-            console.log('[Emulators FE] Initiating loadAndDisplayEmulators...');
+            // console.log('[Emulators FE] Initiating loadAndDisplayEmulators...'); // Removed general log
             state.isLoading = true;
             state.error = null;
             document.getElementById('loadingIndicator').style.display = 'block';
@@ -156,45 +155,44 @@
             document.getElementById('emulatorsContainer').innerHTML = '';
 
             try {
-                console.log('[Emulators FE] Attempting to fetch /api/emulators');
+                // console.log('[Emulators FE] Attempting to fetch /api/emulators'); // Removed general log
                 const response = await fetch('/api/emulators');
                 
                 const responseText = await response.text();
-                console.log('[Emulators FE] Raw response text from server:', responseText);
+                // console.log('[Emulators FE] Raw response text from server:', responseText); // Removed general log
 
                 let apiData;
                 try {
                     apiData = JSON.parse(responseText);
                 } catch (e) {
-                    console.error('[Emulators FE] Failed to parse responseText as JSON:', e);
+                    // console.error('[Emulators FE] Failed to parse responseText as JSON:', e); // Removed general log
                     state.error = 'Failed to parse emulator data from server. Check console.';
                     document.getElementById('errorMessage').textContent = state.error;
                     document.getElementById('errorMessage').style.display = 'block';
                     showToast(state.error, 'error');
                     return;
                 }
-                
-                console.log('[Emulators FE] Parsed API Response (apiData):', JSON.parse(JSON.stringify(apiData)));
+                // console.log('[Emulators FE] Parsed API Response (apiData):', JSON.parse(JSON.stringify(apiData))); // Removed general log
 
                 if (apiData && apiData.success && apiData.data) {
                     state.emulatorsByPlatform = apiData.data; // This should be the object like { "snes": [...], "nes": [...] }
                     
-                    console.log('[Emulators FE] Extracted data (state.emulatorsByPlatform):', JSON.parse(JSON.stringify(state.emulatorsByPlatform)));
-                    console.log('[Emulators FE] typeof state.emulatorsByPlatform:', typeof state.emulatorsByPlatform);
-                    console.log('[Emulators FE] Is state.emulatorsByPlatform an array? (should be false):', Array.isArray(state.emulatorsByPlatform));
+                    // console.log('[Emulators FE] Extracted data (state.emulatorsByPlatform):', JSON.parse(JSON.stringify(state.emulatorsByPlatform))); // Removed general log
+                    // console.log('[Emulators FE] typeof state.emulatorsByPlatform:', typeof state.emulatorsByPlatform); // Removed general log
+                    // console.log('[Emulators FE] Is state.emulatorsByPlatform an array? (should be false):', Array.isArray(state.emulatorsByPlatform)); // Removed general log
 
                     renderEmulators();
 
                 } else {
                     state.error = apiData.message || 'API request was not successful or data is missing.';
-                    console.error('[Emulators FE] API Error:', state.error);
+                    // console.error('[Emulators FE] API Error:', state.error); // Removed general log
                     document.getElementById('errorMessage').textContent = state.error;
                     document.getElementById('errorMessage').style.display = 'block';
                     showToast(state.error, 'error');
                 }
 
             } catch (error) {
-                console.error('[Emulators FE] General JavaScript error in loadAndDisplayEmulators:', error);
+                // console.error('[Emulators FE] General JavaScript error in loadAndDisplayEmulators:', error); // Removed general log
                 state.error = `A critical error occurred: ${error.message}. Check console.`;
                 document.getElementById('errorMessage').textContent = state.error;
                 document.getElementById('errorMessage').style.display = 'block';
@@ -211,27 +209,27 @@
 
             if (Object.keys(state.emulatorsByPlatform).length === 0) {
                 container.innerHTML = '<p>No emulators found or data is not in the expected format.</p>';
-                console.warn('[Emulators FE] renderEmulators: state.emulatorsByPlatform is empty.');
+                // console.warn('[Emulators FE] renderEmulators: state.emulatorsByPlatform is empty.'); // Removed general log
                 return;
             }
 
             // This loop corresponds to your line 279 (Array.forEach or similar)
             // It should iterate over the KEYS of state.emulatorsByPlatform if it's an object
             const platformIds = Object.keys(state.emulatorsByPlatform);
-            console.log('[Emulators FE] Platform IDs to iterate over (Object.keys):', platformIds);
+            // console.log('[Emulators FE] Platform IDs to iterate over (Object.keys):', platformIds); // Removed general log
 
             platformIds.forEach(platformId => { // OUTER LOOP (like line 279)
-                console.log('[Emulators FE] --- Outer Loop Iteration ---');
-                console.log('[Emulators FE] Current platformId (key from Object.keys):', platformId);
-                console.log('[Emulators FE] typeof platformId:', typeof platformId);
+                // console.log('[Emulators FE] --- Outer Loop Iteration ---'); // Removed general log
+                // console.log('[Emulators FE] Current platformId (key from Object.keys):', platformId); // Removed general log
+                // console.log('[Emulators FE] typeof platformId:', typeof platformId); // Removed general log
 
                 // This is where 'emus' is defined, leading to line 280
                 // 'emus' should be the array of emulators for the current platformId
                 const emus = state.emulatorsByPlatform[platformId]; 
                                     
-                console.log(`[Emulators FE] Variable 'emus' (state.emulatorsByPlatform["${platformId}"]):`, JSON.parse(JSON.stringify(emus))); // Log a deep copy
-                console.log(`[Emulators FE] typeof emus for platform '${platformId}':`, typeof emus);
-                console.log(`[Emulators FE] Array.isArray(emus) for platform '${platformId}' (THIS IS CRITICAL):`, Array.isArray(emus));
+                // console.log(`[Emulators FE] Variable 'emus' (state.emulatorsByPlatform["${platformId}"]):`, JSON.parse(JSON.stringify(emus))); // Removed general log
+                // console.log(`[Emulators FE] typeof emus for platform '${platformId}':`, typeof emus); // Removed general log
+                // console.log(`[Emulators FE] Array.isArray(emus) for platform '${platformId}' (THIS IS CRITICAL):`, Array.isArray(emus)); // Removed general log
 
                 // Find platform name for display
                 const platformInfo = state.platforms.find(p => p.id === platformId);
@@ -261,7 +259,7 @@
                         tbody.innerHTML = `<tr><td colspan="5">No emulators configured for this platform.</td></tr>`;
                     } else {
                         emus.forEach(emulator => { // INNER LOOP (like line 280)
-                            console.log('[Emulators FE] Processing emulator object:', JSON.parse(JSON.stringify(emulator)));
+                            // console.log('[Emulators FE] Processing emulator object:', JSON.parse(JSON.stringify(emulator))); // Removed general log
                             const row = document.createElement('tr');
                             row.innerHTML = `
                                 <td>${emulator.emulator_id || 'N/A'}</td>
@@ -281,7 +279,7 @@
                         });
                     }
                 } else {
-                    console.error(`[Emulators FE] CRITICAL ERROR: 'emus' for platformId '${platformId}' is NOT an array. It is a ${typeof emus}. Value:`, emus);
+                    // console.error(`[Emulators FE] CRITICAL ERROR: 'emus' for platformId '${platformId}' is NOT an array. It is a ${typeof emus}. Value:`, emus); // Removed general log
                     tbody.innerHTML = `<tr><td colspan="5" class="red-text">Error: Emulator data for ${platformId} is not in the expected array format. Check console.</td></tr>`;
                 }
                 platformSection.appendChild(table);
@@ -380,7 +378,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            M.Sidenav.init(document.querySelectorAll('.sidenav'), {edge: 'left'});
+            // M.Sidenav.init(document.querySelectorAll('.sidenav'), {edge: 'left'}); // Sidenav removed
             M.Modal.init(document.querySelectorAll('.modal'));
 
             document.getElementById('addEmulatorBtn').addEventListener('click', () => {

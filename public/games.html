@@ -11,7 +11,8 @@
         body { background: #f5f5f5; color: #222; font-family: 'Roboto', Arial, sans-serif; margin: 0; padding: 0; min-height: 100vh; }
         .main-title { margin-top: 48px; font-weight: 500; letter-spacing: 1px; }
         .section-title { margin-top: 24px; font-weight: 400; }
-        .fab-btn { position: fixed; bottom: 36px; right: 36px; z-index: 1001; }
+        .fab-main { position: fixed; bottom: 36px; right: 36px; z-index: 1001; }
+        .fab-secondary { position: fixed; bottom: 100px; right: 36px; z-index: 1001; } /* Adjusted bottom for spacing */
         .hidden { display: none; }
         #backBtn { position: fixed; top: 24px; left: 24px; z-index: 1000; display: none; }
         .cover-thumb { 
@@ -81,15 +82,11 @@
     <script type="module" src="/js/state.js"></script>
 </head>
 <body>
-    <ul id="navDrawer" class="sidenav">
-        <li><a href="platforms.html" class="blue-text text-darken-2" id="navPlatforms"><i class="material-icons left">dns</i>Platforms</a></li>
-        <li><a href="emulators.html" class="green-text text-darken-2" id="navEmulators"><i class="material-icons left">memory</i>Emulators</a></li>
-    </ul>
-    <div id="topNav" style="position:fixed;top:0;left:0;width:100vw;z-index:2000;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.04);padding:12px 0;display:flex;align-items:center;">
-        <a href="#" data-target="navDrawer" class="sidenav-trigger" style="margin-left:16px;margin-right:16px;"><i class="material-icons">menu</i></a>
-    </div>
-    <div class="container" style="margin-top:100px;max-width:1100px;">
-        <h4 class="main-title blue-text text-darken-2" style="margin-bottom:24px;">Games</h4>
+    <!-- Sidenav and TopNav removed -->
+    <div class="container" style="margin-top:48px;max-width:1100px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h4 class="main-title blue-text text-darken-2" style="margin: 0;">Games</h4>
+        </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
             <div class="input-field" style="margin:0;flex:1;">
                 <input id="searchInput" type="text" class="validate" placeholder="Search games...">
@@ -128,8 +125,12 @@
     <button id="backBtn" class="btn-floating btn-large waves-effect waves-light blue">
         <i class="material-icons">arrow_back</i>
     </button>
+    <!-- FAB for navigating to Emulators page -->
+    <a id="goToEmulatorsBtn" class="btn-floating btn-large waves-effect waves-light green fab-secondary" href="emulators.html" title="Manage Emulators">
+        <i class="material-icons">memory</i>
+    </a>
     <!-- Add FAB for adding new games -->
-    <a id="addGameBtn" class="btn-floating btn-large waves-effect waves-light blue fab-btn" title="Add Game">
+    <a id="addGameBtn" class="btn-floating btn-large waves-effect waves-light blue fab-main" title="Add Game">
         <i class="material-icons">add</i>
     </a>
     <!-- IGDB Results Modal -->
@@ -152,13 +153,6 @@
         // Helper function to show toast and log to console
         function showToastAndLog(message, level = 'info', duration = 4000) {
             const logMessage = `Toast [${level.toUpperCase()}]: ${message}`;
-            if (level === 'error') {
-                console.error(logMessage);
-            } else if (level === 'warn') {
-                console.warn(logMessage);
-            } else {
-                console.log(logMessage);
-            }
             M.toast({html: message, displayLength: duration});
         }
 
@@ -183,7 +177,6 @@
 
             // Ensure retroNodeState.state.platforms is an array
             if (!Array.isArray(retroNodeState.state.platforms)) {
-                console.warn('getPlatformNames: retroNodeState.state.platforms is not an array.');
                 return platformIds.join(', '); // Fallback to showing IDs
             }
 
@@ -206,12 +199,6 @@
             tableBody.innerHTML = '';
 
             const currentGlobalState = retroNodeState.state; // Use a consistent variable name
-
-            // Make sure we have games to display
-            if (!Array.isArray(currentGlobalState.games)) {
-                console.warn('No games available to display');
-                return;
-            }
 
             // Filter games
             let filtered = currentGlobalState.games.filter(game => {
@@ -246,7 +233,7 @@
                             return 0;
                     }
                 } catch (err) {
-                    console.error('Error during sort:', err);
+                    console.error('Error during sort:', err); // Removed general log
                     return 0;
                 }
             });
@@ -372,11 +359,13 @@
                     </select>
                     <label for="gamePlatforms" class="active">Platforms</label>
                 </div>
-                <div class="input-field" style="margin-top:16px;display:flex;gap:8px;">
-                    <button id="askAiBtn" type="button" class="btn orange waves-effect waves-light" style="flex:1;"><i class="material-icons left">smart_toy</i>Ask AI</button>
-                    <button id="igdbImportBtn" type="button" class="btn blue waves-effect waves-light" style="flex:1;"><i class="material-icons left">image_search</i>Import from IGDB</button>
+                <div class="input-field" style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;">
+                    <button id="askAiBtn" type="button" class="btn orange waves-effect waves-light" style="flex:1 1 calc(50% - 4px);min-width:150px;"><i class="material-icons left">smart_toy</i>Ask AI</button>
+                    <button id="igdbDialogImportBtn" type="button" class="btn blue waves-effect waves-light" style="flex:1 1 calc(50% - 4px);min-width:150px;"><i class="material-icons left">image_search</i>IGDB</button>
+                    <button id="theGamesDBDialogImportBtn" type="button" class="btn green waves-effect waves-light" style="flex:1 1 100%;margin-top:8px;"><i class="material-icons left">storage</i>TheGamesDB</button>
                 </div>
                 <div id="igdbInlineResults" style="margin-top:8px;"></div>
+                <div id="theGamesDBInlineResults" style="margin-top:8px;"></div>
             `;
             M.FormSelect.init(document.getElementById('gamePlatforms'));
             const modalElem = document.getElementById('crudDialog');
@@ -425,15 +414,15 @@
                     };
                 }
                 // IGDB Import button handler
-                const igdbBtn = document.getElementById('igdbImportBtn');
-                if (igdbBtn) {
-                    igdbBtn.onclick = async function() {
+                const igdbDialogBtn = document.getElementById('igdbDialogImportBtn');
+                if (igdbDialogBtn) {
+                    igdbDialogBtn.onclick = async function() {
                         const title = document.getElementById('gameTitle').value.trim();
                         if (!title) { M.toast({html: 'Enter a game title first!'}); return; }
-                        igdbBtn.disabled = true;
-                        igdbBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Importing...';
+                        igdbDialogBtn.disabled = true;
+                        igdbDialogBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Searching IGDB...';
                         const resultsDiv = document.getElementById('igdbInlineResults');
-                        resultsDiv.innerHTML = '<div class="progress"><div class="indeterminate"></div></div>';
+                        resultsDiv.innerHTML = '<div class="progress" style="margin-top:10px;"><div class="indeterminate"></div></div>';
                         try {
                             const igdbResp = await fetch('/api/igdb/game', {
                                 method: 'POST',
@@ -441,6 +430,7 @@
                                 body: JSON.stringify({ title })
                             });
                             const igdbData = await igdbResp.json();
+
                             resultsDiv.innerHTML = '';
                             if (igdbData && igdbData.results && igdbData.results.length) {
                                 igdbData.results.forEach((game, idx) => {
@@ -502,9 +492,12 @@
                                         resultsDiv.innerHTML = '';
                                     };
                                 });
+
+                                const modalIgdbImages = resultsDiv.querySelectorAll('.igdb-image-options img');
                                 // Add mouseover for full-size preview
-                                resultsDiv.querySelectorAll('.igdb-image-options img').forEach(img => {
+                                modalIgdbImages.forEach(img => {
                                     img.addEventListener('mouseenter', function(e) {
+                                        console.log('Mouse entered IGDB image (modal):', this.src, 'Full size:', this.getAttribute('data-full'));
                                         let previewImg = document.getElementById('coverPreviewImg');
                                         if (!previewImg) {
                                             previewImg = document.createElement('img');
@@ -565,40 +558,37 @@
                                     });
                                 }, 0);
                             } else {
+                                console.log('[Modal IGDB] No IGDB results found or data format issue. Raw data:', JSON.stringify(igdbData, null, 2));
                                 resultsDiv.innerHTML = '<div class="card-panel yellow lighten-4">No IGDB results found.</div>';
                             }
                         } catch (e) {
                             resultsDiv.innerHTML = '<div class="card-panel red lighten-4">Error fetching IGDB data.</div>';
                         }
                         igdbBtn.disabled = false;
-                        igdbBtn.innerHTML = '<i class="material-icons left">image_search</i>Import from IGDB';
+                        igdbDialogBtn.innerHTML = '<i class="material-icons left">image_search</i>IGDB';
                     };
                 }
+                // Initialize TheGamesDB search functionality for the dialog
+                initializeTheGamesDBSearchInDialog();
             }, 100);
         }
-
         function submitGameForm(mode, originalIndex) { // idx renamed to originalIndex
             const gameTitleElement = document.getElementById('gameTitle');
-            console.log('[submitGameForm] gameTitleElement:', gameTitleElement);
             const rawTitleValue = gameTitleElement ? gameTitleElement.value : 'ELEMENT_NOT_FOUND';
-            console.log('[submitGameForm] Raw title value from input:', `"${rawTitleValue}"`);
 
             const title = rawTitleValue === 'ELEMENT_NOT_FOUND' ? '' : rawTitleValue.trim();
-            console.log('[submitGameForm] Trimmed title value:', `"${title}"`);
 
             const descriptionElement = document.getElementById('gameDescription');
             const description = descriptionElement ? descriptionElement.value.trim() : '';
             const coverElement = document.getElementById('gameCover');
             const cover = coverElement ? coverElement.value.trim() : '';
             
-            const platformSelect = document.getElementById('gamePlatforms');
+            const platformSelect = document.getElementById('gamePlatforms'); // Keep this line
             const selectedPlatforms = platformSelect ? Array.from(platformSelect.selectedOptions).map(opt => opt.value) : [];
 
-            console.log('[submitGameForm] About to check if title is empty. Current title:', `"${title}"`);
             if (!title) { 
                 M.toast({html: 'Title is required'}); 
                 console.log('[submitGameForm] Title was empty. Submission aborted.');return; }
-            console.log('[submitGameForm] Title is NOT empty. Proceeding to create gameData.');
             const gameData = {
                 title,
                 description,
@@ -607,8 +597,6 @@
             };
             selectedPlatforms.forEach(pid => { gameData.platforms[pid] = '' }); // ROM path left blank for now
             
-            console.log(`[submitGameForm - ${mode.toUpperCase()}] Game data to be sent:`, JSON.stringify(gameData, null, 2));
-            console.log(`[submitGameForm - ${mode.toUpperCase()}] Value of title being sent: "${gameData.title}" (length: ${gameData.title ? gameData.title.length : 'N/A'})`);
             if (mode === 'add') {
                 fetch('/api/games', {
                     method: 'POST',
@@ -632,36 +620,24 @@
                         M.toast({html: resp.message || 'Failed to add game'});
                     }
                 }).catch(err => {
-                    console.error("Add game error:", err);
                     M.toast({html: 'Error adding game.'});
                 });
             } else if (mode === 'edit') { // originalIndex is the index in retroNodeState.state.games
                 if (originalIndex === null || originalIndex < 0 || originalIndex >= retroNodeState.state.games.length) {
                     M.toast({html: 'Error: Invalid game reference for update.'});
-                    console.error("Invalid originalIndex for edit:", originalIndex);
                     return;
                 }
                 const gameToUpdate = retroNodeState.state.games[originalIndex];
-                console.log('[submitGameForm] Full game object being updated:', JSON.stringify(gameToUpdate, null, 2)); // Log the whole object
-                // --- Add these detailed logs ---
-                console.log('[submitGameForm] Inspecting gameToUpdate.id directly:');
-                console.log('[submitGameForm] gameToUpdate.id value:', gameToUpdate ? gameToUpdate.id : 'gameToUpdate is falsy');
-                console.log('[submitGameForm] typeof gameToUpdate.id:', gameToUpdate ? typeof gameToUpdate.id : 'gameToUpdate is falsy');
-                console.log('[submitGameForm] Boolean(gameToUpdate.id):', gameToUpdate ? Boolean(gameToUpdate.id) : 'gameToUpdate is falsy');
                 let endpointIdentifier;
 
                 if (gameToUpdate && gameToUpdate.id) {
                     endpointIdentifier = gameToUpdate.id;
-                    console.log(`[submitGameForm] Attempting to update game using ID: ${endpointIdentifier}`);
                 } else if (gameToUpdate && gameToUpdate.title_key) {
                     endpointIdentifier = encodeURIComponent(gameToUpdate.title_key);
-                    console.warn(`[submitGameForm] Game "${gameToUpdate.title}" (index: ${originalIndex}) is missing an ID. Using title_key: ${endpointIdentifier}`);
                 } else if (gameToUpdate && gameToUpdate.title) {
                     endpointIdentifier = encodeURIComponent(gameToUpdate.title);
-                    console.error(`[submitGameForm] Game "${gameToUpdate.title}" (index: ${originalIndex}) is missing an ID and title_key. Using title: ${endpointIdentifier}. This is less reliable.`);
                 } else {
                     M.toast({html: 'Error: Cannot identify game to update. Game data might be incomplete.'});
-                    console.error("[submitGameForm] Cannot determine endpointIdentifier for game update:", gameToUpdate);
                     return;
                 }
                 
@@ -685,28 +661,25 @@
                             showToastAndLog('Game updated!');
                         } else {
                             // Backend responded with success:false or missing data
-                            console.error("[submitGameForm] Backend reported failure (JSON response):", resp);
+                            // console.error("[submitGameForm] Backend reported failure (JSON response):", resp); // Removed general log
                             showToastAndLog(resp.message || 'Failed to update game (JSON error)', 'error');
                         }
                     } else {
                         // Handle HTTP errors (like 404, 500) that are not JSON `success:false`
                         const errorText = await response.text(); // Get raw error text
-                        console.error(`[submitGameForm] Backend HTTP error ${response.status}:`, errorText);
                         // Try to parse as JSON for a message, otherwise use the raw text
                         try { const errJson = JSON.parse(errorText); showToastAndLog(errJson.message || errorText, 'error'); }
                         catch (e) { showToastAndLog(errorText || `HTTP error ${response.status}`, 'error'); }
                     }
                 }).catch(err => {
-                    console.error("Update game error:", err);
                     showToastAndLog('Error updating game (Network or other failure).', 'error');
                 });
             }
         }
-
+        
         function deleteGame(originalIndex) { // idx renamed to originalIndex
             if (originalIndex === null || originalIndex < 0 || originalIndex >= retroNodeState.state.games.length) {
                 M.toast({html: 'Error: Invalid game reference for delete.'});
-                console.error("Invalid originalIndex for delete:", originalIndex);
                 return;
             }
             const gameToDelete = retroNodeState.state.games[originalIndex];
@@ -726,7 +699,6 @@
                     M.toast({html: resp.message || 'Failed to delete game'});
                 }
             }).catch(err => {
-                console.error("Delete game error:", err);
                 M.toast({html: 'Error deleting game.'});
             });
         }
@@ -912,8 +884,69 @@
         document.addEventListener('DOMContentLoaded', function() {
             var modals = document.querySelectorAll('.modal');
             M.Modal.init(modals);
-            var sidenavs = document.querySelectorAll('.sidenav');
-            M.Sidenav.init(sidenavs, {edge: 'left'});
+            // var sidenavs = document.querySelectorAll('.sidenav'); // Sidenav removed
+            // M.Sidenav.init(sidenavs, {edge: 'left'}); // Sidenav removed
+        });
+
+        // Event delegation for main game list cover image mouseover
+        document.getElementById('gamesTableBody').addEventListener('mouseover', function(event) {
+            if (event.target.tagName === 'IMG' && event.target.classList.contains('cover-thumb')) {
+                const targetImage = event.target;
+                let previewImg = document.getElementById('coverPreviewImg');
+                if (!previewImg) {
+                    previewImg = document.createElement('img');
+                    previewImg.id = 'coverPreviewImg';
+                    previewImg.style.position = 'fixed';
+                    previewImg.style.zIndex = '3000'; // Ensure it's on top
+                    previewImg.style.display = 'none';
+                    previewImg.style.maxWidth = '320px'; // Adjust as needed
+                    previewImg.style.maxHeight = '80vh';  // Adjust as needed
+                    previewImg.style.boxShadow = '0 4px 24px rgba(0,0,0,0.25)';
+                    previewImg.style.borderRadius = '10px';
+                    previewImg.style.background = '#fff'; // In case image is transparent
+                    previewImg.style.pointerEvents = 'none'; // So it doesn't interfere with mouse events
+                    document.body.appendChild(previewImg);
+                }
+                // Use the src of the cover-thumb as the full image.
+                // If you have a different URL for a larger version, you'd get it from a data-attribute.
+                previewImg.src = targetImage.src;
+                previewImg.style.display = 'block';
+
+                const moveHandler = (e) => {
+                    let x = e.clientX + 24; // Offset from cursor
+                    let y = e.clientY - 24; // Offset from cursor
+
+                    // Keep preview within viewport
+                    if (x + previewImg.offsetWidth > window.innerWidth - 16) {
+                        x = window.innerWidth - previewImg.offsetWidth - 16;
+                    }
+                    if (y + previewImg.offsetHeight > window.innerHeight - 16) {
+                        y = window.innerHeight - previewImg.offsetHeight - 16;
+                    }
+                    if (y < 16) y = 16; // Keep some space from top
+                    if (x < 16) x = 16; // Keep some space from left
+
+                    previewImg.style.left = x + 'px';
+                    previewImg.style.top = y + 'px';
+                };
+                moveHandler(event); // Initial position
+                targetImage._mouseMoveHandler = moveHandler; // Store for removal
+                targetImage._previewImgElement = previewImg; // Store for mouseleave
+                window.addEventListener('mousemove', targetImage._mouseMoveHandler);
+            }
+        });
+
+        document.getElementById('gamesTableBody').addEventListener('mouseout', function(event) {
+            if (event.target.tagName === 'IMG' && event.target.classList.contains('cover-thumb')) {
+                const targetImage = event.target;
+                if (targetImage._previewImgElement) {
+                    targetImage._previewImgElement.style.display = 'none';
+                }
+                if (targetImage._mouseMoveHandler) {
+                    window.removeEventListener('mousemove', targetImage._mouseMoveHandler);
+                    delete targetImage._mouseMoveHandler;
+                }
+            }
         });
 
         // Event delegation for table actions (Edit, Delete)
@@ -929,7 +962,6 @@
                     const gameToEdit = retroNodeState.state.games[originalIndex];
                     openGameDialog('edit', gameToEdit, originalIndex);
                 } else {
-                    console.error('Invalid original index for edit:', editButton.getAttribute('data-original-index'));
                     M.toast({html: 'Error: Could not find game to edit.'});
                 }
                 return;
@@ -944,7 +976,6 @@
                         deleteGame(originalIndex);
                     }
                 } else {
-                    console.error('Invalid original index for delete:', deleteButton.getAttribute('data-original-index'));
                     M.toast({html: 'Error: Could not find game to delete.'});
                 }
                 return;
@@ -1028,8 +1059,7 @@ async function loadInitialData() {
             retroNodeState.loadPlatforms() // loadPlatforms will set its own error state if any
         ]);
     } catch (error) {
-        console.error("Failed to load initial data via retroNodeState methods:", error);
-        // retroNodeState.setState({ error: 'Critical error loading page data.', isLoading: false });
+        retroNodeState.setState({ error: 'Critical error loading page data.', isLoading: false });
     }
 }
 loadInitialData();
@@ -1062,82 +1092,105 @@ loadInitialData();
                     body: JSON.stringify({ title })
                 });
                 const igdbData = await igdbResp.json();
+
                 const section = igdbRow.querySelector('.igdb-inline-section');
                 section.innerHTML = '';
                 if (igdbData && igdbData.results && igdbData.results.length) {
-                    igdbData.results.forEach((game, idx) => {
-                        // Collect all possible cover images (cover + screenshots)
-                        let images = [];
-                        if (game.cover && game.cover.url) images.push({url: 'https:' + game.cover.url, type: 'cover'});
-                        (game.screenshots || []).forEach(s => images.push({url: 'https:' + s.url, type: 'screenshot'}));
-                        // Build image selection UI
-                        const imageOptions = images.map((img, i) =>
-                            `<label style='margin-right:8px;cursor:pointer;display:inline-block;position:relative;'>
-                                <input type='radio' name='igdbCover${idx}' value='${img.url}' ${i===0?'checked':''} style='position:absolute;left:-9999px;'>
-                                <img src='${img.url}' data-full='${img.url.replace("t_thumb","t_1080p")}' class='igdb-cover-thumb' style='width:48px;height:48px;object-fit:cover;border-radius:4px;border:2px solid ${i===0 ? '#1976d2' : '#bbb'};margin-bottom:2px;box-shadow:0 1px 4px #0002;transition:border-color 0.2s,box-shadow 0.2s;'>
-                                <span style='display:block;font-size:0.7em;text-align:center;color:#888;'>${img.type}</span>
-                                <span class='igdb-cover-selected' style='display:${i===0?'block':'none'};position:absolute;top:2px;right:2px;background:#1976d2;color:#fff;border-radius:50%;width:18px;height:18px;font-size:1em;line-height:18px;text-align:center;box-shadow:0 1px 4px #0003;'>✓</span>
-                            </label>`
-                        ).join('');
-                        const rating = game.rating ? `<span style='font-size:0.9em;color:#888;'>Rating: ${game.rating.toFixed(1)}</span>` : '';
-                        const summary = game.summary ? `<div style='font-size:0.95em;margin:8px 0;'>${game.summary.substring(0, 180)}${game.summary.length > 180 ? '...' : ''}</div>` : '';
-                        const video = (game.videos && game.videos[0]) ? `<a href='https://youtube.com/watch?v=${game.videos[0].video_id}' target='_blank'>🎬</a>` : '';
-                        section.innerHTML += `
-                            <div class='card' style='display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;padding:12px;box-shadow:0 2px 8px #0001;'>
-                                <div style='flex:1;'>
-                                    <div style='display:flex;align-items:center;gap:16px;'>
-                                        <div style='display:flex;flex-direction:column;align-items:center;'>
-                                            <div class='igdb-image-options' data-idx='${idx}'>${imageOptions}</div>
+                    console.log('[Inline Table IGDB] IGDB data has results. Proceeding to render images and attach listeners.');
+
+                    try {
+                        igdbData.results.forEach((game, idx) => {
+                            // Collect all possible cover images (cover + screenshots)
+                            let images = [];
+                            if (game.cover && game.cover.url) images.push({url: 'https:' + game.cover.url, type: 'cover'});
+                            (game.screenshots || []).forEach(s => { if (s && s.url) images.push({url: 'https:' + s.url, type: 'screenshot'}); });
+                            // Build image selection UI
+                            const imageOptions = images.map((img, i) => {
+                                const fullUrl = img.url && typeof img.url.replace === 'function' ? img.url.replace("t_thumb","t_1080p") : (img.url || '');
+                                return `<label style='margin-right:8px;cursor:pointer;display:inline-block;position:relative;'>
+                                    <input type='radio' name='igdbCover${idx}' value='${img.url || ''}' ${i===0?'checked':''} style='position:absolute;left:-9999px;'>
+                                    <img src='${img.url || ''}' data-full='${fullUrl}' class='igdb-cover-thumb' style='width:48px;height:48px;object-fit:cover;border-radius:4px;border:2px solid ${i===0 ? '#1976d2' : '#bbb'};margin-bottom:2px;box-shadow:0 1px 4px #0002;transition:border-color 0.2s,box-shadow 0.2s;'>
+                                    <span style='display:block;font-size:0.7em;text-align:center;color:#888;'>${img.type || 'image'}</span>
+                                    <span class='igdb-cover-selected' style='display:${i===0?'block':'none'};position:absolute;top:2px;right:2px;background:#1976d2;color:#fff;border-radius:50%;width:18px;height:18px;font-size:1em;line-height:18px;text-align:center;box-shadow:0 1px 4px #0003;'>✓</span>
+                                </label>`;
+                            }).join('');
+                            const rating = game.rating ? `<span style='font-size:0.9em;color:#888;'>Rating: ${Number(game.rating).toFixed(1)}</span>` : '';
+                            const summary = game.summary ? `<div style='font-size:0.95em;margin:8px 0;'>${String(game.summary).substring(0, 180)}${String(game.summary).length > 180 ? '...' : ''}</div>` : '';
+                            const video = (game.videos && game.videos[0] && game.videos[0].video_id) ? `<a href='https://youtube.com/watch?v=${game.videos[0].video_id}' target='_blank'>🎬</a>` : '';
+                            section.innerHTML += `
+                                <div class='card' style='display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;padding:12px;box-shadow:0 2px 8px #0001;'>
+                                    <div style='flex:1;'>
+                                        <div style='display:flex;align-items:center;gap:16px;'>
+                                            <div style='display:flex;flex-direction:column;align-items:center;'>
+                                                <div class='igdb-image-options' data-idx='${idx}'>${imageOptions}</div>
+                                            </div>
+                                            <div>
+                                                <b>${game.name || 'No Name'}</b> ${rating} ${video}
+                                                ${summary}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <b>${game.name}</b> ${rating} ${video}
-                                            ${summary}
+                                        <div style='margin-top:8px;'>
+                                            <label><input type='checkbox' class='igdb-field' data-field='cover' checked> Cover</label>
+                                            <label><input type='checkbox' class='igdb-field' data-field='name' checked> Title</label>
+                                            <label><input type='checkbox' class='igdb-field' data-field='summary' checked> Summary</label>
+                                            <label><input type='checkbox' class='igdb-field' data-field='rating' ${game.rating ? 'checked' : 'disabled'}> Rating</label>
                                         </div>
                                     </div>
-                                    <div style='margin-top:8px;'>
-                                        <label><input type='checkbox' class='igdb-field' data-field='cover' checked> Cover</label>
-                                        <label><input type='checkbox' class='igdb-field' data-field='name' checked> Title</label>
-                                        <label><input type='checkbox' class='igdb-field' data-field='summary' checked> Summary</label>
-                                        <label><input type='checkbox' class='igdb-field' data-field='rating' ${game.rating ? 'checked' : 'disabled'}> Rating</label>
-                                    </div>
+                                    <button class='btn blue igdb-import-btn' data-idx='${idx}' style='margin-left:16px;'>Import</button>
                                 </div>
-                                <button class='btn blue igdb-import-btn' data-idx='${idx}' style='margin-left:16px;'>Import</button>
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    } catch (renderError) {
+                        console.error('[Inline Table IGDB] Error during HTML rendering loop:', renderError);
+                        section.innerHTML = '<div class="card-panel red lighten-4">Error rendering IGDB results. Check console.</div>';
+                        return; // Stop further processing if rendering fails
+                    }
+
                     // Attach import button handlers
-                    section.querySelectorAll('.igdb-import-btn').forEach(btn2 => {
-                        btn2.onclick = function() {
-                            const idx2 = parseInt(btn2.getAttribute('data-idx'));
-                            const game2 = igdbData.results[idx2];
-                            const card = btn2.closest('.card');
-                            const fields = Array.from(card.querySelectorAll('.igdb-field:checked')).map(cb=>cb.getAttribute('data-field'));
-                            // Get selected cover image
-                            let coverUrl = '';
-                            const selectedImg = card.querySelector(`.igdb-image-options input[type='radio']:checked`);
-                            if (selectedImg) coverUrl = selectedImg.value;
-                            // Helper to fill fields after modal is open
-                            function fillFields() {
-                                if (fields.includes('cover') && coverUrl) document.getElementById('gameCover').value = coverUrl;
-                                if (fields.includes('name')) document.getElementById('gameTitle').value = game2.name;
-                                if (fields.includes('summary')) document.getElementById('gameDescription').value = game2.summary || '';
-                                if (fields.includes('rating') && game2.rating) document.getElementById('gameDescription').value += `\nRating: ${game2.rating.toFixed(1)}`;
-                                M.updateTextFields();
-                            }
-                            // Check if form fields exist
-                            if (!document.getElementById('gameTitle') || !document.getElementById('gameCover')) {
-                                // Open add dialog, then fill fields after modal is rendered
-                                openGameDialog('add');
-                                setTimeout(fillFields, 200); // Wait for modal to render
-                            } else {
-                                fillFields();
-                            }
-                            if (openIgdbRow) { openIgdbRow.parentNode.removeChild(openIgdbRow); openIgdbRow = null; }
-                        };
-                    });
+                    try {
+                        section.querySelectorAll('.igdb-import-btn').forEach(btn2 => {
+                            btn2.onclick = function() {
+                                const idx2 = parseInt(btn2.getAttribute('data-idx'));
+                                const game2 = igdbData.results[idx2];
+                                const card = btn2.closest('.card');
+                                const fields = Array.from(card.querySelectorAll('.igdb-field:checked')).map(cb=>cb.getAttribute('data-field'));
+                                // Get selected cover image
+                                let coverUrl = '';
+                                const selectedImgRadio = card.querySelector(`.igdb-image-options input[type='radio']:checked`);
+                                if (selectedImgRadio) coverUrl = selectedImgRadio.value;
+                                // Helper to fill fields after modal is open
+                                function fillFields() {
+                                    if (fields.includes('cover') && coverUrl) document.getElementById('gameCover').value = coverUrl;
+                                    if (fields.includes('name') && game2.name) document.getElementById('gameTitle').value = game2.name;
+                                    if (fields.includes('summary') && game2.summary) document.getElementById('gameDescription').value = game2.summary || '';
+                                    if (fields.includes('rating') && game2.rating) document.getElementById('gameDescription').value += `\nRating: ${Number(game2.rating).toFixed(1)}`;
+                                    M.updateTextFields();
+                                }
+                                // Check if form fields exist (i.e. if the main modal is open)
+                                if (!document.getElementById('gameTitle') || !document.getElementById('gameCover')) {
+                                    // Open add dialog, then fill fields after modal is rendered
+                                    openGameDialog('add'); // This opens the main game dialog
+                                    setTimeout(fillFields, 200); // Wait for modal to render
+                                } else {
+                                    fillFields(); // Main game dialog is already open, just fill its fields
+                                }
+                                if (openIgdbRow) { openIgdbRow.parentNode.removeChild(openIgdbRow); openIgdbRow = null; }
+                            };
+                        });
+                    } catch (importBtnError) {
+                        console.error('[Inline Table IGDB] Error attaching import button listeners:', importBtnError);
+                        // Continue to attach mouseover if possible, or show an error
+                    }
+
+                    console.log('[Inline Table IGDB] HTML content of section right before querySelectorAll:');
+                    console.log(section.innerHTML);
+
+                    const inlineTableIgdbImages = section.querySelectorAll('.igdb-image-options img');
+                    console.log(`[Inline Table IGDB] Images found by querySelectorAll('.igdb-image-options img'):`, inlineTableIgdbImages.length, inlineTableIgdbImages);
                     // Add mouseover for full-size preview
-                    section.querySelectorAll('.igdb-image-options img').forEach(img => {
+                    inlineTableIgdbImages.forEach(img => {
                         img.addEventListener('mouseenter', function(e) {
+                            console.log('Mouse entered IGDB image (inline table):', this.src, 'Full size:', this.getAttribute('data-full'));
                             let previewImg = document.getElementById('coverPreviewImg');
                             if (!previewImg) {
                                 previewImg = document.createElement('img');
@@ -1202,6 +1255,113 @@ loadInitialData();
                 }
             }
         });
+
+        // --- TheGamesDB Search Functionality (for Dialog) ---
+        function initializeTheGamesDBSearchInDialog() {
+            const theGamesDBDialogButton = document.getElementById('theGamesDBDialogImportBtn');
+            if (theGamesDBDialogButton) {
+                theGamesDBDialogButton.addEventListener('click', handleTheGamesDBSearchInDialog);
+            } else {
+                console.warn('TheGamesDB dialog import button (id="theGamesDBDialogImportBtn") not found.');
+            }
+        }
+
+        async function handleTheGamesDBSearchInDialog() {
+            const gameTitleInput = document.getElementById('gameTitle'); // Title from the dialog form
+            const resultsContainer = document.getElementById('theGamesDBInlineResults');
+            const searchButton = document.getElementById('theGamesDBDialogImportBtn');
+
+            if (!gameTitleInput || !resultsContainer || !searchButton) {
+                M.toast({html: 'Required elements for TheGamesDB search are missing.'});
+                return;
+            }
+
+            const gameTitle = gameTitleInput.value.trim();
+            if (!gameTitle) {
+                M.toast({html: 'Please enter a game title in the form to search TheGamesDB.'});
+                return;
+            }
+
+            searchButton.disabled = true;
+            searchButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Searching TheGamesDB...';
+            resultsContainer.innerHTML = '<div class="progress" style="margin-top:10px;"><div class="indeterminate"></div></div>';
+
+            try {
+                const response = await fetch(`/api/thegamesdb/search?name=${encodeURIComponent(gameTitle)}`);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: `Request failed with status ${response.status}` }));
+                    throw new Error(errorData.message || `TheGamesDB API request failed`);
+                }
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to fetch data from TheGamesDB.');
+                }
+                displayTheGamesDBResultsInDialog(data.results, data.imageBaseUrl, resultsContainer);
+            } catch (error) {
+                console.error('Error searching TheGamesDB (dialog):', error);
+                resultsContainer.innerHTML = `<div class="card-panel red lighten-4" style="margin-top:10px;">Error: ${error.message}</div>`;
+            } finally {
+                searchButton.disabled = false;
+                searchButton.innerHTML = '<i class="material-icons left">storage</i>TheGamesDB';
+            }
+        }
+
+        function displayTheGamesDBResultsInDialog(games, imageBaseUrl, containerElement) {
+            if (!games || games.length === 0) {
+                containerElement.innerHTML = '<div class="card-panel yellow lighten-4" style="margin-top:10px;">No results found on TheGamesDB.</div>';
+                return;
+            }
+
+            let resultsHTML = '<h6>TheGamesDB Results:</h6>';
+            games.slice(0, 5).forEach((game, index) => { // Limit to 5 results for inline display
+                // Use the pre-constructed thumb URL, fallback to large, then to default
+                const displayThumbnailUrl = game.boxart_thumb_url || game.boxart_large_url || '/img/default-cover.png';
+                const platformDisplay = game.platform || 'N/A'; // This is an ID, mapping needed for name
+                const releaseDateDisplay = game.release_date ? new Date(game.release_date).toLocaleDateString() : 'N/A';
+
+                resultsHTML += `
+                    <div class="card" style="margin-bottom: 10px; padding: 10px; display: flex; align-items: center;">
+                        <img src="${displayThumbnailUrl}" alt="${game.game_title || 'Cover'}" style="width: 50px; height: 60px; object-fit: cover; margin-right: 10px; border-radius: 3px;">
+                        <div style="flex-grow: 1;">
+                            <strong>${game.game_title || 'N/A'}</strong><br>
+                            <small>Platform ID: ${platformDisplay} | Released: ${releaseDateDisplay}</small>
+                            ${game.overview ? `<p style="font-size: 0.9em; margin-top: 5px; max-height: 60px; overflow: hidden; text-overflow: ellipsis;">${game.overview.substring(0,150)}...</p>` : ''}
+                        </div>
+                        <button class="btn-small waves-effect waves-light blue import-tgdb-dialog-btn" data-game-index="${index}" type="button" style="margin-left:10px;">Import</button>
+                    </div>
+                `;
+            });
+            containerElement.innerHTML = resultsHTML;
+
+            containerElement.querySelectorAll('.import-tgdb-dialog-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const gameIndex = parseInt(event.target.getAttribute('data-game-index'), 10);
+                    const selectedGame = games[gameIndex];
+                    if (selectedGame) {
+                        populateDialogFormWithTheGamesDBData(selectedGame, imageBaseUrl);
+                        containerElement.innerHTML = ''; // Clear results after import
+                    }
+                });
+            });
+        }
+
+        function populateDialogFormWithTheGamesDBData(gameData, imageBaseUrl) {
+            const titleField = document.getElementById('gameTitle');
+            const descriptionField = document.getElementById('gameDescription');
+            const coverField = document.getElementById('gameCover');
+
+            if (titleField && gameData.game_title) titleField.value = gameData.game_title;
+            if (descriptionField && gameData.overview) descriptionField.value = gameData.overview;
+            if (coverField) {
+                coverField.value = gameData.boxart_large_url || ''; // Use the pre-constructed large URL
+            }
+            M.updateTextFields(); // Important for Materialize text fields
+            M.toast({html: `Imported "${gameData.game_title}" from TheGamesDB. Review and save.`});
+            // Note: Platform mapping from TheGamesDB ID to your system's platform select needs specific logic.
+            // For now, platform is not automatically selected from TheGamesDB import.
+        }
+        // --- End of TheGamesDB Search Functionality (for Dialog) ---
 
         function updatePagination() {
             // Calculate total pages

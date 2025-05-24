@@ -1,4 +1,4 @@
-const { readJsonFile, writeJsonFile, PATHS } = require('../utils/fileOps');
+const { readJsonFile, writeJsonFile, PATHS } = require('../middleware/fileOps');
 const { AppError } = require('../middleware/errorHandler');
 
 class PlatformController {

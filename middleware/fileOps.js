@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const { AppError } = require('../middleware/errorHandler');
+const { AppError } = require('./errorHandler');
 
 /**
  * Read and parse a JSON file

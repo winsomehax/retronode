@@ -15,6 +15,7 @@ const gameController = require('./controllers/gameController');
 const platformController = require('./controllers/platformController');
 const emulatorController = require('./controllers/emulatorController');
 const { igdbController, igdbLimiter } = require('./controllers/igdbController');
+const theGamesDB = require('./middleware/TheGamesDB.js'); // Import TheGamesDB functions
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,18 +37,7 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
-// --- BEGIN DEBUGGING MIDDLEWARE ---
-// This middleware will log the body of PUT/POST requests to /api/games
-// BEFORE the validation and controller logic runs.
-app.use('/api/games', (req, res, next) => {
-  if (req.method === 'POST' || req.method === 'PUT') {
-    console.log(`[App.js DEBUG] Path: ${req.originalUrl}, Method: ${req.method}`);
-    console.log('[App.js DEBUG] Request body BEFORE validation:', JSON.stringify(req.body, null, 2));
-    console.log(`[App.js DEBUG] req.body.title value: "${req.body.title}" (Type: ${typeof req.body.title})`);
-  }
-  next();
-});
-// --- END DEBUGGING MIDDLEWARE ---
+// Removed general request body debugging middleware
 // Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'games.html'));
@@ -78,6 +68,27 @@ app.post('/api/launch', launchValidation.create, validate, emulatorController.la
 
 // IGDB integration
 app.post('/api/igdb/game', igdbLimiter, igdbController.searchGame);
+
+// TheGamesDB integration
+app.get('/api/thegamesdb/search', async (req, res, next) => {
+  try {
+    const gameName = req.query.name;
+    if (!gameName) {
+      // Use AppError for consistent error handling
+      return next(new AppError('Game name query parameter is required.', 400));
+    }
+    // Directly use the imported searchGames function
+    const searchData = await theGamesDB.searchGames(gameName); // searchData is now { games: [], imageBaseUrl: "..." }
+    res.json({
+      success: true,
+      source: 'TheGamesDB',
+      results: searchData.games, // Array of game objects
+      imageBaseUrl: searchData.imageBaseUrl // Base URL for constructing image paths
+    });
+  } catch (error) {
+    next(error); // Pass to the global error handler
+  }
+});
 
 // 404 handler
 app.use((req, res, next) => {

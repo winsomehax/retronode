@@ -110,11 +110,12 @@
     },
     "alteregomaleversion": {
         "title": "Alter Ego - Male Version",
-        "description": "Alter Ego - Male Version is a life simulation game released in 1986 where players navigate the experiences and choices of a male character from infancy to old age, shaping his personality and destiny.",
-        "cover_image_path": "",
+        "description": "You play your own alter ego in this game, going through life stages while making decisions that impact several characteristics, such as calmness, trustworthiness, etc., that in turn affect the number of choices you have in future situation. You might learn a surprising thing or two about yourself while playing this life simulation.",
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/29826-1.jpg",
         "platforms": {
             "c64": ""
-        }
+        },
+        "updated_at": "2025-05-23T21:52:46.585Z"
     },
     "elite": {
         "title": "Elite",
@@ -171,12 +172,12 @@
     },
     "sanxion": {
         "title": "Sanxion",
-        "overview": "",
-        "description": "Pilot your ship through scrolling levels, shooting enemies and dodging obstacles.",
-        "cover_image_path": "",
+        "description": "Sanxion is a side-scrolling shoot &#x27;em up, the goal to traverse each level from left to right avoiding or destroying any enemies and obstacles. The side-scroller speed is controllable, increasing the closer the player is to the center of the screen. The screen is divided in two sections, the upper one with a cenital view, and the lower one, taking up two-thirds of the screen, shows a typical side view. Enemies can come from both sides of the screen in close formations that the player must avoid colliding with.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_cover_big/cmz0dbwc0us7qcpcmszm.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Sanxion (6565).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T16:49:35.861Z"
     },
     "zorktheundiscoveredunderground": {
         "title": "Zork - The Undiscovered Underground",
@@ -294,13 +295,13 @@
         }
     },
     "archoniiadept": {
-        "title": "Archon II - Adept",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "title": "Archon II: Adept",
+        "description": "Archon 2 or also Adept is the successor of the successful Electronic Arts classic Archon. As already seen in Archon, an apocalyptic fight takes place in a fantasy surrounding, now not between &quot;light&quot; and &quot;dark&quot; but between &quot;order&quot; and &quot;chaos&quot;.It all happens in a game area which is divided into 4 elemental layers. In the center is the earth layer, it is surrounded by the water layer and this is surrounded by the air layer. The outer layer is made of fire.Opposite to its forerunner the players start in Adept only with one magician (&quot;Adept&quot;) per layer. All the other creatures have to be conjured in the course of the game. Evocations and other spells cost energy, which is renewed by occupying energy points on the game area with your own creatures. The more points you occupy, the more energy you get.Every side possesses 4 own elemental beings, which have a special force when they are on their corresponding layer. Moreover 4 different demons can be conjured from both sides, which can fight independently from the chosen element. Many of these creatures can use a shooting attack, but they have also lots of special attacks.When two figures meet on a field, here also the screen is zoomed and a fight for life and death starts. The winner claims the hard-fought field.Dependent on the layer you are fighting on, the battlefield has different obstacles such as slowing-down lakes, shoot destracting swirls, flame walls or simply walls ready. The only exception are the two void fields, here no terrain is usedRating: 64.9",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/dkqpwqsfephmf5wbo9d1.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Archon II - Adept (380).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T18:55:46.049Z"
     },
     "lightforce": {
         "title": "Lightforce",
@@ -349,11 +350,12 @@
     },
     "archon": {
         "title": "Archon",
-        "description": "Archon is a 1983 action-strategy game where players battle for control of a chess-like board using fantastical creatures with real-time combat encounters.",
-        "cover_image_path": "",
+        "description": "Archon: The Light and the Dark was a game developed by Free Fall Associates which loosely modeled the game of Chess, with a number of additions to the gameplay. It was programmed by Anne Westfall, and released originally for Atari 8-bit computers in 1983. It was quickly ported to a number of different systems, and was well-received.Rating: 78.0",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/yqvdvefltdswbmft8fp5.jpg",
         "platforms": {
             "c64": ""
-        }
+        },
+        "updated_at": "2025-05-23T18:55:32.004Z"
     },
     "supremacy": {
         "title": "Supremacy",
@@ -375,15 +377,15 @@
     },
     "alteredbeast": {
         "title": "Altered Beast",
-        "description": "Originally released by Sega in arcades in 1988, Altered Beast is a side-scrolling beat &#x27;em up later ported to various home platforms, including the Commodore 64 (C64). In this game, you play as a resurrected warrior chosen by Zeus to rescue his daughter Athena from the underworld ruler Neff. The gameplay involves battling hordes of undead and mythological monsters across five stages set in ancient Greece. Collecting spirit orbs transforms you into powerful beast forms such as a werewolf, allowing for special attacks and abilities.  The C64 adaptation replicates the core action and challenge of the arcade original, with graphics and sound optimized for Commodore’s hardware. Despite technical limitations, it captures the essence of this cult classic—offering fans of action games a nostalgic adventure through myth and legend.",
-        "cover_image_path": "https://upload.wikimedia.org/wikipedia/en/f/fd/PS2_Altered_Beast_Cover.jpg",
+        "description": "Altered Beast is a 1989 Genesis side-scrolling beat &#x27;em up platformer video game developed by Sega R&amp;D2 and released by Sega of America in the USA on August 14, 1989.Enter a time when men were warriors and Gods ruled the world. A time of good against evil, a place of danger. Summoned by Zeus to rescue Athena, you will infiltrate the Underworld with the power to transform into mythical creatures with supernatural strength.Level 1: Become a savage Werewolf and use teeth and nails to shred your enemies to pieces. Capture three of the elusive Spirit Balls and you&#x27;ll be transformed into a ferocious, fireball throwing Werewolf.Level 2: Take flight as Weredragon and use fiery force to fry the followers of Neff.Level 3: Creep across slippery crevasses inside a deep cavern as the crafty Werebear.Level 4: Stalk the gates of the Underworld fortress as a man-eating Weretiger, a predator with no pity.Level 5: Inside the inner-sanctum call on Golden Werewolf&#x27;s might to demolish Neff, the demon, forever.",
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/118-2.jpg",
         "platforms": {
             "c64": "",
             "amiga": "",
             "atarist": "",
             "spectrum": ""
         },
-        "updated_at": "2025-05-23T11:19:12.671Z"
+        "updated_at": "2025-05-23T21:53:23.744Z"
     },
     "turricaniithefinalfight": {
         "title": "Turrican II - The Final Fight",
@@ -423,12 +425,12 @@
     },
     "amcattackofthemutantcamels": {
         "title": "Attack of the Mutant Camels",
-        "description": "The player controls a small jetplane and has the task of killing giant yellow camels before they reach the home base. Doing so requires several dozens of shots. The camels retaliate by shooting fireballs from their mouth.Each camel required several shots to destroy; if a camel reached the base, the game was over. Once all camels on a level had been killed, the player had to survive a",
-        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_thumb/scr8r3.jpg",
+        "description": "The player controls a small jetplane and has the task of killing giant yellow camels before they reach the home base. Doing so requires several dozens of shots. The camels retaliate by shooting fireballs from their mouth.Each camel required several shots to destroy; if a camel reached the base, the game was over. Once all camels on a level had been killed, the player had to survive a &quot;hyperspace&quot; sequence which required avoiding high-speed missiles. Upon successful completion, the next level presented a new wave of camels, with slightly harder gameplay.",
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/6385-1.jpg",
         "platforms": {
             "c64": ""
         },
-        "updated_at": "2025-05-23T11:14:29.490Z"
+        "updated_at": "2025-05-23T21:53:46.559Z"
     },
     "spyvsspy": {
         "title": "Spy vs Spy",
@@ -574,10 +576,13 @@
         }
     },
     "alteregofemaleversion": {
-        "title": "Alter Ego",
+        "title": "Alter Ego - Female Version",
         "description": "Alter Ego - Female Version is a text-based life simulation game released in 1986, where players guide a female character through various life stages by making choices that shape her personality and experiences.",
-        "cover_image_path": "",
-        "platforms": {}
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/29825-1.jpg",
+        "platforms": {
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T21:52:13.277Z"
     },
     "zorkquestiassaultonegrethcastle": {
         "title": "Zork Quest I - Assault on Egreth Castle",
@@ -626,12 +631,12 @@
     },
     "californiagames": {
         "title": "California Games",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "description": "A bundle containing many versions of California Games.",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_cover_big/co702w.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/California Games (1227).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T18:57:12.605Z"
     },
     "worldgames": {
         "title": "World Games",
@@ -830,13 +835,13 @@
         }
     },
     "boulderdashdeluxekit": {
-        "title": "Boulder Dash Deluxe Kit",
-        "overview": "",
-        "description": "",
-        "cover_image_path": "",
+        "title": "Boulder Dash Deluxe",
+        "description": "Boulder Dash® Deluxe takes you, together with the game character called Rockford™ into a myriad of new and exciting challenges. Dig through spectacular caves with 3D elements; avoid falling boulders; collect valuable gems and avoid nefarious enemies along the way. Discover treasure chests with rare collectibles and strong power-ups. Boulder Dash Deluxe includes 180 new exciting and unique levels. Plus, dig through 9 brand new worlds with high-end graphics and their own textures, dive into the Classic 1984 World with its caves or enjoy The Liepa World; a set consisting of 20 of the most mind-bending levels designed by the creator of the original 1984 Boulder Dash version and video game legend Peter Liepa. And, if that’s not enough, you will be challenged by 15 new special opponents ranging from Octopus to Snow Tiger. Boulder Dash® Deluxe truly is the pinnacle in 35+ years of Boulder Dash®! While providing classic Boulder Dash® core gameplay mechanics and features, Boulder Dash® Deluxe introduces exciting new elements such as diagonal movement, which opens up new and intriguing puzzles while creating a very different and organic look for the caves. On top of legendary previous versions, Boulder Dash® Deluxe features include:180 all-new levels with advanced features!Includes 20 levels from the original 1984 Boulder Dash version9 exciting, brand spanking new worlds with high-end graphics, having their own, unique textures, go to Macmarnua Sea or Urath Castle – or back in time to the Classic 1984 World with its caves15 new special opponents like Octopus, Shark Polar bear, and Snow tiger will keep your mind agile and you on your toesThe Liepa World, a premium world by videogame legend Peter Liepa who returned to the game he created 35 years ago with 20 of the most mind-bending levels yet!Full character customization of your game character Rockford™, e.g. shirt, pants, shoes, eyewear, headgear, hair, and facial hairLanguages:  English, Spanish, French, German, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Traditional Chinese!",
+        "cover_image_path": "https://cdn.thegamesdb.net/images/large/boxart/front/104435-1.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Boulder Dash Deluxe Kit (1009).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T21:54:24.901Z"
     },
     "sentinelthe": {
         "title": "Sentinel, The",
@@ -875,12 +880,12 @@
     },
     "bubblebobble": {
         "title": "Bubble Bobble",
-        "overview": "",
         "description": "",
-        "cover_image_path": "",
+        "cover_image_path": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/scvg0r.jpg",
         "platforms": {
-            "c64": "/home/gdo/ROMs/c64/Bubble Bobble (1138).zip"
-        }
+            "c64": ""
+        },
+        "updated_at": "2025-05-23T18:56:04.879Z"
     },
     "manicminer": {
         "title": "Manic Miner",

@@ -1,7 +1,7 @@
 const NodeCache = require('node-cache');
 const fs = require('fs').promises;
 const path = require('path');
-const igdb = require('../igdb');
+const igdb = require('../middleware/igdb');
 const rateLimit = require('express-rate-limit');
 const { AppError } = require('../middleware/errorHandler');
 

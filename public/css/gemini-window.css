@@ -1,0 +1,94 @@
+.gemini-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  background-color: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+.gemini-window-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #0f172a;
+  border-bottom: 1px solid #475569;
+  border-radius: 8px 8px 0 0;
+}
+
+.gemini-window-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #3b82f6;
+}
+
+.gemini-window-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.gemini-window-close:hover {
+  color: #f1f5f9;
+}
+
+.gemini-window-content {
+  padding: 16px;
+}
+
+.gemini-window-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  color: #f1f5f9;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 16px;
+}
+
+.gemini-window-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.gemini-window-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+.gemini-window-transfer {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.gemini-window-transfer:hover {
+  background-color: #2563eb;
+}
+
+.gemini-window-cancel {
+  background-color: #475569;
+  color: white;
+}
+
+.gemini-window-cancel:hover {
+  background-color: #334155;
+}

@@ -1,11 +1,515 @@
 <!DOCTYPE html>
-<!-- This file is intentionally left blank. The default route now serves games.html. -->
 <html lang="en">
 <head>
-  <meta http-equiv="refresh" content="0; url=games.html">
-  <title>Redirecting...</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroNode - Games</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00ffff',
+            secondary: '#4cc9f0',
+            accent: '#f72585',
+            dark: '#0f0f1b',
+            card: '#1a1a2e',
+            sidebar: '#16213e',
+            border: '#4361ee',
+          },
+          fontSize: {
+            base: '1.05rem',
+          },
+          fontFamily: {
+            sans: ['Roboto', 'system-ui', 'sans-serif'],
+            heading: ['Orbitron', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/css/retro-theme.css">
+  <link rel="stylesheet" href="/css/gemini-window.css">
+  <link rel="stylesheet" href="/css/games-db-panel.css">
 </head>
 <body>
-  <p>Redirecting to <a href="games.html">games.html</a>...</p>
+  <div class="flex min-h-screen">
+    <!-- Left Sidebar -->
+    <div class="w-64 sidebar flex-shrink-0">
+      <!-- Logo/Header -->
+      <div class="p-6 border-b border-border">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-primary font-heading glow-text mb-0">RetroNode</h1>
+          <p class="text-[10px] text-gray-500 -mt-2">Manage your retro games and ROMs</p>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Navigation</h2>
+        <ul class="space-y-2">
+          <li>
+            <a href="/" class="flex items-center px-3 py-2 text-primary active rounded-md">
+              <i class="fas fa-gamepad mr-3"></i>
+              <span>Games</span>
+            </a>
+          </li>
+          <li>
+            <a href="/platforms.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-microchip mr-3"></i>
+              <span>Platforms</span>
+            </a>
+          </li>
+          <li>
+            <a href="/emulators.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-desktop mr-3"></i>
+              <span>Emulators</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Filters -->
+      <div class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Filters</h2>
+        
+        <!-- Search -->
+        <div class="mb-4">
+          <label for="searchInput" class="block text-sm font-medium text-body mb-1">Search</label>
+          <input id="searchInput" type="text" class="form-input" placeholder="Search games...">
+        </div>
+        
+        <!-- Platform Filter -->
+        <div class="mb-4">
+          <label for="platformFilter" class="block text-sm font-medium text-body mb-1">Platform</label>
+          <select id="platformFilter" class="form-select">
+            <option value="">All Platforms</option>
+          </select>
+        </div>
+        
+        <!-- Sort Options -->
+        <div class="mb-4">
+          <label for="sortOption" class="block text-sm font-medium text-body mb-1">Sort By</label>
+          <select id="sortOption" class="form-select">
+            <option value="title_asc">Title (A-Z)</option>
+            <option value="title_desc">Title (Z-A)</option>
+            <option value="platform_asc">Platform (A-Z)</option>
+            <option value="platform_desc">Platform (Z-A)</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Stats -->
+      <div class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Stats</h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-body">Total Games:</span>
+            <span id="totalGamesCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Platforms:</span>
+            <span id="totalPlatformsCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Emulators:</span>
+            <span id="totalEmulatorsCount" class="text-primary font-medium">0</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Settings -->
+      <div class="p-4">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Settings</h2>
+        <ul class="space-y-2">
+          <li>
+            <button id="apiKeysBtn" class="flex items-center w-full px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-key mr-3"></i>
+              <span>API Keys</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 p-6 overflow-auto">
+      <div class="flex justify-between items-center mb-6">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-primary font-heading glow-text mb-0">My Games</h1>
+          <p class="text-[10px] text-gray-500 -mt-2">Browse my retro games collection</p>
+        </div>
+        <button id="addGameBtn" class="btn-primary flex items-center">
+          <i class="fas fa-plus mr-2"></i>
+          <span>Add Game</span>
+        </button>
+      </div>
+      
+      <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
+        <!-- Games will be loaded here -->
+        <div class="game-card">
+          <h3 class="game-card-title font-heading">Loading...</h3>
+          <div class="game-card-image">
+            <img src="https://via.placeholder.com/300x450" alt="Loading..." class="w-full h-auto">
+          </div>
+          <div class="game-card-content">
+            <p class="text-body text-sm line-clamp-3">Loading...</p>
+            <div class="game-card-platform">Loading...</div>
+          </div>
+          <div class="game-card-actions">
+            <button title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button title="Delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Game Modal -->
+  <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+    <div class="modal-content w-full max-w-md mx-4 glow-border">
+      <div class="modal-header flex items-center justify-between p-4">
+        <h3 id="gameModalTitle" class="text-xl font-medium font-heading">Add Game</h3>
+        <button id="closeGameModal" class="text-secondary hover:text-primary">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <form id="gameForm">
+          <input type="hidden" id="gameId">
+          <div class="mb-4">
+            <label for="gameTitle" class="block text-sm font-medium text-body mb-1">Title</label>
+            <input id="gameTitle" type="text" class="form-input" placeholder="Game title" required>
+          </div>
+          <div class="mb-4">
+            <label for="gameDescription" class="block text-sm font-medium text-body mb-1">Description</label>
+            <textarea id="gameDescription" class="form-input" rows="3" placeholder="Game description"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="gameCover" class="block text-sm font-medium text-body mb-1">Cover Image URL</label>
+            <input id="gameCover" type="url" class="form-input" placeholder="https://example.com/image.jpg">
+          </div>
+          <div class="mb-4">
+            <label for="gamePlatforms" class="block text-sm font-medium text-body mb-1">Platforms</label>
+            <select id="gamePlatforms" multiple class="form-select" style="height: 120px">
+              <!-- Platforms will be loaded here -->
+            </select>
+          </div>
+          <div class="mb-4">
+            <label for="gameRomPath" class="block text-sm font-medium text-body mb-1">ROM Path</label>
+            <input id="gameRomPath" type="text" class="form-input" placeholder="Path to ROM file">
+          </div>
+          <div class="mt-6 space-y-4">
+            <button id="searchGameDbBtn" type="button" class="w-full btn-primary flex items-center justify-center">
+              <i class="fas fa-database mr-2"></i>Search Game Database
+            </button>
+            <button id="generateDescriptionBtn" type="button" class="w-full bg-accent hover:bg-accent/80 text-white px-4 py-2 rounded-md flex items-center justify-center">
+              <i class="fas fa-robot mr-2"></i>Generate Description
+            </button>
+            <button id="generateDeepseekBtn" type="button" class="w-full bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md flex items-center justify-center">
+              <i class="fas fa-brain mr-2"></i>Generate with GPT41
+            </button>
+          </div>
+          <div id="gameDbResults" class="mt-4 bg-card rounded-md hidden"></div>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button type="button" id="cancelGameBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- API Keys Modal -->
+  <div id="apiKeysModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+    <div class="modal-content w-full max-w-md mx-4 glow-border">
+      <div class="modal-header flex items-center justify-between p-4">
+        <h3 class="text-xl font-medium font-heading">API Keys</h3>
+        <button id="closeApiKeysModal" class="text-secondary hover:text-primary">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <form id="apiKeysForm">
+          <div class="mb-6">
+            <label for="thegamesdbApiKey" class="block text-sm font-medium text-body mb-1">TheGamesDB API Key</label>
+            <div class="flex">
+              <input id="thegamesdbApiKey" type="password" class="form-input rounded-r-none" placeholder="Enter API key">
+              <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-6">
+            <label for="geminiApiKey" class="block text-sm font-medium text-body mb-1">Gemini API Key</label>
+            <div class="flex">
+              <input id="geminiApiKey" type="password" class="form-input rounded-r-none" placeholder="Enter API key">
+              <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-6">
+            <label for="githubPatToken" class="block text-sm font-medium text-body mb-1">GitHub PAT Token</label>
+            <div class="flex">
+              <input id="githubPatToken" type="password" class="form-input rounded-r-none" placeholder="Enter GitHub PAT token">
+              <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button type="button" id="cancelApiKeysBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/gemini-window.js"></script>
+  <script src="/js/games-db-panel.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    // Game form handling
+    document.getElementById('gameForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const gameId = document.getElementById('gameId').value;
+      const title = document.getElementById('gameTitle').value;
+      const description = document.getElementById('gameDescription').value;
+      const coverImagePath = document.getElementById('gameCover').value;
+      const platformSelect = document.getElementById('gamePlatforms');
+      const romPath = document.getElementById('gameRomPath').value;
+      
+      console.log("Submitting form with ROM path:", romPath);
+      
+      // Get selected platforms
+      const selectedPlatforms = Array.from(platformSelect.selectedOptions).reduce((obj, option) => {
+        obj[option.value] = romPath;
+        return obj;
+      }, {});
+      
+      const gameData = {
+        title,
+        description,
+        cover_image_path: coverImagePath,
+        platforms: selectedPlatforms
+      };
+      
+      // Determine if this is an add or edit operation
+      const method = gameId ? 'PUT' : 'POST';
+      const url = gameId ? `/api/games/${gameId}` : '/api/games';
+      
+      fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(gameData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Close modal and reload games
+          document.getElementById('gameModal').classList.add('hidden');
+          loadGames();
+        } else {
+          alert(data.message || 'Failed to save game');
+        }
+      })
+      .catch(error => {
+        console.error('Error saving game:', error);
+        alert('Error saving game');
+      });
+    });
+    
+    // Close game modal
+    document.getElementById('closeGameModal').addEventListener('click', function() {
+      document.getElementById('gameModal').classList.add('hidden');
+    });
+    
+    document.getElementById('cancelGameBtn').addEventListener('click', function() {
+      document.getElementById('gameModal').classList.add('hidden');
+    });
+    
+    // API Keys modal handling
+    document.getElementById('apiKeysBtn').addEventListener('click', function() {
+      // Load current API keys
+      fetch('/api/settings/api-keys')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('thegamesdbApiKey').value = data.thegamesdbApiKey || '';
+            document.getElementById('geminiApiKey').value = data.geminiApiKey || '';
+            document.getElementById('githubPatToken').value = data.githubPatToken || '';
+          }
+          document.getElementById('apiKeysModal').classList.remove('hidden');
+        })
+        .catch(error => {
+          console.error('Error loading API keys:', error);
+          document.getElementById('apiKeysModal').classList.remove('hidden');
+        });
+    });
+    
+    document.getElementById('closeApiKeysModal').addEventListener('click', function() {
+      document.getElementById('apiKeysModal').classList.add('hidden');
+    });
+    
+    document.getElementById('cancelApiKeysBtn').addEventListener('click', function() {
+      document.getElementById('apiKeysModal').classList.add('hidden');
+    });
+    
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+      button.addEventListener('click', function() {
+        const input = this.previousElementSibling;
+        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+        input.setAttribute('type', type);
+        
+        // Toggle icon
+        const icon = this.querySelector('i');
+        if (type === 'password') {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        } else {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        }
+      });
+    });
+    
+    // API Keys form handling
+    document.getElementById('apiKeysForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const thegamesdbApiKey = document.getElementById('thegamesdbApiKey').value;
+      const geminiApiKey = document.getElementById('geminiApiKey').value;
+      const githubPatToken = document.getElementById('githubPatToken').value;
+      
+      fetch('/api/settings/api-keys', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          thegamesdbApiKey,
+          geminiApiKey,
+          githubPatToken
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('apiKeysModal').classList.add('hidden');
+          alert('API keys saved successfully');
+        } else {
+          alert(data.message || 'Failed to save API keys');
+        }
+      })
+      .catch(error => {
+        console.error('Error saving API keys:', error);
+        alert('Error saving API keys');
+      });
+    });
+    
+    // Search game database
+    document.getElementById('searchGameDbBtn').addEventListener('click', function() {
+      const titleField = document.getElementById('gameTitle');
+      const descriptionField = document.getElementById('gameDescription');
+      const coverField = document.getElementById('gameCover');
+      
+      // Open the GamesDB panel with target fields
+      gamesDBPanel.show({
+        title: titleField,
+        description: descriptionField,
+        cover: coverField
+      });
+    });
+    
+    // Generate description with Gemini
+    document.getElementById('generateDescriptionBtn').addEventListener('click', async function() {
+      const title = document.getElementById('gameTitle').value.trim();
+      
+      if (!title) {
+        alert('Please enter a game title first');
+        return;
+      }
+      
+      const descriptionField = document.getElementById('gameDescription');
+      const originalText = descriptionField.value;
+      descriptionField.value = 'Generating description...';
+      descriptionField.disabled = true;
+      
+      try {
+        const result = await generateGameDescription(title);
+        
+        if (result.success) {
+          // Show the Gemini window with the generated content
+          geminiWindow.show(result.description, descriptionField);
+          descriptionField.value = originalText;
+        } else {
+          descriptionField.value = originalText;
+          alert('Failed to generate description: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error fetching Gemini game info:', error);
+        descriptionField.value = originalText;
+        alert('Error generating description');
+      } finally {
+        descriptionField.disabled = false;
+      }
+    });
+    
+    // Generate description with GPT41
+    document.getElementById('generateDeepseekBtn').addEventListener('click', async function() {
+      const title = document.getElementById('gameTitle').value.trim();
+      
+      if (!title) {
+        alert('Please enter a game title first');
+        return;
+      }
+      
+      const descriptionField = document.getElementById('gameDescription');
+      const originalText = descriptionField.value;
+      descriptionField.value = 'Generating description with GPT41...';
+      descriptionField.disabled = true;
+      
+      try {
+        const result = await fetch('/api/github/deepseek', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt: `Write a detailed and engaging description for the video game "${title}". Include information about gameplay, story, and reception. Keep it under 200 words.`
+          })
+        }).then(res => res.json());
+        
+        if (result.success) {
+          // Show the generated content
+          geminiWindow.show(result.description, descriptionField);
+          descriptionField.value = originalText;
+        } else {
+          descriptionField.value = originalText;
+          alert('Failed to generate description: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error fetching GPT41 game info:', error);
+        descriptionField.value = originalText;
+        alert('Error generating description with GPT41');
+      } finally {
+        descriptionField.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,82 +1,14 @@
 {
   "c64": {
     "name": "Commodore 64",
-    "short_name": "C64",
     "manufacturer": "Commodore",
-    "release_year": 1982,
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Commodore-64-Computer-FL.jpg",
-    "description": "The Commodore 64 is an 8-bit home computer introduced in 1982, known for its vast game library and iconic SID sound chip.",
-    "emulators": [
-      {
-        "emulator_id": "vice_c64",
-        "rom_path_template": "/path/to/roms/c64/{game_slug}.d64",
-        "launch_args": []
-      }
-    ]
+    "release_year": "1982",
+    "description": "The Commodore 64 is an 8-bit home computer introduced in January 1982 by Commodore International. It has been listed in the Guinness World Records as the highest-selling single computer model of all time."
   },
   "amiga": {
-    "name": "Commodore Amiga",
-    "short_name": "Amiga",
+    "name": "Amiga",
     "manufacturer": "Commodore",
-    "release_year": 1985,
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Amiga500_system.jpg",
-    "description": "The Commodore Amiga is a family of personal computers released in the mid-1980s, famous for its advanced graphics and audio capabilities.",
-    "emulators": [
-      {
-        "emulator_id": "fs-uae",
-        "rom_path_template": "/path/to/roms/amiga/{game_slug}.adf",
-        "launch_args": ["-cdrom_0", "/path/to/kickstart.rom"]
-      }
-    ]
-  },
-  "atarist": {
-    "name": "Atari ST",
-    "short_name": "Atari ST",
-    "manufacturer": "Atari",
-    "release_year": 1985,
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Atari_1040STf.jpg",
-    "description": "The Atari ST is a line of home computers from Atari Corporation, popular for gaming and music production in the late 1980s.",
-    "emulators": [
-      {
-        "emulator_id": "hatari",
-        "rom_path_template": "/path/to/roms/atari_st/{game_slug}.st",
-        "launch_args": []
-      }
-    ]
-  },
-  "spectrum": {
-    "name": "Sinclair ZX Spectrum",
-    "short_name": "Spectrum",
-    "manufacturer": "Sinclair",
-    "release_year": 1982,
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Sinclair-ZX_Spectrum-48K.jpg",
-    "description": "The Sinclair ZX Spectrum is an 8-bit personal home computer released in the United Kingdom in 1982, notable for its role in the British gaming industry.",
-    "emulators": [
-      {
-        "emulator_id": "fuse",
-        "rom_path_template": "/path/to/roms/spectrum/{game_slug}.tap",
-        "launch_args": []
-      }
-    ]
-  },
-  "nes": {
-    "name": "Nintendo Entertainment System",
-    "short_name": "NES",
-    "manufacturer": "Nintendo",
-    "release_year": 1983,
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/NES-Console-Set.png",
-    "description": "The Nintendo Entertainment System (NES) is an 8-bit third-generation home video game console that helped revitalize the video game industry in the 1980s.",
-    "emulators": [
-      {
-        "emulator_id": "fceux",
-        "rom_path_template": "/path/to/roms/nes/{game_slug}.nes",
-        "launch_args": []
-      },
-      {
-        "emulator_id": "retroarch",
-        "rom_path_template": "/path/to/roms/nes/{game_slug}.nes",
-        "launch_args": ["-L", "/path/to/cores/fceumm_libretro.so"]
-      }
-    ]
+    "release_year": "1985",
+    "description": "The Amiga is a family of personal computers introduced by Commodore in 1985. The original model was part of a wave of 16- and 32-bit computers that featured 256 KB or more of RAM, mouse-based GUIs, and significantly improved graphics and audio over 8-bit systems."
   }
 }

@@ -1,0 +1,200 @@
+.games-db-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 500px;
+  height: 100vh;
+  background-color: #1e293b;
+  border-left: 1px solid #475569;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  font-family: 'Roboto', sans-serif;
+}
+
+.games-db-panel.open {
+  transform: translateX(0);
+}
+
+.games-db-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #0f172a;
+  border-bottom: 1px solid #475569;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.games-db-panel-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #3b82f6;
+}
+
+.games-db-panel-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.games-db-panel-close:hover {
+  color: #f1f5f9;
+}
+
+.games-db-panel-content {
+  padding: 16px;
+}
+
+.games-db-panel-search {
+  margin-bottom: 16px;
+}
+
+.games-db-panel-search-input {
+  width: 100%;
+  padding: 10px;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  color: #f1f5f9;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+.games-db-panel-search-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+}
+
+.games-db-panel-search-button:hover {
+  background-color: #2563eb;
+}
+
+.games-db-panel-results {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.games-db-card {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.games-db-card:hover {
+  transform: translateY(-4px);
+  border-color: #3b82f6;
+}
+
+.games-db-card-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #3b82f6;
+  text-align: center;
+  padding: 12px;
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Roboto', sans-serif;
+}
+
+.games-db-card-content {
+  display: flex;
+  padding: 12px;
+}
+
+.games-db-card-image {
+  width: 80px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #1e293b;
+  flex-shrink: 0;
+}
+
+.games-db-card-details {
+  margin-left: 12px;
+  flex-grow: 1;
+}
+
+.games-db-card-platform {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.games-db-card-release {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.games-db-card-overview {
+  font-size: 14px;
+  color: #cbd5e1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.games-db-card-select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background-color: #3b82f6;
+  border: none;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  margin-top: auto;
+  font-family: 'Roboto', sans-serif;
+}
+
+.games-db-card-select:hover {
+  background-color: #2563eb;
+}
+
+.games-db-panel-loading {
+  text-align: center;
+  padding: 20px;
+  color: #94a3b8;
+}
+
+.games-db-panel-error {
+  color: #ef4444;
+  padding: 12px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.games-db-panel-no-results {
+  text-align: center;
+  padding: 20px;
+  color: #94a3b8;
+}

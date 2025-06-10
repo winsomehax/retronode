@@ -1,0 +1,495 @@
+Example query to thegamesdb.net
+
+https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=THEGAMESDB_API_KEY&name=zelda&fields=valid%20%2C%20delimited%20options%3A%20players%2C%20publishers%2C%20genres%2C%20overview%2C%20last_updated%2C%20rating%2C%20platform%2C%20coop%2C%20youtube%2C%20os%2C%20processor%2C%20ram%2C%20hdd%2C%20video%2C%20sound%2C%20alternates&include=boxart%2C%20platform
+
+Response
+
+{
+  "code": 200,
+  "status": "Success",
+  "data": {
+    "count": 20,
+    "games": [
+      {
+        "id": 108139,
+        "game_title": "The Legend of Zelda: A Link to the Past - Master Quest",
+        "release_date": "2018-02-01",
+        "platform": 6,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": [
+          142
+        ]
+      },
+      {
+        "id": 129885,
+        "game_title": "Zelda: The Legend of Link",
+        "release_date": "2016-07-18",
+        "platform": 7,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": null
+      },
+      {
+        "id": 40126,
+        "game_title": "The Legend of Zelda",
+        "release_date": "1989-08-26",
+        "platform": 4950,
+        "region_id": 9,
+        "country_id": 50,
+        "developers": [
+          6051
+        ]
+      },
+      {
+        "id": 126191,
+        "game_title": "Zelda II: The Adventure of Link (Nintendo Switch Online)",
+        "release_date": "2019-01-16",
+        "platform": 4971,
+        "region_id": 9,
+        "country_id": 50,
+        "developers": [
+          6055
+        ]
+      },
+      {
+        "id": 61737,
+        "game_title": "Zelda II: The Adventure of Link [Classic Series]",
+        "release_date": "1988-12-01",
+        "platform": 7,
+        "region_id": 2,
+        "country_id": 0,
+        "developers": [
+          6037
+        ]
+      },
+      {
+        "id": 49433,
+        "game_title": "Zelda II: The Adventure of Link",
+        "release_date": "2013-09-12",
+        "platform": 38,
+        "region_id": 1,
+        "country_id": 0,
+        "developers": [
+          6037
+        ]
+      },
+      {
+        "id": 67886,
+        "game_title": "Zelda II - The Adventure of Link",
+        "release_date": "2012-11-22",
+        "platform": 4912,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": [
+          6037
+        ]
+      },
+      {
+        "id": 96036,
+        "game_title": "Zelda 2 Redux",
+        "release_date": "1970-01-01",
+        "platform": 7,
+        "region_id": 1,
+        "country_id": 0,
+        "developers": null
+      },
+      {
+        "id": 81472,
+        "game_title": "The Legend of Zelda: A Link to the Past (MSU-1)",
+        "release_date": "2015-06-09",
+        "platform": 6,
+        "region_id": 0,
+        "country_id": 0,
+        "developers": [
+          6037
+        ]
+      },
+      {
+        "id": 66947,
+        "game_title": "Zelda 64: Dawn & Dusk",
+        "release_date": "2019-09-22",
+        "platform": 3,
+        "region_id": 0,
+        "country_id": 0,
+        "developers": [
+          6043
+        ]
+      },
+      {
+        "id": 89769,
+        "game_title": "Zelda Breath Of The Wild [First Print]",
+        "release_date": "2017-03-03",
+        "platform": 38,
+        "region_id": 2,
+        "country_id": 50,
+        "developers": [
+          6041
+        ]
+      },
+      {
+        "id": 82386,
+        "game_title": "The Legend of Zelda: Outlands",
+        "release_date": "2001-05-15",
+        "platform": 7,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": [
+          142
+        ]
+      },
+      {
+        "id": 80714,
+        "game_title": "Zelda Dream Hourglass",
+        "release_date": "2020-10-30",
+        "platform": 7,
+        "region_id": 0,
+        "country_id": 0,
+        "developers": null
+      },
+      {
+        "id": 130185,
+        "game_title": "The Legend of Zelda: Expansion Disk",
+        "release_date": "2021-12-24",
+        "platform": 3,
+        "region_id": 1,
+        "country_id": 50,
+        "developers": null
+      },
+      {
+        "id": 94998,
+        "game_title": "Zelda II: Amida's Curse",
+        "release_date": "2021-10-27",
+        "platform": 7,
+        "region_id": 1,
+        "country_id": 50,
+        "developers": null
+      },
+      {
+        "id": 129591,
+        "game_title": "Zelda II Resurrection of Ganon",
+        "release_date": "2021-01-17",
+        "platform": 7,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": null
+      },
+      {
+        "id": 107342,
+        "game_title": "Zelda II: The Nightmare of Ganon",
+        "release_date": "2018-02-05",
+        "platform": 7,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": [
+          142
+        ]
+      },
+      {
+        "id": 120384,
+        "game_title": "Zelda II: Boss Endurance",
+        "release_date": "2017-01-11",
+        "platform": 7,
+        "region_id": 2,
+        "country_id": 50,
+        "developers": null
+      },
+      {
+        "id": 110757,
+        "game_title": "Zelda II: Journey of a Day",
+        "release_date": "2013-08-07",
+        "platform": 7,
+        "region_id": 9,
+        "country_id": 0,
+        "developers": null
+      },
+      {
+        "id": 119523,
+        "game_title": "Zelda II: Ocarina of Time",
+        "release_date": "2022-05-13",
+        "platform": 7,
+        "region_id": 2,
+        "country_id": 50,
+        "developers": null
+      }
+    ]
+  },
+  "include": {
+    "boxart": {
+      "base_url": {
+        "original": "https://cdn.thegamesdb.net/images/original/",
+        "small": "https://cdn.thegamesdb.net/images/small/",
+        "thumb": "https://cdn.thegamesdb.net/images/thumb/",
+        "cropped_center_thumb": "https://cdn.thegamesdb.net/images/cropped_center_thumb/",
+        "medium": "https://cdn.thegamesdb.net/images/medium/",
+        "large": "https://cdn.thegamesdb.net/images/large/"
+      },
+      "data": {
+        "40126": [
+          {
+            "id": 110289,
+            "type": "boxart",
+            "side": "back",
+            "filename": "boxart/back/40126-1.jpg",
+            "resolution": "1280x720"
+          },
+          {
+            "id": 424871,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/40126-1.jpg",
+            "resolution": null
+          }
+        ],
+        "49433": [
+          {
+            "id": 126436,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/49433-1.png",
+            "resolution": "140x134"
+          }
+        ],
+        "61737": [
+          {
+            "id": 305778,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/61737-1.jpg",
+            "resolution": null
+          }
+        ],
+        "66947": [
+          {
+            "id": 218446,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/66947-1.jpg",
+            "resolution": null
+          }
+        ],
+        "67886": [
+          {
+            "id": 220211,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/67886-1.jpg",
+            "resolution": null
+          }
+        ],
+        "80714": [
+          {
+            "id": 261740,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/80714-1.jpg",
+            "resolution": null
+          }
+        ],
+        "81472": [
+          {
+            "id": 264871,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/81472-1.jpg",
+            "resolution": null
+          }
+        ],
+        "82386": [
+          {
+            "id": 384910,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/82386-1.jpg",
+            "resolution": null
+          }
+        ],
+        "89769": [
+          {
+            "id": 298498,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/89769-1.jpg",
+            "resolution": null
+          },
+          {
+            "id": 298499,
+            "type": "boxart",
+            "side": "back",
+            "filename": "boxart/back/89769-1.jpg",
+            "resolution": null
+          }
+        ],
+        "94998": [
+          {
+            "id": 320398,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/94998-1.jpg",
+            "resolution": null
+          }
+        ],
+        "96036": [
+          {
+            "id": 324824,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/96036-1.jpg",
+            "resolution": null
+          }
+        ],
+        "107342": [
+          {
+            "id": 450922,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/107342-1.jpg",
+            "resolution": null
+          }
+        ],
+        "108139": [
+          {
+            "id": 408045,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/108139-1.jpg",
+            "resolution": null
+          }
+        ],
+        "110757": [
+          {
+            "id": 379846,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/110757-1.jpg",
+            "resolution": null
+          },
+          {
+            "id": 379852,
+            "type": "boxart",
+            "side": "back",
+            "filename": "boxart/back/110757-1.jpg",
+            "resolution": null
+          }
+        ],
+        "119523": [
+          {
+            "id": 409331,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/119523-1.jpg",
+            "resolution": null
+          }
+        ],
+        "120384": [
+          {
+            "id": 413788,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/120384-1.jpg",
+            "resolution": null
+          }
+        ],
+        "126191": [
+          {
+            "id": 437621,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/126191-1.jpg",
+            "resolution": null
+          }
+        ],
+        "129591": [
+          {
+            "id": 451612,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/129591-1.jpg",
+            "resolution": null
+          }
+        ],
+        "129885": [
+          {
+            "id": 452902,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/129885-1.jpg",
+            "resolution": null
+          }
+        ],
+        "130185": [
+          {
+            "id": 456912,
+            "type": "boxart",
+            "side": "front",
+            "filename": "boxart/front/130185-1.jpg",
+            "resolution": null
+          }
+        ]
+      }
+    }
+  },
+  "pages": {
+    "previous": null,
+    "current": "https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=ab7ee8591b660ef9fbfde5e9d51db8e0ff867901c17a49350ed8e9b03fadd30d&name=zelda&fields=valid+%2C+delimited+options%3A+players%2C+publishers%2C+genres%2C+overview%2C+last_updated%2C+rating%2C+platform%2C+coop%2C+youtube%2C+os%2C+processor%2C+ram%2C+hdd%2C+video%2C+sound%2C+alternates&include=boxart%2C+platform&page=1",
+    "next": "https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=ab7ee8591b660ef9fbfde5e9d51db8e0ff867901c17a49350ed8e9b03fadd30d&name=zelda&fields=valid+%2C+delimited+options%3A+players%2C+publishers%2C+genres%2C+overview%2C+last_updated%2C+rating%2C+platform%2C+coop%2C+youtube%2C+os%2C+processor%2C+ram%2C+hdd%2C+video%2C+sound%2C+alternates&include=boxart%2C+platform&page=2"
+  },
+  "remaining_monthly_allowance": 2889,
+  "extra_allowance": 0,
+  "allowance_refresh_timer": 1228604
+}
+
+
+
+Example request to Gemini api
+
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=GEMINI_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
+
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "AI learns patterns from data to make predictions or decisions.\n"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "avgLogprobs": -0.061319728692372642
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 12,
+    "totalTokenCount": 20,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 8
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 12
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.0-flash",
+  "responseId": "IIlEaO_pBfuQ1PIPqNma8Aw"
+}

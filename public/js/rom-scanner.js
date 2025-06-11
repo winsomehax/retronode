@@ -7,7 +7,7 @@ class RomScanner {
     this.platformId = null;
     this.platformName = null;
     this.scanning = false;
-    this.batchSize = 10; // Process ROMs in batches of 10
+    this.batchSize = 20; // Process ROMs in batches of 20
     this.currentBatch = [];
     this.foundRoms = [];
     this.processedCount = 0;
@@ -112,6 +112,12 @@ class RomScanner {
       return;
     }
     
+    // Validate folder path format
+    if (!this.isValidPath(folderPath)) {
+      alert('Invalid folder path format. Please enter a valid path.');
+      return;
+    }
+    
     this.scanning = true;
     this.foundRoms = [];
     this.processedCount = 0;
@@ -142,6 +148,16 @@ class RomScanner {
     this.scanning = false;
   }
   
+  isValidPath(path) {
+    // Basic path validation
+    // Unix-like path: starts with / or ~ or .
+    // Windows path: starts with a drive letter followed by :\ or is a UNC path (\\server\share)
+    const unixPathPattern = /^(\/|~|\.)/;
+    const windowsPathPattern = /^([a-zA-Z]:\\|\\\\)/;
+    
+    return unixPathPattern.test(path) || windowsPathPattern.test(path);
+  }
+  
   async scanFolder(folderPath, extensions) {
     try {
       // Get all ROMs in the folder using the server endpoint
@@ -155,6 +171,11 @@ class RomScanner {
           extensions
         })
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Server error: ${response.status}`);
+      }
       
       const data = await response.json();
       
@@ -170,9 +191,9 @@ class RomScanner {
         return;
       }
       
-      // Process all ROMs in batches of 10
+      // Process all ROMs in batches of 20
       for (let i = 0; i < romList.length; i += this.batchSize) {
-        // Take a slice of 10 ROMs (or fewer for the last batch)
+        // Take a slice of 20 ROMs (or fewer for the last batch)
         const batch = romList.slice(i, i + this.batchSize);
         this.currentBatch = batch;
         
@@ -210,45 +231,67 @@ class RomScanner {
       this.currentBatch = [];
     } catch (error) {
       console.error('Error processing ROM batch:', error);
+      throw new Error(`Failed to process ROM batch: ${error.message}`);
     }
   }
   
   async identifyRomsWithGithubModels(romNames) {
-    // In a real implementation, this would send a request to the GitHub Models API
-    // The prompt would look like:
-    /*
-    You are the world's leading expert in identifying the name of a retro game from just the platform and rom name.
-    Below is a list of rom names. YOU MUST RETURN ONLY JSON.
-    The JSON should contain the full name of the game, a short description of the game, and a field called "success"
-    which is true or false denoting whether you succeeded in identifying that rom.
-    PLATFORM: ${this.platformName}
-    ROM: ${romNames[0]}
-    PLATFORM: ${this.platformName}
-    ROM: ${romNames[1]}
-    ...
-    */
-    
     console.log(`Identifying batch of ${romNames.length} ROMs for platform ${this.platformName}`);
     
-    // For this demo, we'll simulate the response
-    // In a real implementation, you would send a request to the GitHub Models API
-    
-    // Simulate a delay to represent API call time
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Process each ROM name
-    return romNames.map(romName => {
-      // Generate generic data for ROMs
-      const nameParts = romName.replace(/\.\w+$/, '').split(/[_\s\-\.]+/);
-      const formattedName = nameParts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+    try {
+      // Get the selected model from settings or default to GitHub
+      const modelPreference = localStorage.getItem('romIdentificationModel') || 'github';
       
-      return {
-        filename: romName,
-        name: formattedName,
-        description: `A ${this.platformName} game.`,
-        success: true
-      };
-    });
+      // Call the server API to identify ROMs using the selected model
+      const response = await fetch('/api/identify-roms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          platformName: this.platformName,
+          romNames: romNames,
+          model: modelPreference
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Server error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to identify ROMs');
+      }
+      
+      // Map the response data to include the filename
+      return romNames.map((romName, index) => {
+        // Get the identified game data or create a fallback
+        const gameData = result.data[index] || {};
+        
+        return {
+          filename: romName,
+          name: gameData.name || romName.replace(/\.\w+$/, '').replace(/[_\-\.]+/g, ' '),
+          description: gameData.description || `A ${this.platformName} game.`,
+          success: gameData.success || false
+        };
+      });
+    } catch (error) {
+      console.error('Error identifying ROMs:', error);
+      
+      // Fallback to basic identification if the API call fails
+      return romNames.map(romName => {
+        const simpleName = romName.replace(/\.\w+$/, '').replace(/[_\-\.]+/g, ' ');
+        return {
+          filename: romName,
+          name: simpleName,
+          description: `A ${this.platformName} game.`,
+          success: false
+        };
+      });
+    }
   }
   
   updateRomsList() {
@@ -297,9 +340,8 @@ class RomScanner {
     
     try {
       // Import each ROM
-      for (const rom of selectedRoms) {
-        await this.importRom(rom);
-      }
+      const importPromises = selectedRoms.map(rom => this.importRom(rom));
+      await Promise.all(importPromises);
       
       // Show success message
       alert(`Successfully imported ${selectedRoms.length} ROMs`);
@@ -307,9 +349,14 @@ class RomScanner {
       // Close the modal
       this.hide();
       
-      // Reload games to show the new ones
+      // Reload games and update stats
       if (typeof loadGames === 'function') {
         loadGames();
+      }
+      
+      // Update stats immediately
+      if (typeof updateStats === 'function') {
+        updateStats();
       }
     } catch (error) {
       console.error('Error importing ROMs:', error);
@@ -330,22 +377,32 @@ class RomScanner {
       }
     };
     
-    // Send the game data to the server
-    const response = await fetch('/api/games', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(gameData)
-    });
-    
-    const data = await response.json();
-    
-    if (!data.success) {
-      throw new Error(data.message || 'Failed to import ROM');
+    try {
+      // Send the game data to the server
+      const response = await fetch('/api/games', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(gameData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Server error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to import ROM');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error(`Error importing ROM ${rom.filename}:`, error);
+      throw new Error(`Failed to import ${rom.name}: ${error.message}`);
     }
-    
-    return data;
   }
   
   show(platformId, platformName) {

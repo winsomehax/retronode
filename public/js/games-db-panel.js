@@ -1,70 +1,12 @@
 // TheGamesDB Panel Manager
-
-class GamesDBPanel {
+class GamesDBPanel extends ApiPanel {
   constructor() {
-    this.createPanel();
-    this.setupEventListeners();
-    this.gameData = null;
-    this.targetFields = {};
-  }
-  
-  createPanel() {
-    // Create panel if it doesn't exist
-    if (document.getElementById('gamesDBPanel')) {
-      return;
-    }
-    
-    const panelHTML = `
-      <div id="gamesDBPanel" class="games-db-panel">
-        <div class="games-db-panel-header">
-          <div class="games-db-panel-title">TheGamesDB Search Results</div>
-          <button class="games-db-panel-close" id="gamesDBPanelClose">&times;</button>
-        </div>
-        <div class="games-db-panel-content">
-          <div class="games-db-panel-search">
-            <input type="text" id="gamesDBSearchInput" class="games-db-panel-search-input" placeholder="Search for games...">
-            <button id="gamesDBSearchButton" class="games-db-panel-search-button">Search</button>
-          </div>
-          <div id="gamesDBPanelError" class="games-db-panel-error" style="display: none;"></div>
-          <div id="gamesDBPanelResults" class="games-db-panel-results">
-            <div class="games-db-panel-no-results">Enter a search term to find games</div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // Add panel to the document
-    const div = document.createElement('div');
-    div.innerHTML = panelHTML;
-    document.body.appendChild(div.firstElementChild);
-  }
-  
-  setupEventListeners() {
-    document.getElementById('gamesDBPanelClose').addEventListener('click', () => this.hide());
-    
-    document.getElementById('gamesDBSearchButton').addEventListener('click', () => {
-      const searchTerm = document.getElementById('gamesDBSearchInput').value.trim();
-      if (searchTerm) {
-        this.search(searchTerm);
-      }
-    });
-    
-    document.getElementById('gamesDBSearchInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        const searchTerm = e.target.value.trim();
-        if (searchTerm) {
-          this.search(searchTerm);
-        }
-      }
-    });
+    super('gamesDBPanel', 'TheGamesDB Search Results');
   }
   
   async search(term) {
-    const resultsContainer = document.getElementById('gamesDBPanelResults');
-    const errorContainer = document.getElementById('gamesDBPanelError');
-    
-    errorContainer.style.display = 'none';
-    resultsContainer.innerHTML = '<div class="games-db-panel-loading">Searching...</div>';
+    this.clearError();
+    this.showLoading();
     
     try {
       const response = await fetch(`/api/thegamesdb/games?name=${encodeURIComponent(term)}`);
@@ -77,18 +19,16 @@ class GamesDBPanel {
         };
         this.renderResults(this.gameData);
       } else {
-        resultsContainer.innerHTML = '<div class="games-db-panel-no-results">No games found matching your search</div>';
+        this.showNoResults();
       }
     } catch (error) {
       console.error('Error searching TheGamesDB:', error);
-      errorContainer.textContent = 'Error searching TheGamesDB. Please try again.';
-      errorContainer.style.display = 'block';
-      resultsContainer.innerHTML = '';
+      this.showError('Error searching TheGamesDB. Please try again.');
     }
   }
   
   renderResults(data) {
-    const resultsContainer = document.getElementById('gamesDBPanelResults');
+    const resultsContainer = document.getElementById(`${this.id}Results`);
     resultsContainer.innerHTML = '';
     
     data.data.games.forEach(game => {
@@ -168,42 +108,18 @@ class GamesDBPanel {
       }
     }
     
-    // Get platform name if available
-    let platformName = game.platform_name || '';
-    if (this.gameData.include && this.gameData.include.platform && this.gameData.include.platform[platformId]) {
-      platformName = this.gameData.include.platform[platformId].name;
-    }
+    // Create a game object with standardized properties
+    const gameData = {
+      name: game.game_title || game.name || '',
+      description: game.overview || '',
+      cover_url: boxartUrl || ''
+    };
     
     // Update form fields
-    if (this.targetFields.title) {
-      this.targetFields.title.value = game.game_title || game.name || '';
-    }
-    
-    if (this.targetFields.description) {
-      this.targetFields.description.value = game.overview || '';
-    }
-    
-    if (this.targetFields.cover) {
-      this.targetFields.cover.value = boxartUrl || '';
-    }
+    this.updateFormFields(gameData);
     
     // Hide panel
     this.hide();
-  }
-  
-  show(targetFields = {}) {
-    this.targetFields = targetFields;
-    document.getElementById('gamesDBPanel').classList.add('open');
-    
-    // Pre-fill search input if title is provided
-    if (targetFields.title && targetFields.title.value) {
-      document.getElementById('gamesDBSearchInput').value = targetFields.title.value;
-    }
-  }
-  
-  hide() {
-    document.getElementById('gamesDBPanel').classList.remove('open');
-    this.targetFields = {};
   }
 }
 

@@ -90,6 +90,7 @@ body {
   transition: transform 0.2s;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .game-card:hover {
@@ -145,6 +146,34 @@ body {
 
 .game-card-actions button.delete-game-btn:hover {
   color: rgba(247, 37, 133, 0.8);
+}
+
+/* Launch button */
+.launch-game-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-accent);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+}
+
+.launch-game-btn:hover {
+  background-color: rgba(247, 37, 133, 0.8);
+}
+
+.game-card:hover .launch-game-btn,
+.game-card:focus-within .launch-game-btn,
+.game-card.selected .launch-game-btn {
+  opacity: 1;
 }
 
 /* Modal */

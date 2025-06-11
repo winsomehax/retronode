@@ -1,0 +1,2 @@
+
+flatpak run net.sf.VICE -pal -autoload "/mnt/9a98a8c9-dbe4-4368-8316-aa10bd30c8d0/Games/Emul/c64/Uridium (8331)/URIDIUM1.D64" -keybuf "RUN\n"

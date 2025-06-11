@@ -80,6 +80,7 @@ function setupEventListeners() {
         // Check if the click was directly on the button
         const editBtn = event.target.closest('.edit-game-btn');
         const deleteBtn = event.target.closest('.delete-game-btn');
+        const launchBtn = event.target.closest('.launch-game-btn');
         
         if (editBtn) {
           const gameId = editBtn.getAttribute('data-id');
@@ -88,6 +89,9 @@ function setupEventListeners() {
         } else if (deleteBtn) {
           const gameId = deleteBtn.getAttribute('data-id');
           deleteGame(gameId);
+        } else if (launchBtn) {
+          const gameId = launchBtn.getAttribute('data-id');
+          launchGame(gameId);
         }
       }
     });
@@ -148,7 +152,12 @@ async function loadGames(search = '', platform = '') {
     const data = await response.json();
     
     if (data.success) {
-      renderGames(data.data);
+      // Convert object to array with IDs
+      const gamesArray = Object.entries(data.data).map(([id, game]) => ({
+        id,
+        ...game
+      }));
+      renderGames(gamesArray);
     } else {
       console.error('Error loading games:', data.message);
     }
@@ -279,6 +288,7 @@ function renderGames(games) {
                  class="w-full h-auto"
                  onerror="if (this.src !== 'https://via.placeholder.com/300x450') { this.src='https://via.placeholder.com/300x450'; }">
           </div>
+          <button class="launch-game-btn" data-id="${game.id}">Launch</button>
           <div class="p-3">
             <h3 class="game-card-title font-heading text-left mt-0 p-0">${game.title || 'No title'}</h3>
             <div class="game-card-platform text-sm text-secondary text-left mb-2">${platformNames}</div>
@@ -308,6 +318,11 @@ function renderGames(games) {
 
 // Fallback function if platform fetch fails
 function renderGamesWithoutPlatformNames(games, gamesGrid) {
+  if (!Array.isArray(games)) {
+    console.error('Expected games to be an array but got:', typeof games);
+    return;
+  }
+  
   games.forEach(game => {
     const card = document.createElement('div');
     card.className = 'game-card';
@@ -319,6 +334,7 @@ function renderGamesWithoutPlatformNames(games, gamesGrid) {
              class="w-full h-auto"
              onerror="if (this.src !== 'https://via.placeholder.com/300x450') { this.src='https://via.placeholder.com/300x450'; }">
       </div>
+      <button class="launch-game-btn" data-id="${game.id}">Launch</button>
       <div class="p-3">
         <h3 class="game-card-title font-heading text-left mt-0 p-0">${game.title || 'No title'}</h3>
         <div class="game-card-platform text-sm text-secondary text-left mb-2">${Object.keys(game.platforms || {}).join(', ') || 'No platforms'}</div>
@@ -620,6 +636,103 @@ function deleteGame(gameId) {
       alert('Error deleting game');
     });
   }
+}
+
+// Launch game
+function launchGame(gameId) {
+  // Get game details
+  fetch(`/api/games/${gameId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        const game = data.data;
+        
+        // Check if the game has platforms
+        if (!game.platforms || Object.keys(game.platforms).length === 0) {
+          alert('This game has no ROM path configured');
+          return;
+        }
+        
+        // Get the first platform and ROM path
+        const platformId = Object.keys(game.platforms)[0];
+        const romPath = game.platforms[platformId];
+        
+        // Get the platform details to find an emulator
+        fetch(`/api/platforms/${platformId}`)
+          .then(response => response.json())
+          .then(platformData => {
+            if (platformData.success) {
+              const platform = platformData.data;
+              
+              // Check if the platform has emulators
+              if (!platform.emulators || Object.keys(platform.emulators).length === 0) {
+                alert(`No emulators configured for ${platform.name}`);
+                return;
+              }
+              
+              // If there are multiple emulators, ask the user which one to use
+              let emulatorId;
+              if (Object.keys(platform.emulators).length > 1) {
+                const emulatorOptions = Object.entries(platform.emulators)
+                  .map(([id, emulator]) => `${id}: ${emulator.name}`)
+                  .join('\n');
+                
+                const selectedEmulator = prompt(
+                  `Select an emulator to launch ${game.title}:\n${emulatorOptions}`,
+                  Object.keys(platform.emulators)[0]
+                );
+                
+                if (!selectedEmulator || !platform.emulators[selectedEmulator]) {
+                  alert('Invalid emulator selected');
+                  return;
+                }
+                
+                emulatorId = selectedEmulator;
+              } else {
+                // Use the first emulator if there's only one
+                emulatorId = Object.keys(platform.emulators)[0];
+              }
+              
+              // Launch the game using the server endpoint
+              fetch('/api/launch-game', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  gameId,
+                  emulatorId
+                })
+              })
+              .then(response => response.json())
+              .then(launchData => {
+                if (launchData.success) {
+                  console.log(`Game launched: ${game.title}`);
+                  console.log(`Command: ${launchData.command}`);
+                } else {
+                  alert(`Failed to launch game: ${launchData.message}`);
+                }
+              })
+              .catch(error => {
+                console.error('Error launching game:', error);
+                alert('Error launching game');
+              });
+            } else {
+              alert('Failed to get platform details');
+            }
+          })
+          .catch(error => {
+            console.error('Error getting platform details:', error);
+            alert('Error launching game');
+          });
+      } else {
+        alert('Failed to get game details');
+      }
+    })
+    .catch(error => {
+      console.error('Error getting game details:', error);
+      alert('Error launching game');
+    });
 }
 
 // Update stats

@@ -7,7 +7,7 @@
     "emulators": {
       "vice": {
         "name": "VICE",
-        "command": "vice %ROM%",
+        "command": "flatpak run net.sf.VICE -pal -autoload %rom -keybuf 'RUN\n'",
         "description": "Versatile Commodore Emulator",
         "website": "https://vice-emu.sourceforge.io/"
       }

@@ -63,7 +63,12 @@
               <span>Platforms</span>
             </a>
           </li>
-
+          <li>
+            <a href="/settings.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-cog mr-3"></i>
+              <span>Settings</span>
+            </a>
+          </li>
         </ul>
       </nav>
       
@@ -281,7 +286,7 @@
     </div>
   </div>
 
-  <script src="/js/api.js"></script>
+  <script src="/js/api-panel.js"></script>
   <script src="/js/gemini-window.js"></script>
   <script src="/js/games-db-panel.js"></script>
   <script src="/js/rawg-panel.js"></script>
@@ -535,6 +540,28 @@
         descriptionField.disabled = false;
       }
     });
+    
+    // Helper function to generate game description with Gemini
+    async function generateGameDescription(title) {
+      try {
+        const response = await fetch('/api/gemini/game-description', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ title })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Error generating game description:', error);
+        throw error;
+      }
+    }
   </script>
 </body>
 </html>

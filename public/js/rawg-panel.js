@@ -1,70 +1,12 @@
 // RAWG.io Panel Manager
-
-class RawgPanel {
+class RawgPanel extends ApiPanel {
   constructor() {
-    this.createPanel();
-    this.setupEventListeners();
-    this.gameData = null;
-    this.targetFields = {};
-  }
-  
-  createPanel() {
-    // Create panel if it doesn't exist
-    if (document.getElementById('rawgPanel')) {
-      return;
-    }
-    
-    const panelHTML = `
-      <div id="rawgPanel" class="games-db-panel">
-        <div class="games-db-panel-header">
-          <div class="games-db-panel-title">RAWG.io Search Results</div>
-          <button class="games-db-panel-close" id="rawgPanelClose">&times;</button>
-        </div>
-        <div class="games-db-panel-content">
-          <div class="games-db-panel-search">
-            <input type="text" id="rawgSearchInput" class="games-db-panel-search-input" placeholder="Search for games...">
-            <button id="rawgSearchButton" class="games-db-panel-search-button">Search</button>
-          </div>
-          <div id="rawgPanelError" class="games-db-panel-error" style="display: none;"></div>
-          <div id="rawgPanelResults" class="games-db-panel-results">
-            <div class="games-db-panel-no-results">Enter a search term to find games</div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // Add panel to the document
-    const div = document.createElement('div');
-    div.innerHTML = panelHTML;
-    document.body.appendChild(div.firstElementChild);
-  }
-  
-  setupEventListeners() {
-    document.getElementById('rawgPanelClose').addEventListener('click', () => this.hide());
-    
-    document.getElementById('rawgSearchButton').addEventListener('click', () => {
-      const searchTerm = document.getElementById('rawgSearchInput').value.trim();
-      if (searchTerm) {
-        this.search(searchTerm);
-      }
-    });
-    
-    document.getElementById('rawgSearchInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        const searchTerm = e.target.value.trim();
-        if (searchTerm) {
-          this.search(searchTerm);
-        }
-      }
-    });
+    super('rawgPanel', 'RAWG.io Search Results');
   }
   
   async search(term) {
-    const resultsContainer = document.getElementById('rawgPanelResults');
-    const errorContainer = document.getElementById('rawgPanelError');
-    
-    errorContainer.style.display = 'none';
-    resultsContainer.innerHTML = '<div class="games-db-panel-loading">Searching...</div>';
+    this.clearError();
+    this.showLoading();
     
     try {
       const response = await fetch(`/api/rawg/games?name=${encodeURIComponent(term)}`);
@@ -74,18 +16,16 @@ class RawgPanel {
         this.gameData = data;
         this.renderResults(data.results);
       } else {
-        resultsContainer.innerHTML = '<div class="games-db-panel-no-results">No games found matching your search</div>';
+        this.showNoResults();
       }
     } catch (error) {
       console.error('Error searching RAWG.io:', error);
-      errorContainer.textContent = 'Error searching RAWG.io. Please try again.';
-      errorContainer.style.display = 'block';
-      resultsContainer.innerHTML = '';
+      this.showError('Error searching RAWG.io. Please try again.');
     }
   }
   
   renderResults(games) {
-    const resultsContainer = document.getElementById('rawgPanelResults');
+    const resultsContainer = document.getElementById(`${this.id}Results`);
     resultsContainer.innerHTML = '';
     
     games.forEach(game => {
@@ -125,43 +65,23 @@ class RawgPanel {
       if (data.success && data.data) {
         const game = data.data;
         
+        // Create a game object with standardized properties
+        const gameData = {
+          name: game.name || '',
+          description: game.description || '',
+          cover_url: game.background_image || ''
+        };
+        
         // Update form fields
-        if (this.targetFields.title) {
-          this.targetFields.title.value = game.name || '';
-        }
-        
-        if (this.targetFields.description) {
-          this.targetFields.description.value = game.description || '';
-        }
-        
-        if (this.targetFields.cover) {
-          this.targetFields.cover.value = game.background_image || '';
-        }
+        this.updateFormFields(gameData);
         
         // Hide panel
         this.hide();
       }
     } catch (error) {
       console.error('Error fetching game details from RAWG.io:', error);
-      const errorContainer = document.getElementById('rawgPanelError');
-      errorContainer.textContent = 'Error fetching game details. Please try again.';
-      errorContainer.style.display = 'block';
+      this.showError('Error fetching game details. Please try again.');
     }
-  }
-  
-  show(targetFields = {}) {
-    this.targetFields = targetFields;
-    document.getElementById('rawgPanel').classList.add('open');
-    
-    // Pre-fill search input if title is provided
-    if (targetFields.title && targetFields.title.value) {
-      document.getElementById('rawgSearchInput').value = targetFields.title.value;
-    }
-  }
-  
-  hide() {
-    document.getElementById('rawgPanel').classList.remove('open');
-    this.targetFields = {};
   }
 }
 

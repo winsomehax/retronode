@@ -1,487 +1,196 @@
-# RetroNode - Retro Gaming Platform Manager
+# RetroNode System Documentation
 
 ## Overview
-RetroNode is a comprehensive management system for retro gaming, allowing users to organize their game collections across multiple platforms and emulators. The system provides a unified interface for cataloging games, managing platform information, configuring emulators, and launching games through appropriate emulators.
+RetroNode is a web application for managing retro games, platforms, and emulators. It provides a user-friendly interface for cataloging games, organizing them by platform, and configuring emulators for each platform.
 
-## Architecture
+## System Architecture
 
-### Backend
-The backend is built using Node.js with a simple HTTP server implementation. The application avoids using Express.js due to compatibility issues with the path-to-regexp library, instead opting for the native http module.
-
-Key components:
-- HTTP server for handling API requests and serving static files
-- JSON file-based data storage for games, platforms, and emulators
-- API endpoints for CRUD operations on games, platforms, and emulators
-- External API proxies for TheGamesDB and Gemini AI integration
+### Backend (Node.js/Express)
+- **Server**: Express.js server handling API requests
+- **Data Storage**: JSON files for games, platforms, and emulators
+- **External APIs**: Integration with TheGamesDB, RAWG.io, Gemini AI, and GitHub GPT41
 
 ### Frontend
-The frontend is built using vanilla JavaScript with Tailwind CSS for styling. The application follows a single-page application (SPA) pattern with client-side routing.
+- **UI Framework**: HTML5 with Tailwind CSS for styling
+- **JavaScript**: Vanilla JS with modular components
+- **Icons**: Font Awesome
+- **Fonts**: Orbitron (headings), Roboto (body text)
 
-Key components:
-- Responsive UI with a left sidebar for navigation and filtering
-- Game grid display with cover images and details
-- Modal dialogs for adding/editing games, platforms, and emulators
-- Integration with external APIs for game data and AI-generated descriptions
+## Core Files
 
-## Data Structure
+### Server
+- `server.js`: Main Express server with API endpoints
+- `.env`: Environment variables for API keys
 
-### Platforms
-```json
-{
-  "platform_id": {
-    "name": "Platform Name",
-    "short_name": "Short Name",
-    "manufacturer": "Manufacturer Name",
-    "release_year": 1985,
-    "description": "Platform description text",
-    "image_url": "URL to platform image"
-  }
-}
-```
+### Data Storage
+- `data/games.json`: Game catalog in object format with game IDs as keys
+- `data/platforms.json`: Platform definitions
+- `data/emulators.json`: Emulator configurations organized by platform
 
-### Emulators
-```json
-{
-  "platform_id": [
-    {
-      "emulator_id": "emulator_name",
-      "name": "Emulator Display Name",
-      "command": "executable_command",
-      "args": ["--arg1", "--arg2"],
-      "description": "Emulator description",
-      "version": "1.0.0"
-    }
-  ]
-}
-```
-
-### Games
-```json
-[
-  {
-    "id": "unique_id",
-    "title": "Game Title",
-    "description": "Game description",
-    "cover_image_path": "URL to cover image",
-    "platforms": {
-      "platform_id": "path/to/rom.ext"
-    }
-  }
-]
-```
+### Frontend
+- `public/index.html`: Main games page
+- `public/platforms.html`: Platforms management page
+- `public/emulators.html`: Emulators overview page
+- `public/js/app.js`: Core application logic
+- `public/js/emulator-modal.js`: Emulator management modal
+- `public/js/games-db-panel.js`: TheGamesDB search panel
+- `public/js/rawg-panel.js`: RAWG.io search panel
+- `public/js/gemini-window.js`: Gemini AI integration
+- `public/css/retro-theme.css`: Main styling
 
 ## API Endpoints
 
-### Games API
-- `GET /api/games` - List all games with optional filtering and pagination
-  - Query parameters:
-    - `search`: Filter games by title or description
-    - `platform`: Filter games by platform ID
-    - `page`: Page number for pagination
-    - `limit`: Number of items per page
-  - Response: `{ success: true, data: [...games], totalItems, currentPage, totalPages }`
+### Games
+- `GET /api/games`: List all games with optional filtering
+- `GET /api/games/:id`: Get a specific game
+- `POST /api/games`: Add a new game
+- `PUT /api/games/:id`: Update a game
+- `DELETE /api/games/:id`: Delete a game
 
-- `GET /api/games/:gameId` - Get a specific game by ID
-  - Response: `{ success: true, data: game }`
+### Platforms
+- `GET /api/platforms`: List all platforms
+- `GET /api/platforms/:id`: Get a specific platform
+- `POST /api/platforms`: Add a new platform
+- `PUT /api/platforms/:id`: Update a platform
+- `DELETE /api/platforms/:id`: Delete a platform
 
-- `POST /api/games` - Create a new game
-  - Request body: `{ title, description, cover_image_path, platforms }`
-  - Response: `{ success: true, data: newGame }`
+### Emulators
+- `GET /api/emulators`: List all emulators
+- `GET /api/emulators/:platformId`: List emulators for a platform
+- `POST /api/emulators`: Add a new emulator
+- `PUT /api/emulators/:platformId/:emulatorId`: Update an emulator
+- `DELETE /api/emulators/:platformId/:emulatorId`: Delete an emulator
 
-- `PUT /api/games/:gameId` - Update an existing game
-  - Request body: `{ title, description, cover_image_path, platforms }`
-  - Response: `{ success: true, data: updatedGame }`
+### External APIs
+- `GET /api/thegamesdb/games`: Search TheGamesDB for games
+- `GET /api/thegamesdb/platforms`: Search TheGamesDB for platforms
+- `GET /api/rawg/games`: Search RAWG.io for games
+- `GET /api/rawg/games/:id`: Get game details from RAWG.io
+- `GET /api/rawg/platforms`: Get platforms from RAWG.io
+- `POST /api/gemini/game-description`: Generate game description with Gemini
+- `POST /api/gemini/generate-overview`: Generate detailed game overview with Gemini
+- `POST /api/github/deepseek`: Generate content with GitHub GPT41
 
-- `DELETE /api/games/:gameId` - Delete a game
-  - Response: `{ success: true, data: {} }`
+### Settings
+- `GET /api/settings/api-keys`: Get API keys
+- `POST /api/settings/api-keys`: Update API keys
 
-### Platforms API
-- `GET /api/platforms` - List all platforms
-  - Response: `{ success: true, data: platforms }`
+## Data Models
 
-- `GET /api/platforms/:platformId` - Get a specific platform
-  - Response: `{ success: true, data: platform }`
-
-- `POST /api/platforms` - Create a new platform
-  - Request body: `{ platform_id, name, manufacturer, release_year, description }`
-  - Response: `{ success: true, data: newPlatform }`
-
-- `PUT /api/platforms/:platformId` - Update an existing platform
-  - Request body: `{ name, manufacturer, release_year, description }`
-  - Response: `{ success: true, data: updatedPlatform }`
-
-- `DELETE /api/platforms/:platformId` - Delete a platform
-  - Response: `{ success: true, data: {} }`
-
-### Emulators API
-- `GET /api/emulators` - List all emulators grouped by platform
-  - Response: `{ success: true, data: emulators }`
-
-- `GET /api/emulators/:platformId` - List emulators for a specific platform
-  - Response: `{ success: true, data: platformEmulators }`
-
-- `POST /api/emulators` - Create a new emulator
-  - Request body: `{ platformId, emulator: { emulator_id, name, command, args, description, version } }`
-  - Response: `{ success: true, data: newEmulator }`
-
-- `PUT /api/emulators/:platformId/:emulatorId` - Update an existing emulator
-  - Request body: `{ name, command, args, description, version }`
-  - Response: `{ success: true, data: updatedEmulator }`
-
-- `DELETE /api/emulators/:platformId/:emulatorId` - Delete an emulator
-  - Response: `{ success: true, data: {} }`
-
-### External API Proxies
-
-#### TheGamesDB API
-- `GET /api/thegamesdb/search` - Search for games in TheGamesDB
-  - Query parameters:
-    - `name`: Game name to search for
-    - `fields`: Fields to include in the response (optional)
-    - `include`: Additional data to include (optional)
-  - Response format:
-  ```json
-  {
-    "code": 200,
-    "status": "Success",
-    "data": {
-      "count": 1,
-      "games": [
-        {
-          "id": 1,
-          "game_title": "Game Name",
-          "release_date": "1990-01-01",
-          "platform": 7,
-          "overview": "Game description"
-        }
-      ]
-    },
-    "include": {
-      "boxart": {
-        "base_url": {
-          "original": "https://url/to/images/",
-          "small": "https://url/to/small/images/",
-          "thumb": "https://url/to/thumb/images/",
-          "cropped_center_thumb": "https://url/to/cropped/images/",
-          "medium": "https://url/to/medium/images/",
-          "large": "https://url/to/large/images/"
-        },
-        "data": {
-          "1": [
-            {
-              "id": 1,
-              "type": "boxart",
-              "side": "front",
-              "filename": "filename.jpg",
-              "resolution": "300x450"
-            }
-          ]
-        }
-      },
-      "platform": {
-        "data": {
-          "7": {
-            "id": 7,
-            "name": "Platform Name",
-            "alias": "platform_alias"
-          }
-        }
-      }
-    }
+### Game
+```json
+{
+  "title": "Game Title",
+  "description": "Game description",
+  "cover_image_path": "URL to cover image",
+  "platforms": {
+    "platform_id": "ROM path"
   }
-  ```
+}
+```
 
-#### Gemini API
-- `POST /api/gemini/generate-overview` - Generate game descriptions using Gemini AI
-  - Request body:
-  ```json
-  {
-    "contents": [
-      {
-        "parts": [
-          {
-            "text": "Generate a detailed description for a video game titled 'Game Title'"
-          }
-        ]
-      }
-    ]
-  }
-  ```
-  - Response format:
-  ```json
-  {
-    "candidates": [
-      {
-        "content": {
-          "parts": [
-            {
-              "text": "Generated game description text"
-            }
-          ],
-          "role": "model"
-        },
-        "finishReason": "STOP"
-      }
-    ]
-  }
-  ```
+### Platform
+```json
+{
+  "platform_id": "unique-id",
+  "name": "Platform Name",
+  "manufacturer": "Manufacturer",
+  "release_year": 1985,
+  "description": "Platform description"
+}
+```
+
+### Emulator
+```json
+{
+  "emulator_id": "unique-id",
+  "name": "Emulator Name",
+  "command": "emulator %ROM%",
+  "description": "Emulator description",
+  "website": "https://emulator-website.com"
+}
+```
 
 ## UI Components
 
-### Layout
-- Left sidebar with navigation, filters, and stats
-- Main content area for displaying games, platforms, or emulators
-- Modal dialogs for adding/editing items
+### Game Cards
+- Display game title, cover image, description, and platforms
+- Include edit and delete buttons
+- Organized in a responsive grid layout
 
-### Navigation
-- Games section (default view)
-- Platforms section
-- Emulators section
+### Platform Cards
+- Display platform name, manufacturer, release year, and description
+- Include a list of configured emulators
+- Feature an "Add Emulator" button
+- Include edit and delete buttons
 
-### Filtering and Sorting
-- Search input for filtering by title or description
-- Platform dropdown for filtering by platform
-- Sort options:
-  - Title (A-Z)
-  - Title (Z-A)
-  - Platform (A-Z)
-  - Platform (Z-A)
+### Modals
+1. **Game Modal**: Add/edit game details
+2. **Platform Modal**: Add/edit platform details
+3. **Emulator Modal**: Add/edit emulator details
+4. **API Keys Modal**: Configure external API keys
 
-### Game Display
-- Grid layout with responsive columns
-- Game cards showing:
-  - Cover image
-  - Title
-  - Description (truncated)
-  - Platforms
-  - Edit/delete buttons
+### Search Panels
+1. **TheGamesDB Panel**: Search and import games from TheGamesDB
+2. **RAWG.io Panel**: Search and import games from RAWG.io
 
-### Platform Display
-- List layout showing:
-  - Platform name
-  - Manufacturer
-  - Release year
-  - Description
-  - Edit/delete buttons
+## Key Features
 
-### Emulator Display
-- Table layout grouped by platform showing:
-  - Emulator name
-  - Command
-  - Description
-  - Edit/delete buttons
+### Game Management
+- Add, edit, and delete games
+- Search and filter games by title or platform
+- Sort games by title or platform
+- Import game data from TheGamesDB or RAWG.io
+- Generate game descriptions using AI (Gemini or GPT41)
 
-### Modal Dialogs
-- Game dialog:
-  - Title input
-  - Description textarea
-  - Cover image URL input
-  - Platform selection
-  - ROM path input
-  - TheGamesDB search integration
-  - Gemini AI description generation
+### Platform Management
+- Add, edit, and delete platforms
+- Search platforms by name or manufacturer
+- Import platform data from TheGamesDB
 
-- Platform dialog:
-  - Platform ID input
-  - Name input
-  - Manufacturer input
-  - Release year input
-  - Description textarea
-
-- Emulator dialog:
-  - Emulator ID input
-  - Name input
-  - Command input
-  - Arguments input
-  - Description textarea
-  - Version input
-
-## Design Decisions
-
-### Technology Stack
-- **Node.js**: Chosen for its lightweight nature and JavaScript ecosystem compatibility
-- **Native HTTP Module**: Used instead of Express.js due to compatibility issues with path-to-regexp
-- **Tailwind CSS**: Selected for rapid UI development with utility classes
-- **Vanilla JavaScript**: Used for frontend logic without additional frameworks to keep the application lightweight
-
-### Data Storage
-- **JSON Files**: Simple file-based storage for ease of development and deployment
-- **In-Memory Data**: Data is loaded into memory on startup for fast access
-- **Structured Data Model**: Clear separation between games, platforms, and emulators
-
-### UI Design
-- **Dark Theme**: Dark blue/slate color scheme for better visibility in low-light environments
-- **Responsive Layout**: Adapts to different screen sizes
-- **Left Sidebar**: Provides easy access to navigation, filtering, and sorting
-- **Card-Based Game Display**: Visual representation of games with cover images
-- **Modal Dialogs**: Clean interface for adding/editing items without page navigation
+### Emulator Management
+- Add, edit, and delete emulators for each platform
+- Configure emulator commands with ROM path placeholders
 
 ### External API Integration
-- **TheGamesDB**: Used for fetching game metadata and cover images
-- **Gemini AI**: Used for generating game descriptions
-- **Backend Proxies**: APIs are proxied through the backend to avoid CORS issues and protect API keys
+- TheGamesDB for game and platform data
+- RAWG.io for game data
+- Gemini AI for generating game descriptions
+- GitHub GPT41 for generating detailed game information
 
 ## Implementation Details
 
-### Tailwind CSS Configuration
-```javascript
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        primary: '#3b82f6',
-        secondary: '#1d4ed8',
-        accent: '#f59e0b',
-        dark: '#0f172a',
-      },
-      fontSize: {
-        base: '1.05rem',
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-    }
-  }
-}
-```
+### Game Card Layout
+- Title below image for better visual hierarchy
+- Left-aligned text for improved readability
+- Platform names displayed under the title
+- Description limited to 3 lines with ellipsis
 
-### CSS Custom Classes
-```css
-.form-input {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-}
+### Platform Card Layout
+- Platform details at the top
+- Emulators section with add button
+- List of configured emulators with edit buttons
 
-.form-select {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-}
+### Modal Design
+- Consistent styling with glow effects
+- Form validation for required fields
+- Cancel and save buttons
+- Close button in the header
 
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-```
+### API Integration
+- Error handling for failed API requests
+- Loading indicators during API calls
+- Fallback for missing images or data
 
-### API Helper Functions
-```javascript
-// Search TheGamesDB for games
-async function searchTheGamesDB(title) {
-  try {
-    const response = await fetch(`/api/thegamesdb/search?name=${encodeURIComponent(title)}`);
-    const data = await response.json();
-    
-    if (data.status === "Success" && data.data && data.data.games) {
-      // Transform the response to match our expected format
-      const results = data.data.games.map(game => {
-        const gameId = game.id.toString();
-        const platformId = game.platform.toString();
-        
-        // Get boxart if available
-        let boxartThumb = '';
-        let boxartLarge = '';
-        
-        if (data.include && data.include.boxart) {
-          const baseUrl = data.include.boxart.base_url;
-          const boxartData = data.include.boxart.data[gameId];
-          
-          if (boxartData && boxartData.length > 0) {
-            const filename = boxartData[0].filename;
-            boxartThumb = baseUrl.thumb + filename;
-            boxartLarge = baseUrl.medium + filename;
-          }
-        }
-        
-        // Get platform name if available
-        let platformName = 'Unknown Platform';
-        if (data.include && data.include.platform && data.include.platform.data[platformId]) {
-          platformName = data.include.platform.data[platformId].name;
-        }
-        
-        return {
-          id: gameId,
-          game_title: game.game_title,
-          platform: platformId,
-          platform_name: platformName,
-          release_date: game.release_date,
-          overview: game.overview,
-          boxart_thumb_url: boxartThumb,
-          boxart_large_url: boxartLarge
-        };
-      });
-      
-      return { success: true, results };
-    } else {
-      return { success: false, message: 'No results found' };
-    }
-  } catch (error) {
-    console.error('Error searching TheGamesDB:', error);
-    return { success: false, message: error.message };
-  }
-}
+## Required API Keys
+- TheGamesDB API Key
+- RAWG.io API Key
+- Gemini API Key
+- GitHub PAT Token
 
-// Generate game description using Gemini API
-async function generateGameDescription(title, genre) {
-  try {
-    const prompt = `Generate a detailed description for a video game titled "${title}"${genre ? ` in the ${genre} genre` : ''}. Include information about gameplay, features, and what makes it unique.`;
-    
-    const response = await fetch('/api/gemini/generate-overview', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt
-              }
-            ]
-          }
-        ]
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.candidates && data.candidates.length > 0) {
-      const generatedText = data.candidates[0].content.parts[0].text;
-      return { success: true, description: generatedText };
-    } else {
-      return { success: false, message: 'No description generated' };
-    }
-  } catch (error) {
-    console.error('Error generating description:', error);
-    return { success: false, message: error.message };
-  }
-}
-```
-
-## Future Enhancements
-
-1. **Database Integration**: Replace JSON file storage with a proper database (MongoDB, SQLite) (unlikely)
-2. **User Authentication**: Add user accounts and authentication (unlikely)
-3. **Game Launching**: Implement functionality to launch games with configured emulators
-4. **ROM Management**: Add ROM upload and management features
-5. **Metadata Scraping**: Enhance integration with more external databases
-6. **Custom Themes**: Allow users to customize the UI theme
-7. **Game Collections**: Enable users to organize games into collections
-8. **Statistics and Tracking**: Add gameplay time tracking and statistics
-9. **Multi-Platform Support**: Package the application for desktop platforms
-
-## Conclusion
-
-RetroNode provides a comprehensive solution for managing retro game collections across multiple platforms. The application's modular architecture allows for easy extension and customization, while the clean and responsive UI provides an intuitive user experience. The integration with external APIs enhances the application's functionality by providing access to a vast database of game information and AI-generated content.
+## Setup Instructions
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Create a `.env` file with required API keys
+4. Start the server with `node server.js`
+5. Access the application at http://localhost:3000

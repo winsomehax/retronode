@@ -3,6 +3,7 @@
 .env.* # Catches files like .env.development, .env.production, etc.
 .vscode
 nohup.out
+package-lock.json
 
 # Private key files (examples - adjust based on your actual file names)
 # If you have specific SSH keys or other private key files

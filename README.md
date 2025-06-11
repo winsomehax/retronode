@@ -1,6 +1,6 @@
 # RetroNode
 
-A comprehensive management system for retro gaming, allowing users to organize their game collections across multiple platforms and emulators.
+A management system for retro gaming, allowing users to organize their game collections across multiple platforms and emulators. This is an experiment being put together using Gemini Code Assist and Amazon Q. Happy to take patches or suggestions. Stuff like EmulationStation are great but are written in C++ and complex to maintain. This uses HTML/CSS/JS for the GUI and NodeJS for the launching and file system scanning. An attempt to use AI to identify the ROMs being scanned and fill out the data. 
 
 ## Setup
 
@@ -16,6 +16,13 @@ RetroNode uses external APIs that require API keys:
    - Sign up for Google AI Studio at https://makersuite.google.com/
    - Create an API key
 
+3. **RAWG.io API Key**:
+   - Sign up at https://rawg.io/
+
+4. **Github Models Personal Access Token**:
+   - Sign up at https://docs.github.com/en/github-models 
+
+
 ### Configuration
 
 1. Copy the example environment file:
@@ -23,10 +30,13 @@ RetroNode uses external APIs that require API keys:
    cp .env.example .env
    ```
 
-2. Edit the `.env` file and add your API keys:
+2. Edit the `.env` file and add your API keys (do not use quotes around the key):
    ```
    THEGAMESDB_API_KEY=your_thegamesdb_api_key_here
    GEMINI_API_KEY=your_gemini_api_key_here
+   GITHUB_PAT_TOKEN=your_github_pat_token_here
+   RAWG_API_KEY=yourour_rawg_api_key_here
+   
    ```
 
 ## Running the Application
@@ -51,4 +61,4 @@ Then open http://localhost:3000 in your browser.
 - **Backend**: Node.js with native HTTP module
 - **Frontend**: Vanilla JavaScript with Tailwind CSS
 - **Data Storage**: JSON files for persistence
-- **External APIs**: TheGamesDB for game metadata, Gemini AI for content generation
+- **External APIs**: TheGamesDB for game metadata, Gemini AI for content generation, Google Gemini, RAWG.io, Github Models

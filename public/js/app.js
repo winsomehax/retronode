@@ -194,21 +194,54 @@ async function loadPlatforms() {
 }
 
 // Load emulators for a platform
-async function loadEmulators(platformId) {
-  const emulatorsContainer = document.getElementById('emulatorsContainer');
-  if (!emulatorsContainer) return;
+async function loadEmulatorsForPlatform(platformId) {
+  const emulatorsList = document.querySelector(`.emulators-list[data-platform-id="${platformId}"]`);
+  if (!emulatorsList) return;
   
   try {
-    const response = await fetch(`/api/emulators/${platformId}`);
+    const response = await fetch(`/api/platforms/${platformId}`);
     const data = await response.json();
     
-    if (data.success) {
-      renderEmulators(platformId, data.data);
+    if (data.success && data.data) {
+      const platform = data.data;
+      
+      if (!platform.emulators || Object.keys(platform.emulators).length === 0) {
+        emulatorsList.innerHTML = '<p class="text-body-dim text-sm italic">No emulators configured</p>';
+        return;
+      }
+      
+      let html = '<ul class="space-y-2">';
+      Object.entries(platform.emulators).forEach(([id, emulator]) => {
+        html += `
+          <li class="flex justify-between items-center">
+            <span class="text-body text-sm">${emulator.name}</span>
+            <button class="edit-emulator-btn text-secondary hover:text-primary" 
+                    data-platform-id="${platformId}" 
+                    data-emulator-id="${id}" 
+                    title="Edit Emulator">
+              <i class="fas fa-edit"></i>
+            </button>
+          </li>
+        `;
+      });
+      html += '</ul>';
+      
+      emulatorsList.innerHTML = html;
+      
+      // Add event listeners to edit emulator buttons
+      emulatorsList.querySelectorAll('.edit-emulator-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const platformId = this.getAttribute('data-platform-id');
+          const emulatorId = this.getAttribute('data-emulator-id');
+          emulatorModal.show(platformId, emulatorId);
+        });
+      });
     } else {
-      console.error('Error loading emulators:', data.message);
+      emulatorsList.innerHTML = '<p class="text-accent text-sm">Error loading emulators</p>';
     }
   } catch (error) {
     console.error('Error loading emulators:', error);
+    emulatorsList.innerHTML = '<p class="text-accent text-sm">Error loading emulators</p>';
   }
 }
 
@@ -224,6 +257,57 @@ function renderGames(games) {
     return;
   }
   
+  // Fetch all platforms once to avoid multiple requests
+  fetch('/api/platforms')
+    .then(response => response.json())
+    .then(platformData => {
+      const platforms = platformData.success ? platformData.data : {};
+      
+      games.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        
+        // Get platform names
+        const platformNames = Object.keys(game.platforms || {}).map(platformId => 
+          platforms[platformId] ? platforms[platformId].name : platformId
+        ).join(', ') || 'No platforms';
+        
+        card.innerHTML = `
+          <div class="game-card-image">
+            <img src="${game.cover_image_path || 'https://via.placeholder.com/300x450'}" 
+                 alt="${game.title || 'No title'}" 
+                 class="w-full h-auto"
+                 onerror="if (this.src !== 'https://via.placeholder.com/300x450') { this.src='https://via.placeholder.com/300x450'; }">
+          </div>
+          <div class="p-3">
+            <h3 class="game-card-title font-heading text-left mt-0 p-0">${game.title || 'No title'}</h3>
+            <div class="game-card-platform text-sm text-secondary text-left mb-2">${platformNames}</div>
+            <div class="game-card-content p-0">
+              <p class="text-body text-sm line-clamp-3 text-left">${game.description || 'No description'}</p>
+            </div>
+            <div class="game-card-actions justify-end mt-2 p-0 border-0">
+              <button class="edit-game-btn" data-id="${game.id}" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="delete-game-btn" data-id="${game.id}" title="Delete">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        gamesGrid.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching platforms:', error);
+      // Fallback to render games without platform names
+      renderGamesWithoutPlatformNames(games, gamesGrid);
+    });
+}
+
+// Fallback function if platform fetch fails
+function renderGamesWithoutPlatformNames(games, gamesGrid) {
   games.forEach(game => {
     const card = document.createElement('div');
     card.className = 'game-card';
@@ -315,6 +399,18 @@ function renderPlatforms(platforms) {
           </div>
         </div>
         <p class="text-body text-sm line-clamp-3">${platform.description || 'No description available'}</p>
+        
+        <div class="mt-4 border-t border-border pt-3">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="text-secondary font-heading text-sm">Emulators</h4>
+            <button class="add-emulator-btn text-primary hover:text-secondary" data-platform-id="${id}" title="Add Emulator">
+              <i class="fas fa-plus-circle"></i>
+            </button>
+          </div>
+          <div class="emulators-list" data-platform-id="${id}">
+            <p class="text-body-dim text-sm italic">Loading emulators...</p>
+          </div>
+        </div>
       </div>
       <div class="game-card-actions">
         <button class="edit-platform-btn" data-id="${id}" title="Edit">
@@ -343,74 +439,77 @@ function renderPlatforms(platforms) {
       deletePlatform(platformId);
     });
   });
+  
+  // Add event listeners to add emulator buttons
+  document.querySelectorAll('.add-emulator-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const platformId = this.getAttribute('data-platform-id');
+      emulatorModal.show(platformId);
+    });
+  });
+  
+  // Load emulators for each platform
+  Object.keys(platforms).forEach(platformId => {
+    setTimeout(() => loadEmulatorsForPlatform(platformId), 100);
+  });
 }
 
 // Render emulators for a platform
-function renderEmulators(platformId, emulators) {
+function renderEmulators(platformId, emulators, platformName) {
   const emulatorsContainer = document.getElementById('emulatorsContainer');
   if (!emulatorsContainer) return;
   
-  // Get platform name
-  fetch('/api/platforms')
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        const platformName = data.data[platformId]?.name || platformId;
-        
-        emulatorsContainer.innerHTML = `
-          <div class="game-card">
-            <div class="bg-dark px-4 py-3 flex justify-between items-center">
-              <h3 class="font-medium text-lg text-primary font-heading">${platformName}</h3>
-              <button class="btn-primary flex items-center add-emulator-btn" data-platform-id="${platformId}">
-                <i class="fas fa-plus mr-1"></i> Add Emulator
-              </button>
-            </div>
-            <div class="p-4">
-              <table class="w-full">
-                <thead class="text-left">
-                  <tr class="border-b border-border">
-                    <th class="pb-2 text-secondary font-medium">Name</th>
-                    <th class="pb-2 text-secondary font-medium">Command</th>
-                    <th class="pb-2 text-secondary font-medium">Description</th>
-                    <th class="pb-2 text-secondary font-medium text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="emulatorsTableBody">
-                  ${emulators.length === 0 ? 
-                    '<tr><td colspan="4" class="py-4 text-center text-body">No emulators found for this platform</td></tr>' : 
-                    ''}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        `;
-        
-        if (emulators.length > 0) {
-          const tbody = document.getElementById('emulatorsTableBody');
-          emulators.forEach(emulator => {
-            const row = document.createElement('tr');
-            row.className = 'border-b border-border';
-            
-            row.innerHTML = `
-              <td class="py-3 text-primary">${emulator.name}</td>
-              <td class="py-3 text-body font-mono text-sm">${emulator.command || 'N/A'}</td>
-              <td class="py-3 text-body">${emulator.description || 'N/A'}</td>
-              <td class="py-3 text-right">
-                <button class="text-secondary hover:text-primary mr-2 edit-emulator-btn" data-platform-id="${platformId}" data-emulator-id="${emulator.emulator_id}" title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="text-accent hover:text-accent/80 delete-emulator-btn" data-platform-id="${platformId}" data-emulator-id="${emulator.emulator_id}" title="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            `;
-            
-            tbody.appendChild(row);
-          });
-        }
-      }
-    })
-    .catch(error => console.error('Error loading platform details:', error));
+  emulatorsContainer.innerHTML = `
+    <div class="game-card">
+      <div class="bg-dark px-4 py-3 flex justify-between items-center">
+        <h3 class="font-medium text-lg text-primary font-heading">${platformName || platformId}</h3>
+        <button class="btn-primary flex items-center add-emulator-btn" data-platform-id="${platformId}">
+          <i class="fas fa-plus mr-1"></i> Add Emulator
+        </button>
+      </div>
+      <div class="p-4">
+        <table class="w-full">
+          <thead class="text-left">
+            <tr class="border-b border-border">
+              <th class="pb-2 text-secondary font-medium">Name</th>
+              <th class="pb-2 text-secondary font-medium">Command</th>
+              <th class="pb-2 text-secondary font-medium">Description</th>
+              <th class="pb-2 text-secondary font-medium text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="emulatorsTableBody">
+            ${emulators.length === 0 ? 
+              '<tr><td colspan="4" class="py-4 text-center text-body">No emulators found for this platform</td></tr>' : 
+              ''}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  
+  if (emulators.length > 0) {
+    const tbody = document.getElementById('emulatorsTableBody');
+    emulators.forEach(emulator => {
+      const row = document.createElement('tr');
+      row.className = 'border-b border-border';
+      
+      row.innerHTML = `
+        <td class="py-3 text-primary">${emulator.name}</td>
+        <td class="py-3 text-body font-mono text-sm">${emulator.command || 'N/A'}</td>
+        <td class="py-3 text-body">${emulator.description || 'N/A'}</td>
+        <td class="py-3 text-right">
+          <button class="text-secondary hover:text-primary mr-2 edit-emulator-btn" data-platform-id="${platformId}" data-emulator-id="${emulator.emulator_id}" title="Edit">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="text-accent hover:text-accent/80 delete-emulator-btn" data-platform-id="${platformId}" data-emulator-id="${emulator.emulator_id}" title="Delete">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+  }
 }
 
 // Open game modal for adding/editing
@@ -541,24 +640,37 @@ function updateStats() {
     .then(data => {
       if (data.success) {
         const totalPlatformsCount = document.getElementById('totalPlatformsCount');
+        const totalEmulatorsCount = document.getElementById('totalEmulatorsCount');
+        
         if (totalPlatformsCount) {
           totalPlatformsCount.textContent = Object.keys(data.data).length || 0;
         }
-      }
-    });
-  
-  fetch('/api/emulators')
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        const totalEmulatorsCount = document.getElementById('totalEmulatorsCount');
+        
         if (totalEmulatorsCount) {
           let emulatorCount = 0;
-          Object.values(data.data).forEach(emulatorArray => {
-            emulatorCount += emulatorArray.length;
+          
+          // Count emulators from the platforms data
+          Object.values(data.data).forEach(platform => {
+            if (platform.emulators && typeof platform.emulators === 'object') {
+              emulatorCount += Object.keys(platform.emulators).length;
+            }
           });
+          
           totalEmulatorsCount.textContent = emulatorCount;
         }
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching platforms data:', error);
+      const totalPlatformsCount = document.getElementById('totalPlatformsCount');
+      const totalEmulatorsCount = document.getElementById('totalEmulatorsCount');
+      
+      if (totalPlatformsCount) {
+        totalPlatformsCount.textContent = '0';
+      }
+      
+      if (totalEmulatorsCount) {
+        totalEmulatorsCount.textContent = '0';
       }
     });
 }

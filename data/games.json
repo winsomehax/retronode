@@ -9,8 +9,8 @@
   },
   "game-2": {
     "title": "The Secret of Monkey Island",
-    "description": "The Secret of Monkey Island is a 1990 point-and-click graphic adventure game developed and published by Lucasfilm Games. It takes place in a fantastic version of the Caribbean during the age of piracy. The player assumes the role of Guybrush Threepwood, a young man who dreams of becoming a pirate and explores fictional islands while solving puzzles.\n\nThe game was conceived in 1988 by Lucasfilm employee Ron Gilbert, who designed it with Tim Schafer and Dave Grossman. Gilbert's frustrations with contemporary adventure titles led him to make the player character's death impossible, which meant that gameplay focused the game on exploration. The atmosphere was based on that of the Pirates of the Caribbean theme park ride. The Secret of Monkey Island was the fifth game built with the SCUMM engine, which was heavily modified to include a more user-friendly interface.\n\nCritics praised The Secret of Monkey Island for its humor, audiovisuals, and gameplay. The game spawned a number of sequels, collectively known as the Monkey Island series. Gilbert, Schafer and Grossman also led the development of the sequel Monkey Island 2: LeChuck's Revenge.  LucasArts released a remake of the original in 2009, which was also well received by the gaming press.\n\nThe Secret of Monkey Island is a 2D adventure game played from a third-person perspective. Via a point-and-click interface, the player guides protagonist Guybrush Threepwood through the game's world and interacts with the environment by selecting from twelve verb commands (nine in newer versions) such as \"talk to\" for communicating with characters and \"pick up\" for collecting items between commands and the world's objects in order to successfully solve puzzles and thus progress in the game.  While conversing with other characters, the player may choose between topics for discussion that are listed in a dialog tree; the game is one of the first to incorporate such a system.  The in-game action is frequently interrupted by cutscenes: non-interactive animated sequences that are used to provide information about character personalities and advance the plot.  Like other LucasArts adventure games, The Secret of Monkey Island features a design philosophy that makes the player character's death nearly impossible (Guybrush does drown if he stays underwater for more than ten minutes).",
-    "cover_image_path": "https://cdn.thegamesdb.net/images/medium/boxart/front/20368-1.jpg",
+    "description": "From Wikipedia:\nThe Secret of Monkey Island is a 1990 point-and-click graphic adventure game developed and published by Lucasfilm Games. It takes place in a fantastic version of the Caribbean during the age of piracy. The player assumes the role of Guybrush Threepwood, a young man who dreams of becoming a pirate and explores fictional islands while solving puzzles.\nThe game was conceived in 1988 by Lucasfilm employee Ron Gilbert, who designed it with Tim Schafer and Dave Grossman. Gilbert's frustrations with contemporary adventure titles led him to make the player character's death almost impossible, which meant that gameplay focused the game on exploration. The atmosphere was based on that of the Pirates of the Caribbean theme park ride. The Secret of Monkey Island was the fifth game built with the SCUMM engine, which was heavily modified to include a more user-friendly interface.",
+    "cover_image_path": "https://media.rawg.io/media/games/951/951f914b28b246835a811894bbc38403.jpeg",
     "platforms": {
       "amiga": "/roms/amiga/monkey_island.adf"
     }
@@ -19,8 +19,783 @@
     "title": "Green Beret",
     "description": "The player takes on the role of a United States special operations soldier infiltrating an enemy military base in order to save several POW's from being executed by firing squad. There are four stages: a Marshalling Area, a Harbor, an Air Base and a Siberian Camp. The omnipresent knife can be supplemented with captured arms. By killing certain enemy soldiers, the player can obtain a three-shot flamethrower, a four-shot RPG, or a three-pack of hand grenades. At the end of each stage, the player will face a unique group of enemies specific to that stage.",
     "cover_image_path": "https://cdn.thegamesdb.net/images/medium/boxart/front/6380-1.jpg",
+    "platforms": {}
+  },
+  "5f8877ea-d153-42ae-b7ff-5450372eef36": {
+    "title": "AMC Attack Of The Mutant Camels (280)",
+    "description": "A Commodore 64 game.",
     "platforms": {
-      "c64": ""
+      "c64": "/roms/c64/AMC - Attack of the Mutant Camels (280).zip"
+    }
+  },
+  "d000e60b-3b45-4509-8169-a69dbd128ee1": {
+    "title": "Alter Ego Female Version (266)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Alter Ego - Female Version (266).zip"
+    }
+  },
+  "ef6c9abe-fb9d-49b1-9a0b-a9abe070b8bf": {
+    "title": "Alter Ego Male Version (265)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Alter Ego - Male Version (265).zip"
+    }
+  },
+  "06b51d1e-e854-40e2-bc23-9c2547cff756": {
+    "title": "Altered Beast (267)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Altered Beast (267).zip"
+    }
+  },
+  "3637cfd7-01cd-45db-a0f2-bc372b41563f": {
+    "title": "Archon (378)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Archon (378).zip"
+    }
+  },
+  "cf1906b7-64f9-4c9e-a479-dad0270cc1a7": {
+    "title": "Archon II Adept (380)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Archon II - Adept (380).zip"
+    }
+  },
+  "20635d09-e827-4148-9932-f3eb3f4bb425": {
+    "title": "Auf Wiedersehen Monty (494)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Auf Wiedersehen Monty (494).zip"
+    }
+  },
+  "a6e9f9c9-ab32-4e79-b0f1-f1f96914bd7d": {
+    "title": "Aztec Challenge (518)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Aztec Challenge (518).zip"
+    }
+  },
+  "e774639c-b32d-48dc-a298-233f2780741a": {
+    "title": "Beyond The Forbidden Forest (741)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Beyond the Forbidden Forest (741).zip"
+    }
+  },
+  "cdb1a1f1-6ebd-4486-ae63-2cdaf2d370b6": {
+    "title": "Black Thunder (802)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Black Thunder (802).zip"
+    }
+  },
+  "bdc4cab8-c0ae-4ad0-ae73-5f98f498381f": {
+    "title": "Boulder Dash (994)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Boulder Dash (994).zip"
+    }
+  },
+  "91ed8385-d547-4330-950e-ba3452a6fd70": {
+    "title": "Boulder Dash + (993)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Boulder Dash + (993).zip"
+    }
+  },
+  "6db9a5d9-5ddb-4a93-a38e-0fae1418664b": {
+    "title": "Boulder Dash Construction Kit (1007)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Boulder Dash Construction Kit (1007).zip"
+    }
+  },
+  "7a114689-e950-43c2-9b05-d21bb4f6aec7": {
+    "title": "Boulder Dash Deluxe Kit (1009)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Boulder Dash Deluxe Kit (1009).zip"
+    }
+  },
+  "b85def4c-c301-4806-8028-603bdd6e4826": {
+    "title": "Bruce Lee (1135)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Bruce Lee (1135).zip"
+    }
+  },
+  "fa8e2530-e779-45ef-8c2e-f4edbc3fb106": {
+    "title": "Bubble Bobble (1138)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Bubble Bobble (1138).zip"
+    }
+  },
+  "77693a17-b1d4-4ccb-826b-25c8f0d0a9e9": {
+    "title": "Bubble Bobble II (16192)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Bubble Bobble II (16192).zip"
+    }
+  },
+  "42d246b9-cb66-4053-83c3-87afa717b573": {
+    "title": "California Games (1227)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/California Games (1227).zip"
+    }
+  },
+  "93d74998-f831-40b4-b7f9-8a76ff110546": {
+    "title": "Choplifter (1459)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Choplifter (1459).zip"
+    }
+  },
+  "6ec83ba7-e224-4efc-8e08-9665bc1d4243": {
+    "title": "Commando (1602)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Commando (1602).zip"
+    }
+  },
+  "b3329198-8782-4d1f-8ca0-7ca3258c64b0": {
+    "title": "Creatures (1786)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Creatures (1786).zip"
+    }
+  },
+  "8a8aaae6-1f9f-4f7b-abd2-25fd13af7388": {
+    "title": "Creatures II Torture Trouble (1787)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Creatures II - Torture Trouble (1787).zip"
+    }
+  },
+  "02ef1e77-2d46-4cfe-92d9-c019a9b1e98e": {
+    "title": "Delta (2092)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Delta (2092).zip"
+    }
+  },
+  "05b49743-bffd-4805-a13f-8599e9de3b3e": {
+    "title": "Dropzone (2362)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Dropzone (2362).zip"
+    }
+  },
+  "000f68ee-e478-4976-b597-7b9f51fb89b2": {
+    "title": "Elite (2475)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Elite (2475).zip"
+    }
+  },
+  "ed87fd5c-4900-430c-ad4f-de86bf15e65d": {
+    "title": "Elite 128 (2476)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Elite 128 (2476).zip"
+    }
+  },
+  "f86f82f1-85cf-4a29-9e17-58a077e87ff6": {
+    "title": "Forbidden Forest (2864)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Forbidden Forest (2864).zip"
+    }
+  },
+  "bf74ca42-5bd6-473c-9bfa-3bd5fd168188": {
+    "title": "Ghostbusters (3133)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Ghostbusters (3133).zip"
+    }
+  },
+  "2ea15436-edec-42a9-bccd-bbec533610ed": {
+    "title": "Ghostbusters II (3134)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Ghostbusters II (3134).zip"
+    }
+  },
+  "ae2585ac-c285-4092-aa35-4017222e0008": {
+    "title": "Giana Sisters II (14820)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Giana Sisters II (14820).zip"
+    }
+  },
+  "47bc8be2-8b2a-4d86-89e0-55e2d1fb5066": {
+    "title": "Great Giana Sisters , The (3275)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Great Giana Sisters , The (3275).zip"
+    }
+  },
+  "62beb338-2853-49a0-a3f4-82fcd9f22f1a": {
+    "title": "Great Giana Sisters III, The (3276)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Great Giana Sisters III, The (3276).zip"
+    }
+  },
+  "2d3e0daa-89c1-4cbb-b012-601aa49e2d0d": {
+    "title": "Hover Bovver (3621)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Hover Bovver (3621).zip"
+    }
+  },
+  "06008cbd-83c3-4372-a233-c4ce7fcdebad": {
+    "title": "Impossible Mission II (3732)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Impossible Mission II (3732).zip"
+    }
+  },
+  "d2b1e1cc-63c7-4940-b1b4-2af56d5c36dc": {
+    "title": "International Karate (3799)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/International Karate (3799).zip"
+    }
+  },
+  "2d9c3a93-a47d-43ac-862d-5ada87d0c86f": {
+    "title": "Jet Set Willy (3926)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Jet Set Willy (3926).zip"
+    }
+  },
+  "6571a85d-f5ed-407a-8b04-0617afd0071d": {
+    "title": "Jet Set Willy II The Final Frontier (3927)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Jet Set Willy II - The Final Frontier (3927).zip"
+    }
+  },
+  "e67d1007-3bed-4ce2-bf24-2a03fbaca515": {
+    "title": "Jumpman (4000)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Jumpman (4000).zip"
+    }
+  },
+  "19df59b0-136e-460a-8e15-a623baedc069": {
+    "title": "Jumpman II (17360)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Jumpman II (17360).zip"
+    }
+  },
+  "457b62db-0b3f-4412-8ba7-7389641d36b5": {
+    "title": "Karateka (4049)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Karateka (4049).zip"
+    }
+  },
+  "0a111a2a-05c0-4775-b8d0-1cf6b49a9129": {
+    "title": "Knuckle Buster (4169)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Knuckle Buster (4169).zip"
+    }
+  },
+  "f5df090c-f763-4fac-a787-6752f8237810": {
+    "title": "Laser Squad (4267)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Laser Squad (4267).zip"
+    }
+  },
+  "d1792b14-b44c-4c2d-a976-e403eacc003e": {
+    "title": "Laser Squad II (4268)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Laser Squad II (4268).zip"
+    }
+  },
+  "38d0da53-d60b-4445-939e-cbfd28ed9652": {
+    "title": "Last Ninja , The (4284)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Last Ninja , The (4284).zip"
+    }
+  },
+  "a6037687-e358-44d2-abcb-58457d717bc6": {
+    "title": "Last Ninja II (4285)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Last Ninja II (4285).zip"
+    }
+  },
+  "c49b7f73-941e-438e-a23d-220b87c09788": {
+    "title": "Last Ninja III (4286)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Last Ninja III (4286).zip"
+    }
+  },
+  "b55f9d4e-9a22-4e72-9049-8316b81bc387": {
+    "title": "Last V8, The (4293)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Last V8, The (4293).zip"
+    }
+  },
+  "05319048-9100-4971-bf31-f814f859a131": {
+    "title": "Lazy Jones (4310)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Lazy Jones (4310).zip"
+    }
+  },
+  "87d54c38-f40d-4ff2-a5c2-dc5182684c4e": {
+    "title": "Leaderboard Golf (4316)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Leaderboard Golf (4316).zip"
+    }
+  },
+  "724986fc-a5b6-4154-819b-c182cd47ed9f": {
+    "title": "Lightforce (4381)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Lightforce (4381).zip"
+    }
+  },
+  "4aacf040-713b-48e2-9b15-50b01a8c9ab7": {
+    "title": "MULE (5076)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/MULE (5076).zip"
+    }
+  },
+  "dbea50fe-4240-4102-8717-2cd751026083": {
+    "title": "Maniac Mansion (4576)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Maniac Mansion (4576).zip"
+    }
+  },
+  "6c582af6-5b40-48ae-bcec-0ea2e6347a01": {
+    "title": "Manic Miner (4580)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Manic Miner (4580).zip"
+    }
+  },
+  "c15b66c0-e6ae-486a-8518-0d06f7e8f65b": {
+    "title": "Microprose Soccer (4802)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Microprose Soccer (4802).zip"
+    }
+  },
+  "c85114d8-b167-44ff-9ecd-6548b2dab8fe": {
+    "title": "Mission Impossible (9664)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Mission Impossible (9664).zip"
+    }
+  },
+  "72dfc255-8ede-422c-afa5-89d897157867": {
+    "title": "Monty Mole (4966)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Monty Mole (4966).zip"
+    }
+  },
+  "ede13455-2d2e-4d44-8acf-54671f6d9bbd": {
+    "title": "Monty On The Run (4967)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Monty on the Run (4967).zip"
+    }
+  },
+  "9eacd237-70a6-44ea-8897-de1782dbe860": {
+    "title": "Neuromancer (5183)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Neuromancer (5183).zip"
+    }
+  },
+  "8049fecb-7fa2-4a93-9da8-64ad45478d15": {
+    "title": "Paradroid (5553)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Paradroid (5553).zip"
+    }
+  },
+  "96a7e502-8b2c-4c67-aa65-3e18bdc1c117": {
+    "title": "Paradroid Competition Edition (5554)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Paradroid - Competition Edition (5554).zip"
+    }
+  },
+  "accf2220-b2a6-4bf4-bfac-94c648da5b85": {
+    "title": "Paradroid Metal Edition (5555)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Paradroid - Metal Edition (5555).zip"
+    }
+  },
+  "e7b7b634-d72b-400b-a3e9-61dd057c2d1c": {
+    "title": "Pool Of Radiance (5824)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Pool of Radiance (5824).zip"
+    }
+  },
+  "498f08f0-eff5-4089-9983-30cb3391bf1f": {
+    "title": "Potty Pigeon (5849)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Potty Pigeon (5849).zip"
+    }
+  },
+  "92f60f53-cf47-4743-9718-1888f18653c6": {
+    "title": "Prince Of Persia [Preview] (5888)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Prince of Persia [Preview] (5888).zip"
+    }
+  },
+  "557dec53-aa24-4723-9a3c-6cb21cb1722f": {
+    "title": "Racing Destruction Set (6154)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Racing Destruction Set (6154).zip"
+    }
+  },
+  "544b5ec2-dd5b-47b6-bfdc-ce52d89095dc": {
+    "title": "Raid On Bungeling Bay (6175)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Raid on Bungeling Bay (6175).zip"
+    }
+  },
+  "739743ad-8a20-499d-8147-1a14973d2df5": {
+    "title": "Return Of Heracles (13529)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Return of Heracles (13529).zip"
+    }
+  },
+  "d539cb88-656d-4448-a2bc-3d38ab3a9c76": {
+    "title": "Return Of The Mutant Camels (6321)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Return of the Mutant Camels (6321).zip"
+    }
+  },
+  "cca48b30-cc52-4f70-9ebe-fa3d893a8b43": {
+    "title": "Sanxion (6565)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Sanxion (6565).zip"
+    }
+  },
+  "ca2d83a2-00b5-4dcf-9dd0-a6699fb098b1": {
+    "title": "Sentinel (6706)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Sentinel (6706).zip"
+    }
+  },
+  "564c790a-1ec8-4d06-9b47-925774a911c3": {
+    "title": "Sentinel, The (6709)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Sentinel, The (6709).zip"
+    }
+  },
+  "ba68b236-4e48-4251-9e77-7d957ee353ae": {
+    "title": "Skate Or Die! (6849)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Skate or Die! (6849).zip"
+    }
+  },
+  "780893d3-491a-4a61-b018-325cc9b3c398": {
+    "title": "Slicks (6918)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Slicks (6918).zip"
+    }
+  },
+  "5af535b7-522e-4d61-a54d-1ff44408bfc8": {
+    "title": "Space Sentinel (7099)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Space Sentinel (7099).zip"
+    }
+  },
+  "955b5c54-415d-47a4-a147-2fcc57c73e2e": {
+    "title": "Spellbound (7181)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Spellbound (7181).zip"
+    }
+  },
+  "e08daaf1-f45a-4298-b324-f1adbb76f03d": {
+    "title": "Spindizzy (15264)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Spindizzy (15264).zip"
+    }
+  },
+  "0989074f-58ce-4708-89f4-abbf3782c5a5": {
+    "title": "Spy Vs Spy (7268)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Spy vs Spy (7268).zip"
+    }
+  },
+  "85c024eb-03ec-41c2-8742-a3fe5e01035b": {
+    "title": "Spy Vs Spy II The Island Caper (7269)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Spy vs Spy II - The Island Caper (7269).zip"
+    }
+  },
+  "a2bf3040-4c7d-405c-94cf-900065113853": {
+    "title": "Spy Vs Spy III Arctic Antics (7270)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Spy vs Spy III - Arctic Antics (7270).zip"
+    }
+  },
+  "5feb14e2-6864-4ca6-a6f3-bcd238e7181e": {
+    "title": "Suicide Express (7538)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Suicide Express (7538).zip"
+    }
+  },
+  "cb504f6a-037c-4a7f-92ab-d048d6010349": {
+    "title": "Summer Games (7545)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Summer Games (7545).zip"
+    }
+  },
+  "1b7a83c9-0ad5-4759-9d15-4c3ed5cc786f": {
+    "title": "Summer Games II (7547)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Summer Games II (7547).zip"
+    }
+  },
+  "e229c154-d196-4afa-9a00-6ac87e7ea60c": {
+    "title": "Super Pipeline (7600)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Super Pipeline (7600).zip"
+    }
+  },
+  "16f5bdf1-e7d6-40e1-9afa-69893b9bf4ce": {
+    "title": "Super Pipeline II (7601)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Super Pipeline II (7601).zip"
+    }
+  },
+  "5c97b1e3-6fdb-4616-8684-47e020970298": {
+    "title": "Supremacy (7673)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Supremacy (7673).zip"
+    }
+  },
+  "6f9f8fd7-b1dc-42d8-b589-76383ebc8e55": {
+    "title": "Thrust (7897)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Thrust (7897).zip"
+    }
+  },
+  "d76ab2ed-3d95-48b7-a316-276af9027b43": {
+    "title": "Thrust Gold (13439)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Thrust Gold (13439).zip"
+    }
+  },
+  "c14e8c01-a1b8-4c2c-b66f-0dda0b470a0f": {
+    "title": "Thrust II (7898)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Thrust II (7898).zip"
+    }
+  },
+  "a8d93f4c-5615-4f12-b1fa-066ee90450de": {
+    "title": "Turrican (8233)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Turrican (8233).zip"
+    }
+  },
+  "b222b0ff-9689-4f19-b388-4986b0dd6a73": {
+    "title": "Turrican II The Final Fight (8234)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Turrican II - The Final Fight (8234).zip"
+    }
+  },
+  "3c1c5c9b-a864-43cb-a808-d1c17715a81d": {
+    "title": "Turrican III (11975)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Turrican III (11975).zip"
+    }
+  },
+  "55f17bf0-c24b-4ca4-a106-d057f9805470": {
+    "title": "Uridium (8331)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Uridium (8331).zip"
+    }
+  },
+  "305e5e9e-7826-4991-a677-5f33de09b45c": {
+    "title": "Uridium 2 (8333)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Uridium 2 (8333).zip"
+    }
+  },
+  "38126d28-6318-490b-a14f-fce327334f35": {
+    "title": "Uridium+ (8332)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Uridium+ (8332).zip"
+    }
+  },
+  "3bdeaa9f-ad61-4792-8dea-e11c7a421949": {
+    "title": "Warhawk (8490)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Warhawk (8490).zip"
+    }
+  },
+  "ecabc1ac-790e-4023-b722-32beec881673": {
+    "title": "Wasteland (8515)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Wasteland (8515).zip"
+    }
+  },
+  "a40b6fe7-4d6b-4815-8bd8-a3a1444ce304": {
+    "title": "Way Of The Exploding Fist, The (8526)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Way of the Exploding Fist, The (8526).zip"
+    }
+  },
+  "74335173-849c-4d8c-b1b8-1e5af48f6011": {
+    "title": "William Wobbler (8607)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/William Wobbler (8607).zip"
+    }
+  },
+  "d869fbd9-f95a-472a-86f3-ec24b986f6ff": {
+    "title": "Winter Games (8620)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Winter Games (8620).zip"
+    }
+  },
+  "78d0c818-3d1d-4445-994f-6d2b7f4153d8": {
+    "title": "Wizball (8669)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Wizball (8669).zip"
+    }
+  },
+  "4cfc407b-1934-40fd-9f13-0190a0cff88f": {
+    "title": "World Games (8721)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/World Games (8721).zip"
+    }
+  },
+  "f5d540ce-a9d1-4df5-b867-83dea07b50ee": {
+    "title": "Zork The Undiscovered Underground (8907)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork - The Undiscovered Underground (8907).zip"
+    }
+  },
+  "9240374d-7381-46e4-a321-985e235117f4": {
+    "title": "Zork I The Great Underground Empire (8908)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork I - The Great Underground Empire (8908).zip"
+    }
+  },
+  "8eb52026-2ced-41c6-98c4-da92a4bef934": {
+    "title": "Zork I The Great Underground Empire (8909)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork I - The Great Underground Empire (8909).zip"
+    }
+  },
+  "3269d95c-52bd-4993-9950-ee324513f458": {
+    "title": "Zork I The Great Underground Empire (8910)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork I - The Great Underground Empire (8910).zip"
+    }
+  },
+  "4c555c9b-78e7-44f5-aa41-2088087e80be": {
+    "title": "Zork II The Wizard Of Frobozz (8911)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork II - The Wizard of Frobozz  (8911).zip"
+    }
+  },
+  "decd3213-153f-4b97-a8d1-6fb360590d08": {
+    "title": "Zork II The Wizard Of Frobozz (8912)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork II - The Wizard of Frobozz  (8912).zip"
+    }
+  },
+  "bf7b8282-6668-43e0-88af-205dd25eec9c": {
+    "title": "Zork III The Dungeon Master (8913)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork III - The Dungeon Master  (8913).zip"
+    }
+  },
+  "2e1b2aba-425d-458e-adae-b2f2bd812e1b": {
+    "title": "Zork III The Dungeon Master (8914)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork III - The Dungeon Master  (8914).zip"
+    }
+  },
+  "d4db1271-03f8-4af2-9925-a232ba13e675": {
+    "title": "Zork Quest I Assault On Egreth Castle (8915)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork Quest I - Assault on Egreth Castle (8915).zip"
+    }
+  },
+  "abb19b9e-c3ba-4b78-9c8f-0175c4cd2dff": {
+    "title": "Zork Quest II The Crystal Of Doom (8916)",
+    "description": "A Commodore 64 game.",
+    "platforms": {
+      "c64": "/roms/c64/Zork Quest II - The Crystal of Doom (8916).zip"
     }
   }
 }

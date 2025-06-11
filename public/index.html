@@ -63,12 +63,7 @@
               <span>Platforms</span>
             </a>
           </li>
-          <li>
-            <a href="/emulators.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
-              <i class="fas fa-desktop mr-3"></i>
-              <span>Emulators</span>
-            </a>
-          </li>
+
         </ul>
       </nav>
       
@@ -208,10 +203,13 @@
           </div>
           <div class="mt-6 space-y-4">
             <button id="searchGameDbBtn" type="button" class="w-full btn-primary flex items-center justify-center">
-              <i class="fas fa-database mr-2"></i>Search Game Database
+              <i class="fas fa-database mr-2"></i>Search TheGamesDB
+            </button>
+            <button id="searchRawgBtn" type="button" class="w-full bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-md flex items-center justify-center">
+              <i class="fas fa-gamepad mr-2"></i>Search RAWG.io
             </button>
             <button id="generateDescriptionBtn" type="button" class="w-full bg-accent hover:bg-accent/80 text-white px-4 py-2 rounded-md flex items-center justify-center">
-              <i class="fas fa-robot mr-2"></i>Generate Description
+              <i class="fas fa-robot mr-2"></i>Generate with Gemini
             </button>
             <button id="generateDeepseekBtn" type="button" class="w-full bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md flex items-center justify-center">
               <i class="fas fa-brain mr-2"></i>Generate with GPT41
@@ -265,6 +263,15 @@
               </button>
             </div>
           </div>
+          <div class="mb-6">
+            <label for="rawgApiKey" class="block text-sm font-medium text-body mb-1">RAWG.io API Key</label>
+            <div class="flex">
+              <input id="rawgApiKey" type="password" class="form-input rounded-r-none" placeholder="Enter RAWG.io API key">
+              <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
           <div class="flex justify-end space-x-2 mt-6">
             <button type="button" id="cancelApiKeysBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
             <button type="submit" class="btn-primary">Save</button>
@@ -277,6 +284,7 @@
   <script src="/js/api.js"></script>
   <script src="/js/gemini-window.js"></script>
   <script src="/js/games-db-panel.js"></script>
+  <script src="/js/rawg-panel.js"></script>
   <script src="/js/app.js"></script>
   <script>
     // Game form handling
@@ -351,6 +359,7 @@
             document.getElementById('thegamesdbApiKey').value = data.thegamesdbApiKey || '';
             document.getElementById('geminiApiKey').value = data.geminiApiKey || '';
             document.getElementById('githubPatToken').value = data.githubPatToken || '';
+            document.getElementById('rawgApiKey').value = data.rawgApiKey || '';
           }
           document.getElementById('apiKeysModal').classList.remove('hidden');
         })
@@ -394,6 +403,7 @@
       const thegamesdbApiKey = document.getElementById('thegamesdbApiKey').value;
       const geminiApiKey = document.getElementById('geminiApiKey').value;
       const githubPatToken = document.getElementById('githubPatToken').value;
+      const rawgApiKey = document.getElementById('rawgApiKey').value;
       
       fetch('/api/settings/api-keys', {
         method: 'POST',
@@ -403,7 +413,8 @@
         body: JSON.stringify({
           thegamesdbApiKey,
           geminiApiKey,
-          githubPatToken
+          githubPatToken,
+          rawgApiKey
         })
       })
       .then(response => response.json())
@@ -421,7 +432,7 @@
       });
     });
     
-    // Search game database
+    // Search TheGamesDB
     document.getElementById('searchGameDbBtn').addEventListener('click', function() {
       const titleField = document.getElementById('gameTitle');
       const descriptionField = document.getElementById('gameDescription');
@@ -429,6 +440,20 @@
       
       // Open the GamesDB panel with target fields
       gamesDBPanel.show({
+        title: titleField,
+        description: descriptionField,
+        cover: coverField
+      });
+    });
+    
+    // Search RAWG.io
+    document.getElementById('searchRawgBtn').addEventListener('click', function() {
+      const titleField = document.getElementById('gameTitle');
+      const descriptionField = document.getElementById('gameDescription');
+      const coverField = document.getElementById('gameCover');
+      
+      // Open the RAWG panel with target fields
+      rawgPanel.show({
         title: titleField,
         description: descriptionField,
         cover: coverField

@@ -299,7 +299,19 @@ app.delete('/api/platforms/:id', (req, res) => {
 
 // Emulators
 app.get('/api/emulators', (req, res) => {
-  const emulators = readJsonFile(EMULATORS_FILE);
+  // Get emulators from platforms instead of emulators.json
+  const platforms = readJsonFile(PLATFORMS_FILE);
+  const emulators = {};
+  
+  // Extract emulators from each platform
+  Object.entries(platforms).forEach(([platformId, platform]) => {
+    if (platform.emulators && typeof platform.emulators === 'object') {
+      emulators[platformId] = Object.entries(platform.emulators).map(([id, emulator]) => ({
+        emulator_id: id,
+        ...emulator
+      }));
+    }
+  });
   
   res.json({
     success: true,
@@ -308,12 +320,31 @@ app.get('/api/emulators', (req, res) => {
 });
 
 app.get('/api/emulators/:platformId', (req, res) => {
-  const emulators = readJsonFile(EMULATORS_FILE);
-  const platformEmulators = emulators[req.params.platformId] || [];
+  const platforms = readJsonFile(PLATFORMS_FILE);
+  const platform = platforms[req.params.platformId];
+  
+  if (!platform) {
+    return res.json({
+      success: true,
+      data: []
+    });
+  }
+  
+  const emulators = [];
+  
+  // Extract emulators from the platform
+  if (platform.emulators && typeof platform.emulators === 'object') {
+    Object.entries(platform.emulators).forEach(([id, emulator]) => {
+      emulators.push({
+        emulator_id: id,
+        ...emulator
+      });
+    });
+  }
   
   res.json({
     success: true,
-    data: platformEmulators
+    data: emulators
   });
 });
 
@@ -544,6 +575,152 @@ app.get('/api/thegamesdb/platforms', async (req, res) => {
   }
 });
 
+// RAWG.io API
+app.get('/api/rawg/games', async (req, res) => {
+  const { name } = req.query;
+  
+  if (!name) {
+    return res.status(400).json({
+      success: false,
+      message: 'Game name is required'
+    });
+  }
+  
+  const apiKey = process.env.RAWG_API_KEY;
+  
+  if (!apiKey) {
+    return res.status(500).json({
+      success: false,
+      message: 'RAWG API key is not configured'
+    });
+  }
+  
+  try {
+    const response = await axios.get(`https://api.rawg.io/api/games`, {
+      params: {
+        key: apiKey,
+        search: name,
+        page_size: 20
+      }
+    });
+    
+    const games = response.data.results || [];
+    
+    // Process games to format them for our app
+    const processedGames = games.map(game => {
+      // Get platform names
+      const platforms = game.platforms?.map(p => p.platform.name).join(', ') || 'Unknown Platform';
+      
+      return {
+        id: game.id,
+        name: game.name,
+        slug: game.slug,
+        released: game.released,
+        background_image: game.background_image,
+        rating: game.rating,
+        platform_name: platforms,
+        description: game.description_raw || '',
+        genres: game.genres?.map(g => g.name).join(', ') || ''
+      };
+    });
+    
+    res.json({
+      success: true,
+      results: processedGames,
+      count: response.data.count,
+      next: response.data.next
+    });
+  } catch (error) {
+    console.error('Error fetching from RAWG API:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch game data from RAWG'
+    });
+  }
+});
+
+app.get('/api/rawg/games/:id', async (req, res) => {
+  const { id } = req.params;
+  
+  const apiKey = process.env.RAWG_API_KEY;
+  
+  if (!apiKey) {
+    return res.status(500).json({
+      success: false,
+      message: 'RAWG API key is not configured'
+    });
+  }
+  
+  try {
+    const response = await axios.get(`https://api.rawg.io/api/games/${id}`, {
+      params: {
+        key: apiKey
+      }
+    });
+    
+    const game = response.data;
+    
+    // Format game data
+    const formattedGame = {
+      id: game.id,
+      name: game.name,
+      slug: game.slug,
+      released: game.released,
+      background_image: game.background_image,
+      rating: game.rating,
+      platforms: game.platforms?.map(p => p.platform.name).join(', ') || 'Unknown Platform',
+      description: game.description_raw || '',
+      genres: game.genres?.map(g => g.name).join(', ') || '',
+      developers: game.developers?.map(d => d.name).join(', ') || '',
+      publishers: game.publishers?.map(p => p.name).join(', ') || '',
+      screenshots: game.screenshots?.results?.map(s => s.image) || []
+    };
+    
+    res.json({
+      success: true,
+      data: formattedGame
+    });
+  } catch (error) {
+    console.error('Error fetching game details from RAWG API:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch game details from RAWG'
+    });
+  }
+});
+
+app.get('/api/rawg/platforms', async (req, res) => {
+  const apiKey = process.env.RAWG_API_KEY;
+  
+  if (!apiKey) {
+    return res.status(500).json({
+      success: false,
+      message: 'RAWG API key is not configured'
+    });
+  }
+  
+  try {
+    const response = await axios.get(`https://api.rawg.io/api/platforms`, {
+      params: {
+        key: apiKey
+      }
+    });
+    
+    const platforms = response.data.results || [];
+    
+    res.json({
+      success: true,
+      results: platforms
+    });
+  } catch (error) {
+    console.error('Error fetching platforms from RAWG API:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch platform data from RAWG'
+    });
+  }
+});
+
 // Gemini API for game descriptions
 app.post('/api/gemini/game-description', async (req, res) => {
   const { title } = req.body;
@@ -737,7 +914,8 @@ app.get('/api/settings/api-keys', (req, res) => {
       success: true,
       thegamesdbApiKey: envVars.THEGAMESDB_API_KEY || '',
       geminiApiKey: envVars.GEMINI_API_KEY || '',
-      githubPatToken: envVars.GITHUB_PAT_TOKEN || ''
+      githubPatToken: envVars.GITHUB_PAT_TOKEN || '',
+      rawgApiKey: envVars.RAWG_API_KEY || ''
     });
   } catch (error) {
     console.error('Error reading API keys:', error);
@@ -749,7 +927,7 @@ app.get('/api/settings/api-keys', (req, res) => {
 });
 
 app.post('/api/settings/api-keys', (req, res) => {
-  const { thegamesdbApiKey, geminiApiKey, githubPatToken } = req.body;
+  const { thegamesdbApiKey, geminiApiKey, githubPatToken, rawgApiKey } = req.body;
   
   try {
     // Read existing .env file
@@ -762,6 +940,7 @@ app.post('/api/settings/api-keys', (req, res) => {
     envVars.THEGAMESDB_API_KEY = thegamesdbApiKey;
     envVars.GEMINI_API_KEY = geminiApiKey;
     envVars.GITHUB_PAT_TOKEN = githubPatToken;
+    envVars.RAWG_API_KEY = rawgApiKey;
     
     // Convert back to .env format
     envContent = Object.entries(envVars)
@@ -782,6 +961,42 @@ app.post('/api/settings/api-keys', (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to save API keys'
+    });
+  }
+});
+
+// ROM Scanner API
+app.post('/api/scan-folder', (req, res) => {
+  const { folderPath, extensions } = req.body;
+  
+  if (!folderPath) {
+    return res.status(400).json({
+      success: false,
+      message: 'Folder path is required'
+    });
+  }
+  
+  try {
+    // Read the directory contents
+    const files = fs.readdirSync(folderPath);
+    
+    // Filter files by extension if provided
+    const filteredFiles = extensions && extensions.length > 0
+      ? files.filter(file => {
+          const ext = path.extname(file).toLowerCase().substring(1);
+          return extensions.includes(ext);
+        })
+      : files;
+    
+    res.json({
+      success: true,
+      files: filteredFiles
+    });
+  } catch (error) {
+    console.error('Error scanning folder:', error);
+    res.status(500).json({
+      success: false,
+      message: `Error scanning folder: ${error.message}`
     });
   }
 });

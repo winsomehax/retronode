@@ -1,160 +1,147 @@
+/* GamesDB Panel Styles */
+
 .games-db-panel {
   position: fixed;
   top: 0;
-  right: 0;
+  right: -500px;
   width: 500px;
   height: 100vh;
-  background-color: #1e293b;
-  border-left: 1px solid #475569;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+  background-color: var(--color-card);
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  overflow-y: auto;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  font-family: 'Roboto', sans-serif;
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .games-db-panel.open {
-  transform: translateX(0);
+  right: 0;
 }
 
 .games-db-panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background-color: #0f172a;
-  border-bottom: 1px solid #475569;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  padding: 1rem;
+  background-color: var(--color-dark);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .games-db-panel-title {
-  font-size: 18px;
-  font-weight: 500;
-  color: #3b82f6;
+  color: var(--color-primary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
 }
 
 .games-db-panel-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--color-secondary);
+  font-size: 1.5rem;
   cursor: pointer;
-  font-size: 20px;
+  transition: color 0.2s;
 }
 
 .games-db-panel-close:hover {
-  color: #f1f5f9;
+  color: var(--color-primary);
 }
 
 .games-db-panel-content {
-  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
 }
 
 .games-db-panel-search {
-  margin-bottom: 16px;
+  display: flex;
+  margin-bottom: 1rem;
 }
 
 .games-db-panel-search-input {
-  width: 100%;
-  padding: 10px;
-  background-color: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 4px;
-  color: #f1f5f9;
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
+  flex: 1;
+  background-color: var(--color-dark);
+  border: 1px solid var(--color-border);
+  border-right: none;
+  color: var(--color-body);
+  padding: 0.5rem;
+  border-radius: 0.25rem 0 0 0.25rem;
 }
 
 .games-db-panel-search-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  background-color: #3b82f6;
+  background-color: var(--color-primary);
+  color: var(--color-dark);
   border: none;
-  border-radius: 4px;
-  color: white;
-  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0.25rem 0.25rem 0;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  transition: background-color 0.2s;
 }
 
 .games-db-panel-search-button:hover {
-  background-color: #2563eb;
+  background-color: rgba(0, 255, 255, 0.8);
 }
 
-.games-db-panel-results {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
+.games-db-panel-error {
+  background-color: rgba(247, 37, 133, 0.2);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.games-db-panel-loading,
+.games-db-panel-no-results {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--color-body-dim);
 }
 
 .games-db-card {
-  background-color: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 8px;
+  background-color: var(--color-dark);
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
   overflow: hidden;
-  transition: transform 0.2s, border-color 0.2s;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-
-.games-db-card:hover {
-  transform: translateY(-4px);
-  border-color: #3b82f6;
 }
 
 .games-db-card-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #3b82f6;
-  text-align: center;
-  padding: 12px;
-  background-color: #1e293b;
-  border-bottom: 1px solid #334155;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: 'Roboto', sans-serif;
+  color: var(--color-primary);
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .games-db-card-content {
   display: flex;
-  padding: 12px;
+  padding: 0.5rem;
 }
 
 .games-db-card-image {
   width: 80px;
   height: 120px;
   object-fit: cover;
-  border-radius: 4px;
-  background-color: #1e293b;
-  flex-shrink: 0;
+  margin-right: 0.5rem;
 }
 
 .games-db-card-details {
-  margin-left: 12px;
-  flex-grow: 1;
+  flex: 1;
 }
 
 .games-db-card-platform {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-bottom: 4px;
-  font-weight: 500;
+  color: var(--color-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
 }
 
 .games-db-card-release {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-bottom: 8px;
+  color: var(--color-body-dim);
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
 .games-db-card-overview {
-  font-size: 14px;
-  color: #cbd5e1;
+  color: var(--color-body);
+  font-size: 0.9rem;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -162,39 +149,23 @@
 }
 
 .games-db-card-select {
-  display: block;
   width: 100%;
-  padding: 8px;
-  background-color: #3b82f6;
+  background-color: var(--color-primary);
+  color: var(--color-dark);
   border: none;
-  color: white;
-  font-weight: 500;
+  padding: 0.5rem;
   cursor: pointer;
-  text-align: center;
-  margin-top: auto;
-  font-family: 'Roboto', sans-serif;
+  transition: background-color 0.2s;
 }
 
 .games-db-card-select:hover {
-  background-color: #2563eb;
+  background-color: rgba(0, 255, 255, 0.8);
 }
 
-.games-db-panel-loading {
-  text-align: center;
-  padding: 20px;
-  color: #94a3b8;
-}
-
-.games-db-panel-error {
-  color: #ef4444;
-  padding: 12px;
-  background-color: rgba(239, 68, 68, 0.1);
-  border-radius: 4px;
-  margin-bottom: 16px;
-}
-
-.games-db-panel-no-results {
-  text-align: center;
-  padding: 20px;
-  color: #94a3b8;
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .games-db-panel {
+    width: 100%;
+    right: -100%;
+  }
 }

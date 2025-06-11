@@ -493,3 +493,21 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:g
   "modelVersion": "gemini-2.0-flash",
   "responseId": "IIlEaO_pBfuQ1PIPqNma8Aw"
 }
+
+RAWG api
+https://api.rawg.io/docs/#operation/games_list
+
+
+curl "https://api.rawg.io/api/games?search=Witcher&key=76c73dcfbf314c508c60399afc040d9c"
+
+
+
+
+You are the world's leading expert in identifying the name of a retro game from just 
+the platform and rom name. Below is a list of rom names. YOU MUST RETURN ONLY JSON.
+The JSON should contain the full name of the game, a short description of the game, 
+and a field called "success" which is true or false denoting whether you succeeded
+in identifying that rom.
+
+PLATFORM: MAME ROM: 005.zip
+PLATFORM: MAME ROM: 100lions.zip

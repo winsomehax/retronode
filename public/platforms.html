@@ -61,12 +61,6 @@
               <span>Platforms</span>
             </a>
           </li>
-          <li>
-            <a href="/emulators.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
-              <i class="fas fa-desktop mr-3"></i>
-              <span>Emulators</span>
-            </a>
-          </li>
         </ul>
       </nav>
       
@@ -191,6 +185,8 @@
   </div>
 
   <script src="/js/app.js"></script>
+  <script src="/js/emulator-modal.js"></script>
+  <script src="/js/rom-scanner.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Load platforms
@@ -384,6 +380,23 @@
               </div>
             </div>
             <p class="text-body text-sm line-clamp-3">${platform.description || 'No description available'}</p>
+            
+            <div class="mt-4 border-t border-border pt-3">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="text-secondary font-heading text-sm">Emulators</h4>
+                <div>
+                  <button class="scan-roms-btn text-secondary hover:text-primary mr-2" data-platform-id="${id}" title="Scan ROMs">
+                    <i class="fas fa-search"></i>
+                  </button>
+                  <button class="add-emulator-btn text-primary hover:text-secondary" data-platform-id="${id}" title="Add Emulator">
+                    <i class="fas fa-plus-circle"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="emulators-list" data-platform-id="${id}">
+                <p class="text-body-dim text-sm italic">Loading emulators...</p>
+              </div>
+            </div>
           </div>
           <div class="game-card-actions">
             <button class="edit-platform-btn" data-id="${id}" title="Edit">
@@ -412,6 +425,78 @@
           deletePlatform(platformId);
         });
       });
+      
+      // Add event listeners to add emulator buttons
+      document.querySelectorAll('.add-emulator-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const platformId = this.getAttribute('data-platform-id');
+          emulatorModal.show(platformId);
+        });
+      });
+      
+      // Add event listeners to scan ROMs buttons
+      document.querySelectorAll('.scan-roms-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const platformId = this.getAttribute('data-platform-id');
+          const platformName = this.closest('.game-card').querySelector('.game-card-title').textContent;
+          romScanner.show(platformId, platformName);
+        });
+      });
+      
+      // Load emulators for each platform
+      Object.keys(platforms).forEach(platformId => {
+        setTimeout(() => loadEmulatorsForPlatform(platformId), 100);
+      });
+    }
+    
+    // Load emulators for a specific platform
+    function loadEmulatorsForPlatform(platformId) {
+      const emulatorsList = document.querySelector(`.emulators-list[data-platform-id="${platformId}"]`);
+      if (!emulatorsList) return;
+      
+      fetch(`/api/emulators/${platformId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.data.length === 0) {
+              emulatorsList.innerHTML = '<p class="text-body-dim text-sm italic">No emulators configured</p>';
+              return;
+            }
+            
+            let html = '<ul class="space-y-2">';
+            data.data.forEach(emulator => {
+              html += `
+                <li class="flex justify-between items-center">
+                  <span class="text-body text-sm">${emulator.name}</span>
+                  <button class="edit-emulator-btn text-secondary hover:text-primary" 
+                          data-platform-id="${platformId}" 
+                          data-emulator-id="${emulator.emulator_id}" 
+                          title="Edit Emulator">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </li>
+              `;
+            });
+            html += '</ul>';
+            
+            emulatorsList.innerHTML = html;
+            
+            // Add event listeners to edit emulator buttons
+            emulatorsList.querySelectorAll('.edit-emulator-btn').forEach(button => {
+              button.addEventListener('click', function() {
+                const platformId = this.getAttribute('data-platform-id');
+                const emulatorId = this.getAttribute('data-emulator-id');
+                emulatorModal.show(platformId, emulatorId);
+              });
+            });
+          } else {
+            emulatorsList.innerHTML = '<p class="text-accent text-sm">Error loading emulators</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error loading emulators:', error);
+          emulatorsList.innerHTML = '<p class="text-accent text-sm">Error loading emulators</p>';
+        });
     }
     
     // Open platform modal for editing

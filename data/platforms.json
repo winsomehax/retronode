@@ -26,5 +26,12 @@
         "website": "https://fs-uae.net/"
       }
     }
+  },
+  "ps2": {
+    "platform_id": "ps2",
+    "name": "Playstation 2",
+    "manufacturer": "Sony",
+    "release_year": null,
+    "description": ""
   }
 }

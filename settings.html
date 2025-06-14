@@ -4,34 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RetroNode - Settings</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#00ffff',
-            secondary: '#4cc9f0',
-            accent: '#f72585',
-            dark: '#0f0f1b',
-            card: '#1a1a2e',
-            sidebar: '#16213e',
-            border: '#4361ee',
-          },
-          fontSize: {
-            base: '1.05rem',
-          },
-          fontFamily: {
-            sans: ['Roboto', 'system-ui', 'sans-serif'],
-            heading: ['Orbitron', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="/css/retro-theme.css">
+  <link rel="stylesheet" href="css/output.css">
+  <link rel="stylesheet" href="css/retro-theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 </head>
 <body>
   <div class="flex min-h-screen">
@@ -108,6 +85,7 @@
               <select id="romIdentificationModel" class="form-select">
                 <option value="github">GitHub Models (GPT-4.1)</option>
                 <option value="gemini">Google Gemini</option>
+                  <option value="mock">Mock AI (for testing)</option> <!-- Add this line -->
               </select>
               <p class="text-xs text-body-dim mt-1">Select which AI model to use for identifying ROMs</p>
             </div>
@@ -122,7 +100,9 @@
               <span>Open API Keys</span>
             </button>
           </div>
-          
+
+
+
           <!-- Save Button -->
           <div class="flex justify-end">
             <button type="submit" class="btn-primary">Save Settings</button>
@@ -190,6 +170,7 @@
 
   <script src="/js/app.js"></script>
   <script src="/js/settings.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Update stats

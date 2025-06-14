@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroNode</title>
+    <!-- Font Awesome (or your preferred icon library) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Any other head elements like favicons -->
+    <!-- CSS will be handled by Vite through main.js import -->
+</head>
+<body>
+    <!-- Your existing body structure from the old public/index.html -->
+    <!-- Example: -->
+    <!-- <nav>...</nav> -->
+    <!-- <main id="app-content">...</main> -->
+    <!-- <div id="gameModal" class="hidden">...</div> -->
+    <!-- etc. -->
+
+    <!-- Ensure your main application container exists if app.js targets one -->
+    <div id="app">
+ <div class="flex min-h-screen">
+    <!-- Left Sidebar -->
+    <div class="w-64 sidebar flex-shrink-0">
+      <!-- Logo/Header -->
+      <div class="p-6 border-b border-border">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-primary font-heading glow-text mb-0">RetroNode</h1>
+          <p class="text-[10px] text-gray-500 -mt-2">Manage your retro games and ROMs</p>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Navigation</h2>
+        <ul class="space-y-2">
+          <li>
+            <a href="/" class="flex items-center px-3 py-2 text-primary active rounded-md">
+              <i class="fas fa-gamepad mr-3"></i>
+              <span>Games</span>
+            </a>
+          </li>
+          <li>
+            <a href="/platforms.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-microchip mr-3"></i>
+              <span>Platforms</span>
+            </a>
+          </li>
+          <li>
+            <a href="/settings.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-cog mr-3"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Search -->
+      <div class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Search</h2>
+        <div class="mb-4">
+          <input id="searchInput" type="text" class="form-input" placeholder="Search games...">
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Filters</h2>
+        <div class="mb-4">
+          <label for="platformFilter" class="block text-sm font-medium text-body mb-1">Platform</label>
+          <select id="platformFilter" class="form-select w-full">
+            <option value="">All Platforms</option>
+            <!-- Platform options will be loaded dynamically -->
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="sortOption" class="block text-sm font-medium text-body mb-1">Sort By</label>
+          <select id="sortOption" class="form-select w-full">
+            <option value="title_asc">Title (A-Z)</option>
+            <option value="title_desc">Title (Z-A)</option>
+            <option value="platform_asc">Platform (A-Z)</option>
+            <option value="platform_desc">Platform (Z-A)</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Stats -->
+      <div class="p-4">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Stats</h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-body">Total Games:</span>
+            <span id="totalGamesCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Platforms:</span>
+            <span id="totalPlatformsCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Emulators:</span>
+            <span id="totalEmulatorsCount" class="text-primary font-medium">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-primary font-heading glow-text">Games</h1>
+        <button id="addGameBtn" class="btn-primary flex items-center">
+          <i class="fas fa-plus mr-2"></i>
+          <span>Add Game</span>
+        </button>
+      </div>
+      
+      <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        <!-- Games will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Game Modal -->
+  <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+    <div class="modal-content w-full max-w-md mx-4 glow-border flex flex-col max-h-[80vh] overflow-auto">
+      <div class="modal-header flex items-center justify-between p-4">
+        <h3 id="gameModalTitle" class="text-xl font-medium font-heading">Add Game</h3>
+        <button id="closeGameModal" class="text-secondary hover:text-primary">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body flex-1 overflow-y-auto p-4">
+        <form id="gameForm">
+          <input type="hidden" id="gameId">
+          
+          <div class="mb-4">
+            <label for="gameTitle" class="block text-sm font-medium text-body mb-1">Title</label>
+            <input id="gameTitle" type="text" class="form-input" placeholder="Game title" required>
+          </div>
+          
+          <div class="mb-4">
+            <label for="gameDescription" class="block text-sm font-medium text-body mb-1">Description</label>
+            <textarea id="gameDescription" class="form-input" rows="3" placeholder="Game description"></textarea>
+          </div>
+          
+          <div class="mb-4">
+            <label for="gameCover" class="block text-sm font-medium text-body mb-1">Cover Image URL</label>
+            <input id="gameCover" type="text" class="form-input" placeholder="https://example.com/image.jpg">
+          </div>
+          
+          <div class="mb-4">
+            <label for="gamePlatforms" class="block text-sm font-medium text-body mb-1">Platform</label>
+            <select id="gamePlatforms" class="form-select">
+              <!-- Platforms will be loaded dynamically -->
+            </select>
+          </div>
+          
+          <div class="mb-4">
+            <label for="gameRomPath" class="block text-sm font-medium text-body mb-1">ROM Path</label>
+            <input id="gameRomPath" type="text" class="form-input" placeholder="/path/to/rom.ext">
+          </div>
+          
+          <div class="mt-6">
+            <button id="searchGameDbBtn" type="button" class="w-full btn-primary flex items-center justify-center mb-4">
+              <i class="fas fa-database mr-2"></i>Search Game Database
+            </button>
+          </div>
+          <div id="gameDbResults" class="mt-4 bg-card rounded-md hidden"></div>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button type="button" id="cancelGameBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fixed action buttons -->
+  <div class="fixed bottom-8 right-8 flex flex-col space-y-4">
+    <button id="addGameBtnFloat" class="w-14 h-14 bg-accent hover:bg-accent/80 text-white shadow-lg flex items-center justify-center rounded-md" title="Add Game">
+      <i class="fas fa-plus text-xl"></i>
+    </button>
+  </div>
+
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -3,238 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <title>Games Edit Dialog</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .dialog-container { border: 1px solid #ccc; padding: 20px; max-width: 600px; margin: auto; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
-        .form-group input[type="text"], .form-group textarea { width: 95%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-        .form-group textarea { min-height: 80px; }
-        .form-group img { max-width: 150px; height: auto; display: block; margin-top: 5px; }
-        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
-        button:hover { background-color: #0056b3; }
-        #searchResults { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .search-result-item { padding: 5px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
-        .search-result-item:hover { background-color: #f9f9f9; }
-        .error-message { color: red; font-size: 0.9em; margin-top: 5px;}
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/output.css">
+    <link rel="stylesheet" href="css/retro-theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 </head>
-<body>
+<body class="bg-dark text-body p-6">
+    <div class="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-primary font-heading mb-6">Edit Game Details</h2>
 
-<div class="dialog-container">
-    <h2>Edit Game Details</h2>
+        <div class="space-y-6">
+            <div>
+                <label for="gameNameSearch" class="block text-sm font-medium text-body mb-2">Search Game on TheGamesDB:</label>
+                <div class="flex gap-2">
+                    <input type="text" id="gameNameSearch" placeholder="E.g., Zelda" class="form-input flex-grow">
+                    <button onclick="searchGameOnTheGamesDB()" class="btn-primary flex items-center gap-2">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </button>
+                </div>
+                <div id="searchError" class="text-accent text-sm mt-1"></div>
+            </div>
 
-    <div class="form-group">
-        <label for="gameNameSearch">Search Game on TheGamesDB:</label>
-        <input type="text" id="gameNameSearch" placeholder="E.g., Zelda">
-        <button onclick="searchGameOnTheGamesDB()">Search</button>
-        <div id="searchError" class="error-message"></div>
+            <div id="searchResults" class="bg-dark rounded-lg p-4 hidden">
+                <!-- Search results will be listed here -->
+            </div>
+
+            <hr class="border-border">
+
+            <div class="space-y-4">
+                <div>
+                    <label for="gameId" class="block text-sm font-medium text-body mb-2">Game ID (from TheGamesDB):</label>
+                    <input type="text" id="gameId" readonly class="form-input bg-dark/50">
+                </div>
+                <div>
+                    <label for="gameTitle" class="block text-sm font-medium text-body mb-2">Title:</label>
+                    <input type="text" id="gameTitle" class="form-input">
+                </div>
+                <div>
+                    <label for="releaseDate" class="block text-sm font-medium text-body mb-2">Release Date:</label>
+                    <input type="text" id="releaseDate" class="form-input">
+                </div>
+                <div>
+                    <label for="platformName" class="block text-sm font-medium text-body mb-2">Platform:</label>
+                    <input type="text" id="platformName" class="form-input">
+                </div>
+                <div>
+                    <label for="overview" class="block text-sm font-medium text-body mb-2">Overview:</label>
+                    <textarea id="overview" class="form-input min-h-[150px]"></textarea>
+                    <button onclick="generateOverviewWithGemini()" class="btn-secondary mt-2 flex items-center gap-2">
+                        <i class="fas fa-robot"></i>
+                        <span>Generate Overview with AI</span>
+                    </button>
+                    <div id="geminiError" class="text-accent text-sm mt-1"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-body mb-2">Boxart:</label>
+                    <img id="boxartImage" src="" alt="Boxart Preview" class="max-w-[200px] rounded-lg shadow-lg hidden">
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+                <button onclick="saveGameDetails()" class="btn-primary flex items-center gap-2">
+                    <i class="fas fa-save"></i>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </div>
     </div>
-    <div id="searchResults">
-        <!-- Search results will be listed here -->
-    </div>
 
-    <hr>
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+    <script>
+        // API Keys are no longer stored here. They are on the backend.
+        let allGamesDBData = null; // To store the full API response for later use
 
-    <div class="form-group">
-        <label for="gameId">Game ID (from TheGamesDB):</label>
-        <input type="text" id="gameId" readonly>
-    </div>
-    <div class="form-group">
-        <label for="gameTitle">Title:</label>
-        <input type="text" id="gameTitle">
-    </div>
-    <div class="form-group">
-        <label for="releaseDate">Release Date:</label>
-        <input type="text" id="releaseDate">
-    </div>
-    <div class="form-group">
-        <label for="platformName">Platform:</label>
-        <input type="text" id="platformName">
-    </div>
-    <div class="form-group">
-        <label for="overview">Overview:</label>
-        <textarea id="overview"></textarea>
-        <button onclick="generateOverviewWithGemini()">Generate Overview with AI</button>
-        <div id="geminiError" class="error-message"></div>
-    </div>
-    <div class="form-group">
-        <label>Boxart:</label>
-        <img id="boxartImage" src="" alt="Boxart Preview">
-    </div>
+        // --- TheGamesDB Integration ---
+        async function searchGameOnTheGamesDB() {
+            const gameName = document.getElementById('gameNameSearch').value;
+            const searchResultsDiv = document.getElementById('searchResults');
+            const searchErrorDiv = document.getElementById('searchError');
+            searchResultsDiv.innerHTML = '<div class="text-center text-secondary"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</div>';
+            searchResultsDiv.classList.remove('hidden');
+            searchErrorDiv.textContent = '';
 
-    <button onclick="saveGameDetails()">Save Changes (Locally)</button>
-</div>
-
-<script>
-    // API Keys are no longer stored here. They are on the backend.
-    let allGamesDBData = null; // To store the full API response for later use
-
-    // --- TheGamesDB Integration ---
-    async function searchGameOnTheGamesDB() {
-        const gameName = document.getElementById('gameNameSearch').value;
-        const searchResultsDiv = document.getElementById('searchResults');
-        const searchErrorDiv = document.getElementById('searchError');
-        searchResultsDiv.innerHTML = 'Searching...';
-        searchErrorDiv.textContent = '';
-
-        if (!gameName) {
-            searchResultsDiv.innerHTML = 'Please enter a game name to search.';
-            return;
-        }
-
-        const fields = 'overview,players,publishers,genres,platform,release_date';
-        const include = 'boxart,platform';
-        // Call your backend proxy instead of TheGamesDB directly
-        const url = `/api/thegamesdb/search?name=${encodeURIComponent(gameName)}&fields=${encodeURIComponent(fields)}&include=${encodeURIComponent(include)}`;
-
-        try {
-            const response = await fetch(url);
-            allGamesDBData = await response.json(); // Store the full response
-
-            if (!response.ok) {
-                 throw new Error(`API error: ${response.status} - ${allGamesDBData.message || 'Failed to fetch data'}`);
+            if (!gameName) {
+                searchResultsDiv.innerHTML = '<div class="text-center text-body-dim">Please enter a game name to search.</div>';
+                return;
             }
 
-            if (allGamesDBData.code === 200 && allGamesDBData.data && allGamesDBData.data.games && allGamesDBData.data.games.length > 0) {
-                // TheGamesDB API includes platform data under `allGamesDBData.include.platform.data`
-                displaySearchResults(allGamesDBData.data.games, allGamesDBData.include.platform.data);
-            } else if (allGamesDBData.data && allGamesDBData.data.games && allGamesDBData.data.games.length === 0) {
-                searchResultsDiv.innerHTML = 'No games found for that name.';
-            } else {
-                searchResultsDiv.innerHTML = 'Could not retrieve game data. Check console for details.';
-                console.error("TheGamesDB API response issue:", allGamesDBData);
-                searchErrorDiv.textContent = allGamesDBData.message || 'Unknown error from TheGamesDB proxy.';
-            }
-        } catch (error) {
-            console.error('Error fetching from TheGamesDB proxy:', error);
-            searchResultsDiv.innerHTML = `Failed to fetch game data.`;
-            searchErrorDiv.textContent = error.message;
-        }
-    }
+            const fields = 'overview,players,publishers,genres,platform,release_date';
+            const include = 'boxart,platform';
+            const url = `/api/thegamesdb/games?name=${encodeURIComponent(gameName)}&fields=${encodeURIComponent(fields)}&include=${encodeURIComponent(include)}`;
 
-    function displaySearchResults(games, platformsData) {
-        const searchResultsDiv = document.getElementById('searchResults');
-        searchResultsDiv.innerHTML = '<strong>Select a game:</strong>';
-        const ul = document.createElement('ul');
-        ul.style.listStyleType = 'none';
-        ul.style.paddingLeft = '0';
+            try {
+                const response = await fetch(url);
+                allGamesDBData = await response.json();
 
-        games.forEach((game, index) => {
-            const li = document.createElement('li');
-            li.classList.add('search-result-item');
-            let platformName = 'N/A';
-            // TheGamesDB returns platform ID in game object, and platform details in include.platform.data
-            if (game.platform && platformsData && platformsData[game.platform]) {
-                platformName = platformsData[game.platform].name;
-            }
-            li.textContent = `${game.game_title} (Platform: ${platformName}, Release: ${game.release_date || 'N/A'})`;
-            li.onclick = () => populateDialogWithGameData(index);
-            ul.appendChild(li);
-        });
-        searchResultsDiv.appendChild(ul);
-    }
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} - ${allGamesDBData.message || 'Failed to fetch data'}`);
+                }
 
-    function populateDialogWithGameData(gameIndex) {
-        if (!allGamesDBData || !allGamesDBData.data.games[gameIndex]) return;
-
-        const game = allGamesDBData.data.games[gameIndex];
-        const boxartIncludeData = allGamesDBData.include.boxart;
-        const platformIncludeData = allGamesDBData.include.platform.data;
-
-        document.getElementById('gameId').value = game.id || '';
-        document.getElementById('gameTitle').value = game.game_title || '';
-        document.getElementById('releaseDate').value = game.release_date || '';
-        document.getElementById('overview').value = game.overview || '';
-
-        let platformName = 'N/A';
-        if (game.platform && platformIncludeData && platformIncludeData[game.platform]) {
-            platformName = platformIncludeData[game.platform].name;
-        }
-        document.getElementById('platformName').value = platformName;
-
-        const boxartImageElement = document.getElementById('boxartImage');
-        boxartImageElement.src = '';
-        boxartImageElement.style.display = 'none';
-
-        if (boxartIncludeData && boxartIncludeData.data && boxartIncludeData.data[game.id]) {
-            const gameBoxarts = boxartIncludeData.data[game.id];
-            const frontBoxart = gameBoxarts.find(b => b.side === 'front');
-            if (frontBoxart && boxartIncludeData.base_url) {
-                const boxartUrl = `${boxartIncludeData.base_url.medium}${frontBoxart.filename}`;
-                boxartImageElement.src = boxartUrl;
-                boxartImageElement.style.display = 'block';
+                if (allGamesDBData.code === 200 && allGamesDBData.data && allGamesDBData.data.games && allGamesDBData.data.games.length > 0) {
+                    displaySearchResults(allGamesDBData.data.games, allGamesDBData.include.platform.data);
+                } else if (allGamesDBData.data && allGamesDBData.data.games && allGamesDBData.data.games.length === 0) {
+                    searchResultsDiv.innerHTML = '<div class="text-center text-body-dim">No games found for that name.</div>';
+                } else {
+                    searchResultsDiv.innerHTML = '<div class="text-center text-body-dim">Could not retrieve game data. Check console for details.</div>';
+                    console.error("TheGamesDB API response issue:", allGamesDBData);
+                    searchErrorDiv.textContent = allGamesDBData.message || 'Unknown error from TheGamesDB proxy.';
+                }
+            } catch (error) {
+                console.error('Error fetching from TheGamesDB proxy:', error);
+                searchResultsDiv.innerHTML = '<div class="text-center text-accent">Failed to fetch game data.</div>';
+                searchErrorDiv.textContent = error.message;
             }
         }
-        document.getElementById('searchResults').innerHTML = '';
-        document.getElementById('searchError').textContent = '';
-    }
 
-    // --- Gemini API Integration ---
-    async function generateOverviewWithGemini() {
-        const gameTitle = document.getElementById('gameTitle').value;
-        const platformName = document.getElementById('platformName').value;
-        const releaseDate = document.getElementById('releaseDate').value;
-        const overviewTextarea = document.getElementById('overview');
-        const geminiErrorDiv = document.getElementById('geminiError');
-        geminiErrorDiv.textContent = '';
+        function displaySearchResults(games, platformsData) {
+            const searchResultsDiv = document.getElementById('searchResults');
+            searchResultsDiv.innerHTML = '<div class="text-lg font-medium text-primary mb-4">Select a game:</div>';
+            const ul = document.createElement('ul');
+            ul.className = 'space-y-2';
 
-        if (!gameTitle) {
-            geminiErrorDiv.textContent = 'Please ensure the game title is filled.';
-            return;
-        }
-
-        let promptText = `Write a short, engaging overview (around 2-3 sentences) for the video game titled "${gameTitle}. Be opinionated, friendly and creative. Only use plain text and NOT Markdown.".`;
-        if (platformName && platformName !== 'N/A') promptText += ` It was released for the ${platformName}`;
-        if (releaseDate) promptText += ` around ${releaseDate}`;
-        promptText += `. Focus on its key appeal or genre.`;
-
-        overviewTextarea.placeholder = "Generating with AI...";
-        const url = `/api/gemini/generate-overview`; // Call your backend proxy
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+            games.forEach((game, index) => {
+                const li = document.createElement('li');
+                li.className = 'p-3 bg-dark/50 rounded-lg hover:bg-dark cursor-pointer transition-colors';
+                let platformName = 'N/A';
+                if (game.platform && platformsData && platformsData[game.platform]) {
+                    platformName = platformsData[game.platform].name;
+                }
+                li.innerHTML = `
+                    <div class="font-medium text-primary">${game.game_title}</div>
+                    <div class="text-sm text-body-dim">
+                        <span class="mr-2">Platform: ${platformName}</span>
+                        <span>Release: ${game.release_date || 'N/A'}</span>
+                    </div>
+                `;
+                li.onclick = () => populateDialogWithGameData(index);
+                ul.appendChild(li);
             });
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(`Gemini API error: ${response.status} - ${data.message || (data.error ? data.error.message : 'Failed to generate')}`);
-            }
-
-            if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                overviewTextarea.value = data.candidates[0].content.parts[0].text.trim();
-            } else {
-                throw new Error('Could not parse AI response.');
-            }
-        } catch (error) {
-            console.error('Error calling Gemini API proxy:', error);
-            geminiErrorDiv.textContent = error.message;
-        } finally {
-            overviewTextarea.placeholder = "";
+            searchResultsDiv.appendChild(ul);
         }
-    }
 
-    // --- Save Functionality (Placeholder) ---
-    function saveGameDetails() {
-        const gameDetails = {
-            id: document.getElementById('gameId').value,
-            title: document.getElementById('gameTitle').value,
-            releaseDate: document.getElementById('releaseDate').value,
-            platform: document.getElementById('platformName').value,
-            overview: document.getElementById('overview').value,
-            boxartUrl: document.getElementById('boxartImage').src
-        };
-        console.log('Saving Game Details (to be sent to backend):', gameDetails);
-        alert('Game details (see console) would be sent to your backend for saving to games.json or database.');
-        // In a real app, you'd POST this to an endpoint like `/api/games` or `/api/games/:id`
-    }
+        function populateDialogWithGameData(gameIndex) {
+            if (!allGamesDBData || !allGamesDBData.data.games[gameIndex]) return;
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('boxartImage').style.display = 'none';
-    });
-</script>
+            const game = allGamesDBData.data.games[gameIndex];
+            const boxartIncludeData = allGamesDBData.include.boxart;
+            const platformIncludeData = allGamesDBData.include.platform.data;
 
+            document.getElementById('gameId').value = game.id || '';
+            document.getElementById('gameTitle').value = game.game_title || '';
+            document.getElementById('releaseDate').value = game.release_date || '';
+            document.getElementById('overview').value = game.overview || '';
+
+            let platformName = 'N/A';
+            if (game.platform && platformIncludeData && platformIncludeData[game.platform]) {
+                platformName = platformIncludeData[game.platform].name;
+            }
+            document.getElementById('platformName').value = platformName;
+
+            const boxartImageElement = document.getElementById('boxartImage');
+            boxartImageElement.src = '';
+            boxartImageElement.classList.add('hidden');
+
+            if (boxartIncludeData && boxartIncludeData.data && boxartIncludeData.data[game.id]) {
+                const gameBoxarts = boxartIncludeData.data[game.id];
+                const frontBoxart = gameBoxarts.find(b => b.side === 'front');
+                if (frontBoxart && boxartIncludeData.base_url) {
+                    const boxartUrl = `${boxartIncludeData.base_url.medium}${frontBoxart.filename}`;
+                    boxartImageElement.src = boxartUrl;
+                    boxartImageElement.classList.remove('hidden');
+                }
+            }
+            document.getElementById('searchResults').classList.add('hidden');
+            document.getElementById('searchError').textContent = '';
+        }
+
+        // --- Gemini API Integration ---
+        async function generateOverviewWithGemini() {
+            const gameTitle = document.getElementById('gameTitle').value;
+            const platformName = document.getElementById('platformName').value;
+            const releaseDate = document.getElementById('releaseDate').value;
+            const overviewTextarea = document.getElementById('overview');
+            const geminiErrorDiv = document.getElementById('geminiError');
+            geminiErrorDiv.textContent = '';
+
+            if (!gameTitle) {
+                geminiErrorDiv.textContent = 'Please ensure the game title is filled.';
+                return;
+            }
+
+            let promptText = `Write a short, engaging overview (around 2-3 sentences) for the video game titled "${gameTitle}. Be opinionated, friendly and creative. Only use plain text and NOT Markdown.".`;
+            if (platformName && platformName !== 'N/A') promptText += ` It was released for the ${platformName}`;
+            if (releaseDate) promptText += ` around ${releaseDate}`;
+            promptText += `. Focus on its key appeal or genre.`;
+
+            overviewTextarea.placeholder = "Generating with AI...";
+            const url = `/api/gemini/generate-overview`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(`Gemini API error: ${response.status} - ${data.message || (data.error ? data.error.message : 'Failed to generate')}`);
+                }
+
+                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                    overviewTextarea.value = data.candidates[0].content.parts[0].text.trim();
+                } else {
+                    throw new Error('Could not parse AI response.');
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API proxy:', error);
+                geminiErrorDiv.textContent = error.message;
+            } finally {
+                overviewTextarea.placeholder = "";
+            }
+        }
+
+        // --- Save Functionality ---
+        async function saveGameDetails() {
+            const gameId = document.getElementById('gameId').value;
+            const gameDetails = {
+                title: document.getElementById('gameTitle').value,
+                description: document.getElementById('overview').value,
+                releaseDate: document.getElementById('releaseDate').value,
+                platform: document.getElementById('platformName').value,
+                coverUrl: document.getElementById('boxartImage').src
+            };
+
+            if (!gameDetails.title) {
+                alert('Please enter a game title');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/games/${gameId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gameDetails)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to save game details');
+                }
+
+                if (data.success) {
+                    alert('Game details saved successfully!');
+                    // Optionally close dialog or refresh parent window
+                    if (window.opener) {
+                        window.opener.location.reload();
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to save game details');
+                }
+            } catch (error) {
+                console.error('Error saving game details:', error);
+                alert(`Error saving game details: ${error.message}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('boxartImage').classList.add('hidden');
+        });
+    </script>
 </body>
 </html>

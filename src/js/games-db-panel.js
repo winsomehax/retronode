@@ -1,5 +1,6 @@
 // TheGamesDB Panel Manager
-class GamesDBPanel extends ApiPanel {
+import ApiPanel from './api-panel.js';
+export default class GamesDBPanel extends ApiPanel {
   constructor() {
     super('gamesDBPanel', 'TheGamesDB Search Results');
   }
@@ -122,6 +123,3 @@ class GamesDBPanel extends ApiPanel {
     this.hide();
   }
 }
-
-// Initialize the GamesDB panel
-const gamesDBPanel = new GamesDBPanel();

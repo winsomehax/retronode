@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             theGamesDbResultsDiv.innerHTML = '';
 
             try {
-                const response = await fetch(`/api/thegamesdb/search?name=${encodeURIComponent(title)}`);
+                const response = await fetch(`/api/thegamesdb/games?name=${encodeURIComponent(title)}`);
                 loadingMessage.style.display = 'none';
 
                 if (!response.ok) {

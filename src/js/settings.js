@@ -1,28 +1,23 @@
 // Settings management for RetroNode
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize settings
-  initializeSettings();
-  
-  // Add event listener for the settings form
-  const settingsForm = document.getElementById('settingsForm');
-  if (settingsForm) {
-    settingsForm.addEventListener('submit', saveSettings);
-  }
-});
-
 // Initialize settings from localStorage
-function initializeSettings() {
+export function initializeSettings() {
   // ROM identification model preference
   const modelPreference = localStorage.getItem('romIdentificationModel') || 'github';
   const modelSelect = document.getElementById('romIdentificationModel');
   if (modelSelect) {
     modelSelect.value = modelPreference;
   }
+
+  // Add event listener for the settings form
+  const settingsForm = document.getElementById('settingsForm');
+  if (settingsForm) {
+    settingsForm.addEventListener('submit', saveSettings);
+  }
 }
 
 // Save settings to localStorage
-function saveSettings(e) {
+export function saveSettings(e) {
   if (e) e.preventDefault();
   
   // ROM identification model preference
@@ -36,6 +31,6 @@ function saveSettings(e) {
 }
 
 // Get a setting value with default
-function getSetting(key, defaultValue) {
+export function getSetting(key, defaultValue) {
   return localStorage.getItem(key) || defaultValue;
 }

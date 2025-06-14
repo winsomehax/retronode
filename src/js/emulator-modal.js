@@ -1,6 +1,7 @@
 // Emulator Modal Manager
+import { loadEmulatorsForPlatform, updateStats, loadPlatforms } from './app.js';
 
-class EmulatorModal {
+export default class EmulatorModal {
   constructor() {
     this.createModal();
     this.setupEventListeners();
@@ -192,6 +193,3 @@ class EmulatorModal {
     document.getElementById('emulatorModal').classList.add('hidden');
   }
 }
-
-// Initialize the emulator modal
-const emulatorModal = new EmulatorModal();

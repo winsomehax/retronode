@@ -4,47 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Game</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-        textarea { min-height: 100px; }
-        .title-container { display: flex; align-items: center; gap: 10px; }
-        .title-container input[type="text"] { flex-grow: 1; }
-        button { padding: 8px 15px; cursor: pointer; }
-        #loadingMessage { color: blue; }
-        #errorMessage { color: red; }
-        #theGamesDbResultsContainer { margin-top: 15px; border: 1px solid #ccc; padding: 10px; max-height: 300px; overflow-y: auto; }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/output.css">
+    <link rel="stylesheet" href="css/retro-theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 </head>
-<body>
-    <h1>Edit Game Details</h1>
-    <div class="form-group">
-        <label for="gameTitle">Game Title:</label>
-        <div class="title-container">
-            <input type="text" id="gameTitle" name="title" placeholder="e.g., Super Mario Bros.">
-            <button id="searchTheGamesDBBtn" title="Search TheGamesDB for structured info">Search TheGamesDB</button>
-            <button id="searchGeminiBtn" title="Search Gemini for a general description">Search Gemini</button>
+<body class="bg-dark text-body p-6">
+    <h1 class="text-2xl font-bold text-primary font-heading mb-6">Edit Game Details</h1>
+    <div class="space-y-6">
+        <div>
+            <label for="gameTitle" class="block text-sm font-medium text-body mb-2">Game Title:</label>
+            <div class="flex gap-2">
+                <input type="text" id="gameTitle" name="title" placeholder="e.g., Super Mario Bros." 
+                       class="form-input flex-grow">
+                <button id="searchTheGamesDBBtn" title="Search TheGamesDB for structured info" 
+                        class="btn-primary flex items-center gap-2">
+                    <i class="fas fa-database"></i>
+                    <span>TheGamesDB</span>
+                </button>
+                <button id="searchGeminiBtn" title="Search Gemini for a general description" 
+                        class="btn-secondary flex items-center gap-2">
+                    <i class="fas fa-robot"></i>
+                    <span>Gemini</span>
+                </button>
+            </div>
+        </div>
+        <div>
+            <label for="gameDescription" class="block text-sm font-medium text-body mb-2">Description:</label>
+            <textarea id="gameDescription" name="description" placeholder="Game description will appear here..." 
+                      class="form-input min-h-[150px]"></textarea>
+        </div>
+        <div>
+            <label for="gameCoverUrl" class="block text-sm font-medium text-body mb-2">Cover Image URL:</label>
+            <input type="url" id="gameCoverUrl" name="coverUrl" placeholder="e.g., https://example.com/cover.jpg" 
+                   class="form-input">
         </div>
     </div>
-    <div class="form-group">
-        <label for="gameDescription">Description:</label>
-        <textarea id="gameDescription" name="description" placeholder="Game description will appear here..."></textarea>
-    </div>
-    <div class="form-group">
-        <label for="gameCoverUrl">Cover Image URL:</label>
-        <input type="url" id="gameCoverUrl" name="coverUrl" placeholder="e.g., https://example.com/cover.jpg">
-    </div>
 
-    <div id="loadingMessage" style="display:none;">Searching...</div>
-    <div id="errorMessage" style="display:none;"></div>
-    <div id="theGamesDbResultsContainer" style="display:none;">
-        <h4>TheGamesDB Results:</h4>
-        <div id="theGamesDbResults"></div>
+    <div id="loadingMessage" class="hidden mt-4 text-secondary">
+        <i class="fas fa-spinner fa-spin mr-2"></i>Searching...
     </div>
-
+    <div id="errorMessage" class="hidden mt-4 text-accent"></div>
+    <div id="theGamesDbResultsContainer" class="hidden mt-6 bg-card rounded-lg p-4">
+        <h4 class="text-lg font-medium text-primary font-heading mb-4">TheGamesDB Results:</h4>
+        <div id="theGamesDbResults" class="space-y-4"></div>
+    </div>
 
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
 </body>
 </html>

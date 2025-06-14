@@ -1,6 +1,6 @@
 // Gemini Window Manager
 
-class GeminiWindow {
+export default class GeminiWindow {
   constructor() {
     this.createWindow();
     this.setupEventListeners();
@@ -90,6 +90,3 @@ class GeminiWindow {
     this.hide();
   }
 }
-
-// Initialize the Gemini window
-const geminiWindow = new GeminiWindow();

@@ -1,14 +1,87 @@
+import '../css/main.css'; // Import the main CSS file
 // Main application script
+import EmulatorModal from './emulator-modal.js';
+import RomScanner from './rom-scanner.js';
+import GamesDBPanel from './games-db-panel.js';
+import RawgPanel from './rawg-panel.js';
+import GeminiWindow from './gemini-window.js';
+import { initializeSettings } from './settings.js';
+// API functions are typically called directly, no need to import all if not re-exporting
+// import * as api from './api.js';
+
+// Main application script
+let appInitialized = false;
+console.log('app.js loaded, appInitialized:', appInitialized);
+
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize the application
-  initApp();
+  console.log('DOMContentLoaded event fired. appInitialized:', appInitialized);
+  if (!appInitialized) {
+    console.log('Initializing app...');
+    initApp();
+    appInitialized = true;
+    console.log('App initialized state set to true.');
+  }
+
+  // Instantiate and make available globally if necessary (or pass as dependencies)
+  // These are instantiated after initApp which might set up some DOM elements they depend on.
+  window.emulatorModal = new EmulatorModal();
+  window.romScanner = new RomScanner();
+  window.gamesDBPanel = new GamesDBPanel();
+  window.rawgPanel = new RawgPanel();
+  window.geminiWindow = new GeminiWindow();
+// Game form submission handler
+const gameForm = document.getElementById('gameForm');
+if (gameForm) {
+  gameForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const gameId = document.getElementById('gameId').value;
+    const title = document.getElementById('gameTitle').value;
+    const description = document.getElementById('gameDescription').value;
+    const cover_image_path = document.getElementById('gameCover').value;
+    // Platforms: collect selected platforms and ROM path
+    const platformSelect = document.getElementById('gamePlatforms');
+    const romPath = document.getElementById('gameRomPath').value;
+    let platforms = {};
+    if (platformSelect && romPath) {
+      Array.from(platformSelect.selectedOptions).forEach(option => {
+        platforms[option.value] = { path: romPath };
+      });
+    }
+    const payload = {
+      title,
+      description,
+      cover_image_path,
+      platforms
+    };
+    let url = '/api/games';
+    let method = 'POST';
+    if (gameId) {
+      url = `/api/games/${gameId}`;
+      method = 'PUT';
+    }
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('gameModal').classList.add('hidden');
+      loadGames();
+      updateStats();
+    } else {
+      alert(data.message || 'Failed to save game');
+    }
+  });
+}
 });
 
 function initApp() {
   // Load initial data
-  loadGames();
+  loadGames('', '', false);
   loadPlatforms();
   updateStats();
+  initializeSettings();
   
   // Set up event listeners
   setupEventListeners();
@@ -20,7 +93,7 @@ function setupEventListeners() {
   if (searchInput) {
     searchInput.addEventListener('input', function() {
       const searchTerm = this.value.trim();
-      loadGames(searchTerm, document.getElementById('platformFilter')?.value);
+      loadGames(searchTerm, document.getElementById('platformFilter')?.value, false);
     });
   }
   
@@ -30,7 +103,7 @@ function setupEventListeners() {
     platformFilter.addEventListener('change', function() {
       const platformId = this.value;
       const searchTerm = document.getElementById('searchInput')?.value.trim() || '';
-      loadGames(searchTerm, platformId);
+      loadGames(searchTerm, platformId, false);
     });
   }
   
@@ -51,6 +124,14 @@ function setupEventListeners() {
     });
   }
   
+  // Add game button (floating)
+  const addGameBtnFloat = document.getElementById('addGameBtnFloat');
+  if (addGameBtnFloat) {
+    addGameBtnFloat.addEventListener('click', function() {
+      openGameModal();
+    });
+  }
+
   // Add platform button
   const addPlatformBtn = document.getElementById('addPlatformBtn');
   if (addPlatformBtn) {
@@ -136,38 +217,197 @@ function setupEventListeners() {
       }
     });
   }
+
+  // Close game modal buttons
+  const closeGameModalBtn = document.getElementById('closeGameModal');
+  if (closeGameModalBtn) {
+    closeGameModalBtn.addEventListener('click', function() {
+      document.getElementById('gameModal').classList.add('hidden');
+    });
+  }
+
+  const cancelGameBtn = document.getElementById('cancelGameBtn');
+  if (cancelGameBtn) {
+    cancelGameBtn.addEventListener('click', function() {
+      document.getElementById('gameModal').classList.add('hidden');
+    });
+  }
+
+  // Search game database button in the modal
+  const searchGameDbBtn = document.getElementById('searchGameDbBtn');
+  if (searchGameDbBtn) {
+    searchGameDbBtn.addEventListener('click', function() {
+      const title = document.getElementById('gameTitle').value.trim();
+      if (!title) {
+        alert('Please enter a game title to search');
+        return;
+      }
+
+      const resultsContainer = document.getElementById('gameDbResults');
+      resultsContainer.classList.remove('hidden');
+      resultsContainer.innerHTML = '<div class="p-4 text-center text-body">Searching...</div>';
+
+      fetch(`/api/thegamesdb/games?name=${encodeURIComponent(title)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.results && data.results.length > 0) {
+            let html = '<div class="p-4">';
+            data.results.forEach(game => {
+              html += `
+                <div class="bg-dark p-3 mb-3 rounded-md">
+                  <div class="flex">
+                    <div class="w-12 h-12 bg-card rounded-md flex items-center justify-center mr-3">
+                      <i class="fas fa-gamepad text-primary text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                      <h4 class="text-primary font-medium font-heading">${game.game_title}</h4>
+                      <p class="text-secondary text-sm">Platform: ${game.platform_name || game.platform || 'Unknown'}</p>
+                      <p class="text-body text-sm mt-2">${game.overview ? (game.overview.substring(0, 100) + '...') : 'No description available'}</p>
+                    </div>
+                  </div>
+                  <div class="mt-3 flex justify-end">
+                    <button class="btn-primary text-sm import-game-btn" data-game-id="${game.id}" data-title="${game.game_title}" data-overview="${game.overview || ''}" data-cover="${game.boxart_url || ''}">Import</button>
+                  </div>
+                </div>`;
+            });
+            html += '</div>';
+            resultsContainer.innerHTML = html;
+
+            resultsContainer.querySelectorAll('.import-game-btn').forEach(button => {
+              button.addEventListener('click', function() {
+                document.getElementById('gameTitle').value = this.dataset.title;
+                document.getElementById('gameDescription').value = this.dataset.overview;
+                document.getElementById('gameCover').value = this.dataset.cover;
+                resultsContainer.classList.add('hidden');
+              });
+            });
+          } else {
+            resultsContainer.innerHTML = '<div class="p-4 text-center text-body">No results found</div>';
+          }
+        })
+        .catch(error => {
+          console.error('Error searching game database:', error);
+          resultsContainer.innerHTML = '<div class="p-4 text-center text-accent">Error searching game database</div>';
+        });
+    });
+  }
 }
 
+let isGamesLoading = false;
+
 // Load games from API
-async function loadGames(search = '', platform = '') {
+export async function loadGames(search = '', platform = '', test = false) {
+  console.log(`loadGames called. search: "${search}", platform: "${platform}", test: ${test}. isGamesLoading: ${isGamesLoading}`);
   const gamesGrid = document.getElementById('gamesGrid');
   if (!gamesGrid) return;
+
+  if (isGamesLoading) {
+    console.warn('loadGames: Already loading games. Skipping this call.');
+    return;
+  }
+  isGamesLoading = true;
+  
+  // Show loading state
+  gamesGrid.innerHTML = `
+    <div class="col-span-full flex justify-center items-center py-8">
+      <div class="text-primary">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+        <span class="ml-3">Loading games...</span>
+      </div>
+    </div>
+  `;
+  console.log('loadGames: Spinner shown, gamesGrid cleared (1st time).');
   
   try {
-    let url = `/api/games?limit=100`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-    if (platform) url += `&platform=${encodeURIComponent(platform)}`;
+    console.log('loadGames: Starting game fetch.');
+    // Make sure we're not using test data
+    let url;
+    if (test) {
+      // If test is true, construct a URL for test data.
+      // The API handles a 'count' parameter if 'test=true'.
+      url = `/api/games?test=true`;
+      // Example: if you want to control the number of test items, you could add:
+      // url += `&count=5`; 
+    } else {
+      // Normal operation: fetch actual games
+      const queryParams = new URLSearchParams();
+      if (search) queryParams.append('search', search);
+      if (platform) queryParams.append('platform', platform);
+      // The API defaults to a limit (e.g., 20). If you need to specify a different limit:
+      // queryParams.append('limit', '50'); 
+      url = `/api/games${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+    }
     
+    console.log(`loadGames: Fetching from URL: ${url}`);
     const response = await fetch(url);
     const data = await response.json();
     
     if (data.success) {
-      // Convert object to array with IDs
-      const gamesArray = Object.entries(data.data).map(([id, game]) => ({
-        id,
-        ...game
-      }));
-      renderGames(gamesArray);
+      console.log('loadGames: Game fetch successful.', data);
+      // Clear loading state
+      gamesGrid.innerHTML = '';
+      console.log('loadGames: gamesGrid cleared (2nd time).');
+      
+      // Convert array items to game objects and ensure uniqueness by ID
+      const gamesArray = Array.isArray(data.data) ? data.data : [];
+      const uniqueGames = gamesArray.reduce((acc, game) => {
+        if (!acc.some(g => g.id === game.id)) {
+          acc.push(game);
+        }
+        return acc;
+      }, []);
+      console.log('loadGames: Unique games processed:', uniqueGames.length, uniqueGames);
+      
+      // Directly render game cards without calling renderGames
+      if (uniqueGames.length === 0) {
+        gamesGrid.innerHTML = '<div class="col-span-full text-center text-body py-8">No games found matching your criteria.</div>';
+        // No need to set isGamesLoading = false here; finally block will handle it.
+        return; // Exits before platform fetch
+      }
+      
+      // Fetch all platforms once to avoid multiple requests
+      fetch('/api/platforms')
+        .then(response => response.json())
+        .then(platformData => {
+          const platforms = platformData.success ? platformData.data : {};
+          console.log('loadGames: Platform data fetched. Calling renderGameCards.', platforms);
+          renderGameCards(uniqueGames, gamesGrid, platforms);
+        })
+        .catch(error => {
+          console.error('Error fetching platforms:', error);
+          // Render without platform names
+          console.log('loadGames: Platform fetch failed. Calling renderGameCards with empty platforms.');
+          renderGameCards(uniqueGames, gamesGrid, {});
+        })
+        // The isGamesLoading flag is now handled by the outer try/finally block
+        // .finally(() => {
+        //   isGamesLoading = false; 
+        // });
     } else {
       console.error('Error loading games:', data.message);
+      gamesGrid.innerHTML = `
+        <div class="col-span-full text-center text-accent py-8">
+          Error loading games: ${data.message || 'Unknown error'}
+        </div>
+      `;
+      // No need to set isGamesLoading = false here; finally block will handle it.
     }
   } catch (error) {
     console.error('Error loading games:', error);
+    gamesGrid.innerHTML = `
+      <div class="col-span-full text-center text-accent py-8">
+        Error loading games: ${error.message || 'Unknown error'}
+      </div>
+    `;
+    // No need to set isGamesLoading = false here; finally block will handle it.
+  } finally {
+    isGamesLoading = false;
+    console.log('loadGames: Execution finished. isGamesLoading set to false.');
   }
 }
 
 // Load platforms from API
-async function loadPlatforms() {
+export async function loadPlatforms() {
   const platformFilter = document.getElementById('platformFilter');
   const platformsContainer = document.getElementById('platformsContainer');
   
@@ -203,7 +443,11 @@ async function loadPlatforms() {
 }
 
 // Load emulators for a platform
-async function loadEmulatorsForPlatform(platformId) {
+export async function loadEmulatorsForPlatform(platformId) {
+  if (!platformId) {
+    console.error('No platformId provided to loadEmulatorsForPlatform');
+    return;
+  }
   const emulatorsList = document.querySelector(`.emulators-list[data-platform-id="${platformId}"]`);
   if (!emulatorsList) return;
   
@@ -254,105 +498,77 @@ async function loadEmulatorsForPlatform(platformId) {
   }
 }
 
-// Render games to the grid
+// Render games to the grid - DEPRECATED, use loadGames directly
+// This function is kept for backward compatibility but should not be used
 function renderGames(games) {
+  console.warn('renderGames is deprecated, use loadGames directly');
   const gamesGrid = document.getElementById('gamesGrid');
   if (!gamesGrid) return;
   
-  gamesGrid.innerHTML = '';
-  
-  if (games.length === 0) {
-    gamesGrid.innerHTML = '<div class="col-span-full text-center text-body py-8">No games found matching your criteria.</div>';
-    return;
-  }
-  
-  // Fetch all platforms once to avoid multiple requests
-  fetch('/api/platforms')
-    .then(response => response.json())
-    .then(platformData => {
-      const platforms = platformData.success ? platformData.data : {};
-      
-      games.forEach(game => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        
-        // Get platform names
-        const platformNames = Object.keys(game.platforms || {}).map(platformId => 
-          platforms[platformId] ? platforms[platformId].name : platformId
-        ).join(', ') || 'No platforms';
-        
-        card.innerHTML = `
-          <div class="game-card-image">
-            <img src="${game.cover_image_path || 'https://via.placeholder.com/300x450'}" 
-                 alt="${game.title || 'No title'}" 
-                 class="w-full h-auto"
-                 onerror="if (this.src !== 'https://via.placeholder.com/300x450') { this.src='https://via.placeholder.com/300x450'; }">
-          </div>
-          <button class="launch-game-btn" data-id="${game.id}">Launch</button>
-          <div class="p-3">
-            <h3 class="game-card-title font-heading text-left mt-0 p-0">${game.title || 'No title'}</h3>
-            <div class="game-card-platform text-sm text-secondary text-left mb-2">${platformNames}</div>
-            <div class="game-card-content p-0">
-              <p class="text-body text-sm line-clamp-3 text-left">${game.description || 'No description'}</p>
-            </div>
-            <div class="game-card-actions justify-end mt-2 p-0 border-0">
-              <button class="edit-game-btn" data-id="${game.id}" title="Edit">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="delete-game-btn" data-id="${game.id}" title="Delete">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </div>
-          </div>
-        `;
-        
-        gamesGrid.appendChild(card);
-      });
-    })
-    .catch(error => {
-      console.error('Error fetching platforms:', error);
-      // Fallback to render games without platform names
-      renderGamesWithoutPlatformNames(games, gamesGrid);
-    });
+  // This function is no longer used directly
+  // It was causing duplicate rendering of games
 }
 
-// Fallback function if platform fetch fails
-function renderGamesWithoutPlatformNames(games, gamesGrid) {
-  if (!Array.isArray(games)) {
-    console.error('Expected games to be an array but got:', typeof games);
-    return;
-  }
-  
-  games.forEach(game => {
+// Helper function to render game cards
+function renderGameCards(games, gamesGrid, platforms) {
+  console.log(`renderGameCards: Rendering ${games.length} game(s).`);
+  games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
-    card.className = 'game-card';
+    // Added Tailwind classes for aspect ratio, flex layout, and base card styling
+    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col';
+    
+    // Get platform names
+    let platformNames = 'No platform';
+    let platformIds = [];
+    if (game.platforms && Object.keys(game.platforms).length > 0) {
+      platformIds = Object.keys(game.platforms);
+    } else if (game.platform) {
+      platformIds = [game.platform];
+    }
+    if (platformIds.length > 0) {
+      platformNames = platformIds.map(platformId =>
+        platforms[platformId] && platforms[platformId].name ? platforms[platformId].name : platformId
+      ).join(', ');
+    }
+
+    const placeholderUrl = 'https://via.placeholder.com/300x450/1a1a2e/ffffff?text=No+Cover';
+    let imageUrl = placeholderUrl; // Default to placeholder
+
+    if (typeof game.cover_image_path === 'string' && 
+        (game.cover_image_path.startsWith('http://') || game.cover_image_path.startsWith('https://'))) {
+      imageUrl = game.cover_image_path;
+    }
     
     card.innerHTML = `
-      <div class="game-card-image">
-        <img src="${game.cover_image_path || 'https://via.placeholder.com/300x450'}" 
+      <div class="relative flex-grow min-h-0"> <!-- Image container -->
+        <img src="${imageUrl}" 
              alt="${game.title || 'No title'}" 
-             class="w-full h-auto"
-             onerror="if (this.src !== 'https://via.placeholder.com/300x450') { this.src='https://via.placeholder.com/300x450'; }">
+             class="absolute inset-0 w-full h-full object-cover"
+             onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
-      <button class="launch-game-btn" data-id="${game.id}">Launch</button>
-      <div class="p-3">
-        <h3 class="game-card-title font-heading text-left mt-0 p-0">${game.title || 'No title'}</h3>
-        <div class="game-card-platform text-sm text-secondary text-left mb-2">${Object.keys(game.platforms || {}).join(', ') || 'No platforms'}</div>
-        <div class="game-card-content p-0">
-          <p class="text-body text-sm line-clamp-3 text-left">${game.description || 'No description'}</p>
-        </div>
-        <div class="game-card-actions justify-end mt-2 p-0 border-0">
-          <button class="edit-game-btn" data-id="${game.id}" title="Edit">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="delete-game-btn" data-id="${game.id}" title="Delete">
-            <i class="fas fa-trash-alt"></i>
-          </button>
+      <div class="p-2 flex-shrink-0"> <!-- Text and actions container -->
+        <h3 class="font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
+        <p class="text-xs text-body-dim truncate mb-1" title="${platformNames}">${platformNames}</p>
+        
+        <!-- Description re-enabled, using line-clamp-2 for a bit more text -->
+        <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
+
+        <div class="flex justify-between items-center mt-1">
+          <button class="launch-game-btn text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary/80" data-id="${game.id}">Launch</button>
+          <div class="space-x-1">
+            <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
         </div>
       </div>
     `;
     
     gamesGrid.appendChild(card);
+    console.log(`renderGameCards: Appended card ${index + 1} for game "${game.title || game.id}"`);
   });
 }
 
@@ -529,7 +745,7 @@ function renderEmulators(platformId, emulators, platformName) {
 }
 
 // Open game modal for adding/editing
-function openGameModal(gameId = null) {
+export function openGameModal(gameId = null) {
   const gameModal = document.getElementById('gameModal');
   const gameForm = document.getElementById('gameForm');
   const modalTitle = document.getElementById('gameModalTitle');
@@ -551,7 +767,8 @@ function openGameModal(gameId = null) {
           const game = data.data;
           console.log("Game data:", game);
           
-          document.getElementById('gameId').value = game.id;
+          // Set the hidden gameId field to the ID from the URL
+          document.getElementById('gameId').value = gameId;
           document.getElementById('gameTitle').value = game.title || '';
           document.getElementById('gameDescription').value = game.description || '';
           document.getElementById('gameCover').value = game.cover_image_path || '';
@@ -609,12 +826,12 @@ function openGameModal(gameId = null) {
 }
 
 // Edit game
-function editGame(gameId) {
+export function editGame(gameId) {
   openGameModal(gameId);
 }
 
 // Delete game
-function deleteGame(gameId) {
+export function deleteGame(gameId) {
   if (confirm('Are you sure you want to delete this game?')) {
     fetch(`/api/games/${gameId}`, {
       method: 'DELETE'
@@ -625,7 +842,7 @@ function deleteGame(gameId) {
         // Reload games
         const searchTerm = document.getElementById('searchInput')?.value.trim() || '';
         const platformId = document.getElementById('platformFilter')?.value || '';
-        loadGames(searchTerm, platformId);
+        loadGames(searchTerm, platformId, false);
         updateStats();
       } else {
         alert(data.message || 'Failed to delete game');
@@ -639,7 +856,7 @@ function deleteGame(gameId) {
 }
 
 // Launch game
-function launchGame(gameId) {
+export function launchGame(gameId) {
   // Get game details
   fetch(`/api/games/${gameId}`)
     .then(response => response.json())
@@ -736,8 +953,8 @@ function launchGame(gameId) {
 }
 
 // Update stats
-function updateStats() {
-  fetch('/api/games')
+export function updateStats() {
+  fetch('/api/games?test=false')
     .then(response => response.json())
     .then(data => {
       if (data.success) {
@@ -786,4 +1003,10 @@ function updateStats() {
         totalEmulatorsCount.textContent = '0';
       }
     });
+}
+// Helper function to open emulator modal (used in setupEventListeners)
+export function openEmulatorModal(platformId, emulatorId = null) {
+  if (window.emulatorModal) {
+    window.emulatorModal.show(platformId, emulatorId);
+  }
 }

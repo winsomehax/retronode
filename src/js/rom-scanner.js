@@ -1,8 +1,10 @@
 // ROM Scanner Module
 
-class RomScanner {
+export default class RomScanner {
   constructor() {
     this.createModal();
+    this.createScanCompleteModal();   // For scan completion
+    this.createImportCompleteModal(); // For import completion
     this.setupEventListeners();
     this.platformId = null;
     this.platformName = null;
@@ -19,7 +21,6 @@ class RomScanner {
     if (document.getElementById('romScannerModal')) {
       return;
     }
-    
     const modalHTML = `
       <div id="romScannerModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
         <div class="modal-content w-full max-w-md mx-4 glow-border">
@@ -79,6 +80,54 @@ class RomScanner {
     document.body.appendChild(div.firstElementChild);
   }
   
+  createScanCompleteModal() {
+    if (document.getElementById('scanCompleteModal')) {
+      return;
+    }
+    const modalHTML = `
+      <div id="scanCompleteModal" class="fixed inset-0 bg-black bg-opacity-70 z-[51] flex items-center justify-center hidden">
+        <div class="modal-content w-full max-w-xs mx-4 glow-border">
+          <div class="modal-header flex items-center justify-between p-4">
+            <h3 class="text-lg font-medium font-heading">Scan Complete</h3>
+            <button id="closeScanCompleteModal" class="text-secondary hover:text-primary">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="p-4 text-center">
+            <p id="scanCompleteMessage" class="text-body">Found 0 ROMs.</p>
+          </div>
+        </div>
+      </div>
+    `;
+    const div = document.createElement('div');
+    div.innerHTML = modalHTML;
+    document.body.appendChild(div.firstElementChild);
+  }
+
+  createImportCompleteModal() {
+    if (document.getElementById('romImportCompleteModal')) {
+      return;
+    }
+    const modalHTML = `
+      <div id="romImportCompleteModal" class="fixed inset-0 bg-black bg-opacity-70 z-[51] flex items-center justify-center hidden">
+        <div class="modal-content w-full max-w-xs mx-4 glow-border">
+          <div class="modal-header flex items-center justify-between p-4">
+            <h3 class="text-lg font-medium font-heading">Import Complete</h3>
+            <button id="closeRomImportCompleteModal" class="text-secondary hover:text-primary">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="p-4 text-center">
+            <p id="importCompleteMessage" class="text-body">Done!</p>
+          </div>
+        </div>
+      </div>
+    `;
+    const div = document.createElement('div');
+    div.innerHTML = modalHTML;
+    document.body.appendChild(div.firstElementChild);
+  }
+
   setupEventListeners() {
     document.getElementById('closeRomScannerModal').addEventListener('click', () => this.hide());
     document.getElementById('cancelScanBtn').addEventListener('click', () => this.hide());
@@ -89,6 +138,16 @@ class RomScanner {
     
     document.getElementById('importRomsBtn').addEventListener('click', () => {
       this.importRoms();
+    });
+
+    document.getElementById('closeScanCompleteModal').addEventListener('click', () => {
+      document.getElementById('scanCompleteModal').classList.add('hidden');
+      // This modal does NOT close the main romScannerModal
+    });
+
+    document.getElementById('closeRomImportCompleteModal').addEventListener('click', () => {
+      document.getElementById('romImportCompleteModal').classList.add('hidden');
+      this.hide(); // This modal DOES close the main romScannerModal
     });
     
     // Browse folder button would typically open a file dialog
@@ -125,20 +184,29 @@ class RomScanner {
     
     // Show progress UI
     document.getElementById('scanProgress').classList.remove('hidden');
-    document.getElementById('scanResults').classList.remove('hidden');
+    document.getElementById('scanResultsList').innerHTML = ''; // Clear previous results (from a hidden div)
+    // Ensure the scanResults div (which contains the list) remains hidden
+    document.getElementById('scanResults').classList.add('hidden'); 
     document.getElementById('startScanBtn').disabled = true;
     document.getElementById('importRomsBtn').classList.add('hidden');
     
     try {
-      // Scan the folder using the server endpoint
+      // Scan the folder using the API wrapper
       await this.scanFolder(folderPath, extensions);
       
       // Update UI
       document.getElementById('scanProgressBar').style.width = '100%';
       document.getElementById('scanProgressText').textContent = `Scan complete. Found ${this.foundRoms.length} ROMs.`;
       document.getElementById('startScanBtn').disabled = false;
-      document.getElementById('importRomsBtn').classList.remove('hidden');
+
+      // The detailed list view (scanResults) is already hidden and remains hidden.
+      // document.getElementById('scanResults').classList.add('hidden'); // This line is redundant now but harmless
       
+      if (this.foundRoms.length > 0) {
+        document.getElementById('importRomsBtn').classList.remove('hidden');
+      }
+      
+      this.showScanCompleteModal(`Found ${this.foundRoms.length} ROMs.`);
     } catch (error) {
       console.error('Error scanning for ROMs:', error);
       document.getElementById('scanProgressText').textContent = `Error: ${error.message}`;
@@ -160,24 +228,9 @@ class RomScanner {
   
   async scanFolder(folderPath, extensions) {
     try {
-      // Get all ROMs in the folder using the server endpoint
-      const response = await fetch('/api/scan-folder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          folderPath,
-          extensions
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Server error: ${response.status}`);
-      }
-      
-      const data = await response.json();
+      // Get all ROMs in the folder using the API wrapper
+      const data = await scanFolderApi(folderPath, extensions); // scanFolderApi is now imported
+
       
       if (!data.success) {
         throw new Error(data.message || 'Failed to scan folder');
@@ -197,7 +250,7 @@ class RomScanner {
         const batch = romList.slice(i, i + this.batchSize);
         this.currentBatch = batch;
         
-        // Process this batch with a single GitHub Models API call
+        // Process this batch with a single API call
         await this.processRomBatch();
         
         // Update progress
@@ -218,8 +271,8 @@ class RomScanner {
     if (this.currentBatch.length === 0) return;
     
     try {
-      // In a real implementation, we would send the batch to the GitHub Models API
-      const identifiedRoms = await this.identifyRomsWithGithubModels(this.currentBatch);
+      // Use the API wrapper to identify ROMs
+      const identifiedRoms = await this.identifyRoms(this.currentBatch);
       
       // Add identified ROMs to the found ROMs list
       this.foundRoms = [...this.foundRoms, ...identifiedRoms];
@@ -235,32 +288,12 @@ class RomScanner {
     }
   }
   
-  async identifyRomsWithGithubModels(romNames) {
+  async identifyRoms(romNames) {
     console.log(`Identifying batch of ${romNames.length} ROMs for platform ${this.platformName}`);
     
     try {
-      // Get the selected model from settings or default to GitHub
-      const modelPreference = localStorage.getItem('romIdentificationModel') || 'github';
-      
-      // Call the server API to identify ROMs using the selected model
-      const response = await fetch('/api/identify-roms', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          platformName: this.platformName,
-          romNames: romNames,
-          model: modelPreference
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Server error: ${response.status}`);
-      }
-      
-      const result = await response.json();
+      // Use the API wrapper function
+      const result = await identifyRomsApi(this.platformName, romNames);
       
       if (!result.success) {
         throw new Error(result.message || 'Failed to identify ROMs');
@@ -343,15 +376,11 @@ class RomScanner {
       const importPromises = selectedRoms.map(rom => this.importRom(rom));
       await Promise.all(importPromises);
       
-      // Show success message
-      alert(`Successfully imported ${selectedRoms.length} ROMs`);
-      
-      // Close the modal
-      this.hide();
-      
+      // Show the "Import Complete" modal
+      this.showImportCompleteModal(`Successfully imported ${selectedRoms.length} ROMs.`);
       // Reload games and update stats
       if (typeof loadGames === 'function') {
-        loadGames();
+        loadGames('', ''); // Explicitly pass empty parameters to avoid test data
       }
       
       // Update stats immediately
@@ -427,7 +456,18 @@ class RomScanner {
   hide() {
     document.getElementById('romScannerModal').classList.add('hidden');
   }
+
+  showScanCompleteModal(message) {
+    document.getElementById('scanCompleteMessage').textContent = message;
+    document.getElementById('scanCompleteModal').classList.remove('hidden');
+  }
+
+  showImportCompleteModal(message) {
+    document.getElementById('importCompleteMessage').textContent = message;
+    document.getElementById('romImportCompleteModal').classList.remove('hidden');
+  }
 }
 
 // Initialize the ROM scanner
-const romScanner = new RomScanner();
+var romScanner = new RomScanner();
+window.romScanner = romScanner;

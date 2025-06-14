@@ -9,13 +9,14 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Import routes
-const gamesRouter = require('./routes/games');
-const thegamesdbRouter = require('./routes/thegamesdb');
-const platformsRouter = require('./routes/platforms');
-const emulatorsRouter = require('./routes/emulators'); // Import the emulators router
-const scannerRouter = require('./routes/scanner');
+const gamesRouter = require('../routes/games');
+const thegamesdbRouter = require('../routes/thegamesdb');
+const platformsRouter = require('../routes/platforms');
+const emulatorsRouter = require('../routes/emulators'); // Import the emulators router
+const scannerRouter = require('../routes/scanner');
 
 // Simple in-memory data store
 let platforms = {};
@@ -62,23 +63,33 @@ app.use('/api/emulators', emulatorsRouter); // Use the emulators router for /api
 app.use('/api', scannerRouter);
 app.use('/api', thegamesdbRouter);
 
-// Serve static files from Vite's build output in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
+// Emulators
+// These routes handle global emulator operations if not covered by emulatorsRouter
+app.get('/api/emulators', (req, res) => {
+  res.json({ success: true, data: emulators });
+});
 
-  // Specific routes for your HTML pages if they are not handled by client-side routing
-  // and you want direct URL access in production.
-  // These might not be strictly necessary if express.static serves them correctly
-  // or if you rely on client-side routing from index.html.
-  // ['/platforms.html', '/emulators.html', '/settings.html'].forEach(pagePath => {
-  //   app.get(pagePath, (req, res) => {
-  //     res.sendFile(path.join(__dirname, 'dist', pagePath));
-  //   });
-  // });
-}
-// The /api/emulators GET and POST routes defined directly in app.js might conflict
-// with routes defined in ./routes/emulators.js. Review and consolidate if necessary.
-// For this migration, they are left as is.
+app.post('/api/emulators', (req, res) => {
+  const { platformId, emulator } = req.body;
+  
+  if (!platformId || !emulator || !emulator.name) {
+    return res.status(400).json({ success: false, message: 'Platform ID and emulator name are required' });
+  }
+  
+  if (!platforms[platformId]) {
+    return res.status(404).json({ success: false, message: 'Platform not found' });
+  }
+  
+  if (!emulators[platformId]) {
+    emulators[platformId] = [];
+  }
+  
+  emulators[platformId].push(emulator);
+  saveData();
+  
+  res.status(201).json({ success: true, data: emulator });
+});
+
 // External DB mock
 app.get('/api/thegamesdb/search', (req, res) => {
   const { name } = req.query;
@@ -104,16 +115,15 @@ app.get('/api/thegamesdb/search', (req, res) => {
   });
 });
 
-// Catch-all for SPA: Serve index.html for any non-API GET requests
+// Serve frontend for all other routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Export the app for testing
+// (Catch-all route must be last)
 app.get('*', (req, res) => {
-  // In development, Vite handles serving index.html.
-  // In production, try to serve the requested file if it exists in dist, otherwise serve index.html for SPA fallback.
-  const filePath = path.join(__dirname, 'dist', req.path);
-  if (process.env.NODE_ENV === 'production' && fs.existsSync(filePath) && path.extname(req.path) !== '') {
-    res.sendFile(filePath);
-  } else {
-    res.sendFile(path.join(__dirname, process.env.NODE_ENV === 'production' ? 'dist/index.html' : 'index.html'));
-  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 module.exports = app;

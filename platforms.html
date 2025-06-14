@@ -4,34 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RetroNode - Platforms</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#00ffff',
-            secondary: '#4cc9f0',
-            accent: '#f72585',
-            dark: '#0f0f1b',
-            card: '#1a1a2e',
-            sidebar: '#16213e',
-            border: '#4361ee',
-          },
-          fontSize: {
-            base: '1.05rem',
-          },
-          fontFamily: {
-            sans: ['Roboto', 'system-ui', 'sans-serif'],
-            heading: ['Orbitron', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="/css/retro-theme.css">
+  <link rel="stylesheet" href="css/output.css">
+  <link rel="stylesheet" href="css/retro-theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 </head>
 <body>
   <div class="flex min-h-screen">
@@ -190,9 +167,11 @@
     </button>
   </div>
 
-  <script src="/js/app.js"></script>
-  <script src="/js/emulator-modal.js"></script>
-  <script src="/js/rom-scanner.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/emulator-modal.js"></script>
+  <script src="js/rom-scanner.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Load platforms
@@ -456,53 +435,77 @@
     }
     
     // Load emulators for a specific platform
-    function loadEmulatorsForPlatform(platformId) {
+    async function loadEmulatorsForPlatform(platformId) {
       const emulatorsList = document.querySelector(`.emulators-list[data-platform-id="${platformId}"]`);
       if (!emulatorsList) return;
       
-      fetch(`/api/emulators/${platformId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            if (data.data.length === 0) {
-              emulatorsList.innerHTML = '<p class="text-body-dim text-sm italic">No emulators configured</p>';
-              return;
-            }
-            
-            let html = '<ul class="space-y-2">';
-            data.data.forEach(emulator => {
-              html += `
-                <li class="flex justify-between items-center">
-                  <span class="text-body text-sm">${emulator.name}</span>
-                  <button class="edit-emulator-btn text-secondary hover:text-primary" 
-                          data-platform-id="${platformId}" 
-                          data-emulator-id="${emulator.emulator_id}" 
-                          title="Edit Emulator">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </li>
-              `;
-            });
-            html += '</ul>';
-            
-            emulatorsList.innerHTML = html;
-            
-            // Add event listeners to edit emulator buttons
-            emulatorsList.querySelectorAll('.edit-emulator-btn').forEach(button => {
-              button.addEventListener('click', function() {
-                const platformId = this.getAttribute('data-platform-id');
-                const emulatorId = this.getAttribute('data-emulator-id');
-                emulatorModal.show(platformId, emulatorId);
-              });
-            });
-          } else {
-            emulatorsList.innerHTML = '<p class="text-accent text-sm">Error loading emulators</p>';
+      emulatorsList.innerHTML = '<p class="text-body-dim text-sm italic">Loading emulators...</p>'; // Set loading message
+
+      try {
+        const apiUrl = `/api/emulators/${platformId}`; // Actual API endpoint
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+          let errorText = `HTTP error ${response.status}: ${response.statusText}`;
+          try {
+            const body = await response.text();
+            errorText += ` - Response preview: ${body.substring(0, 200)}${body.length > 200 ? '...' : ''}`;
+          } catch (e) {
+            // Ignore if reading response body fails
           }
-        })
-        .catch(error => {
-          console.error('Error loading emulators:', error);
-          emulatorsList.innerHTML = '<p class="text-accent text-sm">Error loading emulators</p>';
-        });
+          console.error(`Failed to fetch emulators from ${apiUrl}. ${errorText}`);
+          throw new Error(`Failed to fetch emulators: ${response.status} ${response.statusText}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          let responseText = await response.text();
+          const errorMsg = `Expected JSON response from ${apiUrl}, but got ${contentType || 'unknown content type'}. Response preview: ${responseText.substring(0, 200)}${responseText.length > 200 ? '...' : ''}`;
+          console.error(errorMsg);
+          throw new Error(`Invalid response type: Expected JSON, got ${contentType || 'text/plain'}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.data.length === 0) {
+            emulatorsList.innerHTML = '<p class="text-body-dim text-sm italic">No emulators configured</p>';
+            return;
+          }
+          
+          let html = '<ul class="space-y-2">';
+          data.data.forEach(emulator => {
+            html += `
+              <li class="flex justify-between items-center">
+                <span class="text-body text-sm">${emulator.name}</span>
+                <button class="edit-emulator-btn text-secondary hover:text-primary" 
+                        data-platform-id="${platformId}" 
+                        data-emulator-id="${emulator.emulator_id}" 
+                        title="Edit Emulator">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </li>
+            `;
+          });
+          html += '</ul>';
+          
+          emulatorsList.innerHTML = html;
+          
+          // Add event listeners to edit emulator buttons
+          emulatorsList.querySelectorAll('.edit-emulator-btn').forEach(button => {
+            button.addEventListener('click', function() {
+              const platformId = this.getAttribute('data-platform-id');
+              const emulatorId = this.getAttribute('data-emulator-id');
+              emulatorModal.show(platformId, emulatorId);
+            });
+          });
+        } else {
+          emulatorsList.innerHTML = `<p class="text-accent text-sm">Error loading emulators: ${data.message || 'Unknown error'}</p>`;
+        }
+      } catch (error) {
+        console.error(`Error loading emulators for platform ${platformId}: ${error.message}`, error);
+        emulatorsList.innerHTML = '<p class="text-accent text-sm">Failed to load emulators. Check console for details.</p>';
+      }
     }
     
     // Open platform modal for editing

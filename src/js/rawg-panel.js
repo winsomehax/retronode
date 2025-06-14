@@ -1,5 +1,6 @@
 // RAWG.io Panel Manager
-class RawgPanel extends ApiPanel {
+import ApiPanel from './api-panel.js';
+export default class RawgPanel extends ApiPanel {
   constructor() {
     super('rawgPanel', 'RAWG.io Search Results');
   }
@@ -84,6 +85,3 @@ class RawgPanel extends ApiPanel {
     }
   }
 }
-
-// Initialize the RAWG panel
-const rawgPanel = new RawgPanel();

@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-[#00ffffe6] transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-white font-medium py-2 px-4 rounded-lg hover:bg-[#4cc9f0e6] transition-colors;
+  }
+  
+  .form-input {
+    @apply w-full px-3 py-2 bg-dark border border-border rounded-lg text-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary;
+  }
+  
+  .form-select {
+    @apply w-full px-3 py-2 bg-dark border border-border rounded-lg text-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none;
+  }
+  
+  .nav-link {
+    @apply text-body-dim hover:text-primary transition-colors;
+  }
+  
+  .nav-link.active {
+    @apply text-primary;
+  }
+  
+  .card {
+    @apply bg-card border border-border rounded-lg overflow-hidden;
+  }
+  
+  .card-header {
+    @apply bg-dark p-4 border-b border-border;
+  }
+  
+  .card-body {
+    @apply p-4;
+  }
+  
+  .card-footer {
+    @apply p-4 border-t border-border;
+  }
+  
+  .sidebar-section {
+    @apply mb-6;
+  }
+  
+  .sidebar-title {
+    @apply text-lg font-medium text-primary mb-3;
+  }
+  
+  .stats-grid {
+    @apply grid grid-cols-3 gap-4;
+  }
+  
+  .stat-item {
+    @apply text-center;
+  }
+  
+  .stat-value {
+    @apply text-2xl font-medium text-primary;
+  }
+  
+  .stat-label {
+    @apply text-sm text-body-dim;
+  }
+  
+  .search-input {
+    @apply w-64 px-3 py-2 pl-10 bg-dark border border-border rounded-lg text-body focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary;
+  }
+  
+  .search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-body-dim;
+  }
+}

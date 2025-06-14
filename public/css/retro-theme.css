@@ -1,4 +1,4 @@
-/* RetroNode Theme CSS */
+                                                                                                                                                                                                                                                                                                                                                                       /* RetroNode Theme CSS */
 
 :root {
   --color-primary: #00ffff;
@@ -15,7 +15,7 @@
 
 body {
   background-color: var(--color-dark);
-  color: var(--color-body);
+  color: var(--color-body) !important;
   font-family: 'Roboto', system-ui, sans-serif;
 }
 
@@ -70,8 +70,8 @@ body {
 
 /* Buttons */
 .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-dark);
+  background-color: var(--color-border) !important;
+  color: #ffffff !important;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   font-weight: 500;
@@ -79,7 +79,21 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: rgba(0, 255, 255, 0.8);
+  background-color: var(--color-primary) !important;
+}
+
+/* Secondary Buttons */
+.btn-secondary {
+  background-color: var(--color-secondary) !important;
+  color: #ffffff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-border) !important;
 }
 
 /* Game cards */
@@ -99,32 +113,38 @@ body {
 
 .game-card-title {
   color: var(--color-primary);
-  padding: 0.5rem 1rem;
-  font-size: 1.1rem;
+  padding: 0.125rem 0.25rem;
+  font-size: 0.75rem;
   line-height: 1.2;
   text-align: center;
 }
 
 .game-card-image {
-  aspect-ratio: 3/4;
+  aspect-ratio: 4/3;
   overflow: hidden;
+  max-height: 180px;
 }
 
 .game-card-content {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem;
   flex-grow: 1;
+  font-size: 0.75rem;
+  max-height: 4.5em;
 }
 
 .game-card-platform {
   color: var(--color-secondary);
-  text-align: center;
+  text-align: left;
+  font-size: 0.7rem;
+  padding: 0 0.25rem;
 }
 
 .game-card-actions {
   display: flex;
   justify-content: flex-end;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 0.25rem;
 }
 
 .game-card-actions button {
@@ -132,7 +152,8 @@ body {
   border: none;
   color: var(--color-secondary);
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0.125rem 0.25rem;
+  font-size: 0.75rem;
   transition: color 0.2s;
 }
 
@@ -180,6 +201,8 @@ body {
 .modal-content {
   background-color: var(--color-card);
   border-radius: 0.5rem;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .modal-header {
@@ -217,4 +240,10 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
+}
+
+/* Ensure scrollable gameDbResults container in modal */
+#gameDbResults {
+  max-height: 50vh !important;
+  overflow-y: auto !important;
 }

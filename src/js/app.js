@@ -407,7 +407,7 @@ export async function loadGames(search = '', platform = '', test = false) {
 }
 
 // Load platforms from API
-export async function loadPlatforms() {
+export async function loadPlatforms(renderer) { // Added renderer parameter
   const platformFilter = document.getElementById('platformFilter');
   const platformsContainer = document.getElementById('platformsContainer');
   
@@ -429,7 +429,11 @@ export async function loadPlatforms() {
       
       // Update platforms container if on platforms page
       if (platformsContainer) {
-        renderPlatforms(data.data);
+        if (typeof renderer === 'function') {
+          renderer(data.data); // Use provided renderer
+        } else {
+          renderPlatforms(data.data); // Use internal renderer as fallback
+        }
       }
       
       // Update stats
@@ -515,7 +519,7 @@ function renderGameCards(games, gamesGrid, platforms) {
   games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
     // Added Tailwind classes for aspect ratio, flex layout, and base card styling
-    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col';
+    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col max-w-xs mx-auto';
     
     // Get platform names
     let platformNames = 'No platform';

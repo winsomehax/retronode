@@ -167,15 +167,16 @@
     </button>
   </div>
 
-  <script src="js/api.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/emulator-modal.js"></script>
-  <script src="js/rom-scanner.js"></script>
+  <script type="module" src="/src/js/api.js"></script>
+  <script type="module" src="/src/js/app.js"></script>
+  <script type="module" src="/src/js/emulator-modal.js"></script>
+  <script type="module" src="/src/js/rom-scanner.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
-  <script>
+  <script type="module">
+    import { loadPlatforms, updateStats } from '/src/js/app.js';
     document.addEventListener('DOMContentLoaded', function() {
       // Load platforms
-      loadPlatforms();
+      loadPlatforms(renderPlatforms); // Pass the local renderPlatforms function
       updateStats();
       
       // Platform search
@@ -254,7 +255,7 @@
           if (data.success) {
             // Close modal and reload platforms
             document.getElementById('platformModal').classList.add('hidden');
-            loadPlatforms();
+            loadPlatforms(renderPlatforms); // Pass the local renderPlatforms function
             updateStats();
           } else {
             alert(data.message || 'Failed to save platform');
@@ -558,7 +559,7 @@
         .then(data => {
           if (data.success) {
             // Reload platforms
-            loadPlatforms();
+            loadPlatforms(renderPlatforms); // Pass the local renderPlatforms function
             updateStats();
           } else {
             alert(data.message || 'Failed to delete platform');

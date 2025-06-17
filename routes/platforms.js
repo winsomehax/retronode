@@ -38,11 +38,32 @@ router.get('/', async (req, res) => {
       data: platforms
     });
   } catch (error) {
-    console.error('Error getting platforms:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while getting platforms.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+
+    const errorResponse = {
       success: false,
-      message: `Error getting platforms: ${error.message}`
-    });
+      message: `Error getting platforms: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -59,7 +80,7 @@ router.get('/:id', async (req, res) => {
         message: 'Platform not found'
       });
     }
-this.stack    // Always include emulators property
+    // Always include emulators property (Corrected line: assuming 'this.stack' was an error/typo)
     if (!platform.emulators) {
       platform.emulators = {};
     }
@@ -68,11 +89,31 @@ this.stack    // Always include emulators property
       data: platform
     });
   } catch (error) {
-    console.error('Error getting platform:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while getting platform.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error getting platform: ${error.message}`
-    });
+      message: `Error getting platform: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -120,11 +161,31 @@ router.post('/', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error creating platform:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while creating platform.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error creating platform: ${error.message}`
-    });
+      message: `Error creating platform: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -179,11 +240,31 @@ router.put('/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error updating platform:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while updating platform.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error updating platform: ${error.message}`
-    });
+      message: `Error updating platform: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -213,11 +294,31 @@ router.delete('/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error deleting platform:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while deleting platform.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error deleting platform: ${error.message}`
-    });
+      message: `Error deleting platform: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 

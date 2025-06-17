@@ -2,6 +2,7 @@
  * Game launcher routes for RetroNode
  */
 const express = require('express');
+const fs = require('fs').promises; // Import fs.promises
 const router = express.Router();
 const path = require('path');
 const { readJsonFileAsync, ensureDirectoryExists } = require('../utils/fileUtils');
@@ -112,19 +113,35 @@ router.post('/', async (req, res) => {
         message: `Game launched successfully`,
         command: `${command} ${args.join(' ')}`
       });
-    } catch (execError) {
-      console.error(`Error executing command:`, execError);
-      return res.status(500).json({
-        success: false,
-        message: `Error launching game: ${execError.message}`
-      });
+    } catch (execError) { // Catch errors from safeExecuteCommand
+      console.error(`[${new Date().toISOString()}] Error executing command in ${req.method} ${req.originalUrl}:`, execError);
+      // This is an operational error, so we send a specific message
+      // The robust sending logic will be handled by the outer catch if this res.status.json fails,
+      // or we can duplicate it here for fine-grained control if needed.
+      // For now, let the outer catch handle res.json() failures.
+      if (!res.headersSent) {
+        return res.status(500).json({
+          success: false,
+          message: `Error launching game (execution failed): ${execError.message}`
+        });
+      }
     }
-  } catch (error) {
-    console.error('Error launching game:', error);
-    res.status(500).json({
-      success: false,
-      message: `Error launching game: ${error.message}`
-    });
+  } catch (error) { // Outer catch for general errors in the route
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while launching game.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = { success: false, message: `Error launching game: ${errorMessage}` };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+    try {
+      if (!res.headersSent) { res.status(500).json(errorResponse); } else { console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`); }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) { res.status(500).send('Internal Server Error - Response generation failed'); }
+    }
   }
 });
 

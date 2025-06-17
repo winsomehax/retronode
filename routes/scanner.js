@@ -54,19 +54,27 @@ router.post('/scan-folder', async (req, res) => {
         success: true,
         files: filteredFiles
       });
-    } catch (fsError) {
-      console.error('Error reading directory:', fsError);
-      res.status(500).json({
-        success: false,
-        message: `Error scanning folder: ${fsError.message}`
-      });
+    } catch (fsError) { // Catch errors from fs.readdir
+      console.error(`[${new Date().toISOString()}] File system error in ${req.method} ${req.originalUrl}:`, fsError);
+      // Let the outer catch handle sending the response for consistency
+      throw fsError; // Re-throw to be caught by the outer catch block
     }
-  } catch (error) {
-    console.error('Error scanning folder:', error);
-    res.status(500).json({
-      success: false,
-      message: `Error scanning folder: ${error.message}`
-    });
+  } catch (error) { // Outer catch for general errors in the route
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while scanning folder.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = { success: false, message: `Error scanning folder: ${errorMessage}` };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+    try {
+      if (!res.headersSent) { res.status(500).json(errorResponse); } else { console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`); }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) { res.status(500).send('Internal Server Error - Response generation failed'); }
+    }
   }
 });
 
@@ -105,19 +113,27 @@ router.post('/identify-roms', async (req, res) => {
         success: true,
         data: gameData
       });
-    } catch (apiError) {
-      console.error('Error identifying ROMs:', apiError);
-      res.status(500).json({
-        success: false,
-        message: `Error identifying ROMs: ${apiError.message}`
-      });
+    } catch (apiError) { // Catch errors from API calls
+      console.error(`[${new Date().toISOString()}] API error in ${req.method} ${req.originalUrl}:`, apiError);
+      // Let the outer catch handle sending the response
+      throw apiError; // Re-throw to be caught by the outer catch block
     }
-  } catch (error) {
-    console.error('Error in identify-roms endpoint:', error);
-    res.status(500).json({
-      success: false,
-      message: `Error processing request: ${error.message}`
-    });
+  } catch (error) { // Outer catch for general errors
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while identifying ROMs.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = { success: false, message: `Error identifying ROMs: ${errorMessage}` };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+    try {
+      if (!res.headersSent) { res.status(500).json(errorResponse); } else { console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`); }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) { res.status(500).send('Internal Server Error - Response generation failed'); }
+    }
   }
 });
 

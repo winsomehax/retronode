@@ -86,11 +86,31 @@ router.get('/', async (req, res) => {
       totalPages: Math.ceil(filteredGames.length / limitNum)
     });
   } catch (error) {
-    console.error('Error getting games:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while getting games.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error getting games: ${error.message}`
-    });
+      message: `Error getting games: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -113,11 +133,31 @@ router.get('/:id', async (req, res) => {
       data: game
     });
   } catch (error) {
-    console.error('Error getting game:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while getting game.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error getting game: ${error.message}`
-    });
+      message: `Error getting game: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -156,11 +196,31 @@ router.post('/', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error creating game:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while creating game.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error creating game: ${error.message}`
-    });
+      message: `Error creating game: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -207,11 +267,31 @@ router.put('/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error updating game:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while updating game.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error updating game: ${error.message}`
-    });
+      message: `Error updating game: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -241,11 +321,31 @@ router.delete('/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error deleting game:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while deleting game.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error deleting game: ${error.message}`
-    });
+      message: `Error deleting game: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 

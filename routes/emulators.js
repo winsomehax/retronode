@@ -42,11 +42,31 @@ router.get('/:platformId', async (req, res) => {
       data: emulatorsArray
     });
   } catch (error) {
-    console.error('Error getting emulators:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while getting emulators.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error getting emulators: ${error.message}`
-    });
+      message: `Error getting emulators: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -106,11 +126,31 @@ router.post('/:platformId', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error adding emulator:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while adding emulator.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error adding emulator: ${error.message}`
-    });
+      message: `Error adding emulator: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -168,11 +208,31 @@ router.put('/:platformId/:emulatorId', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error updating emulator:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while updating emulator.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error updating emulator: ${error.message}`
-    });
+      message: `Error updating emulator: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 
@@ -210,11 +270,31 @@ router.delete('/:platformId/:emulatorId', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error deleting emulator:', error);
-    res.status(500).json({
+    console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
+    let errorMessage = 'An unexpected error occurred while deleting emulator.';
+    if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+      errorMessage = error.message;
+    } else if (typeof error === 'string' && error.trim() !== '') {
+      errorMessage = error;
+    }
+    const errorResponse = {
       success: false,
-      message: `Error deleting emulator: ${error.message}`
-    });
+      message: `Error deleting emulator: ${errorMessage}`
+    };
+    console.log(`[${new Date().toISOString()}] Attempting to send 500 error response for ${req.method} ${req.originalUrl}:`, JSON.stringify(errorResponse));
+
+    try {
+      if (!res.headersSent) {
+        res.status(500).json(errorResponse);
+      } else {
+        console.error(`[${new Date().toISOString()}] Headers already sent for ${req.method} ${req.originalUrl}, cannot send JSON error response.`);
+      }
+    } catch (sendError) {
+      console.error(`[${new Date().toISOString()}] CRITICAL: Failed to send JSON error response for ${req.method} ${req.originalUrl}:`, sendError);
+      if (!res.headersSent) {
+        res.status(500).send('Internal Server Error - Response generation failed');
+      }
+    }
   }
 });
 

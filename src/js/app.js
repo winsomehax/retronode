@@ -531,12 +531,17 @@ function renderGameCards(games, gamesGrid, platforms) {
       ).join(', ');
     }
 
-    const placeholderUrl = 'https://via.placeholder.com/300x450/1a1a2e/ffffff?text=No+Cover';
+    const placeholderUrl = `/api/game-media/covers?path=${encodeURIComponent("placeholder.webp")}`;
     let imageUrl = placeholderUrl; // Default to placeholder
 
-    if (typeof game.cover_image_path === 'string' && 
-        (game.cover_image_path.startsWith('http://') || game.cover_image_path.startsWith('https://'))) {
-      imageUrl = game.cover_image_path;
+    if (typeof game.cover_image_path === 'string' && game.cover_image_path.trim() !== '') {
+      if (game.cover_image_path.startsWith('http://') || game.cover_image_path.startsWith('https://')) {
+        // It's already a full URL, use it directly
+        imageUrl = game.cover_image_path;
+      } else {
+        // Assume it's a local path identifier that the server can serve via a specific endpoint
+        imageUrl = `/api/game-media/covers?path=${encodeURIComponent(game.cover_image_path)}`;
+      }
     }
     
     card.innerHTML = `

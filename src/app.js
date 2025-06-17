@@ -1,10 +1,20 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs'); // Added for file system operations
+const mime = require('mime-types'); // Added for MIME type detection
 
 // Initialize app
 const app = express();
+
+// --- Configuration for Media Covers ---
+const MEDIA_COVERS_BASE_PATH = process.env.MEDIA_COVERS_BASE_PATH;
+
+if (!MEDIA_COVERS_BASE_PATH) {
+  console.error("FATAL ERROR: MEDIA_COVERS_BASE_PATH is not set in the environment variables.");
+  process.exit(1); // Exit if the path is not configured
+}
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -62,6 +72,56 @@ app.use('/api/platforms', platformsRouter);
 app.use('/api/emulators', emulatorsRouter); // Use the emulators router for /api/emulators path
 app.use('/api', scannerRouter);
 app.use('/api', thegamesdbRouter);
+
+// --- Route to serve game cover images ---
+app.get('/api/game-media/covers', (req, res) => {
+  const relativeImagePath = req.query.path;
+
+  if (!relativeImagePath) {
+    return res.status(400).send('Image path parameter is missing.');
+  }
+
+  // Sanitize the relative path to prevent directory traversal attacks.
+  // path.normalize resolves '..' and '.' segments.
+  const normalizedPath = path.normalize(relativeImagePath);
+
+  // After normalization, ensure it doesn't try to go "up" from the base
+  // and isn't an absolute path itself.
+  if (normalizedPath.startsWith('..') || normalizedPath.startsWith('/') || path.isAbsolute(normalizedPath)) {
+    console.warn(`Attempted traversal or absolute path in game media request: ${normalizedPath}`);
+    return res.status(400).send('Invalid image path.');
+  }
+
+  const absoluteImagePath = path.join(MEDIA_COVERS_BASE_PATH, normalizedPath);
+
+  // Check if the file exists and is readable
+  fs.access(absoluteImagePath, fs.constants.R_OK, (err) => {
+    if (err) {
+      // File doesn't exist or isn't readable
+      console.warn(`Cover image not found or not readable: ${absoluteImagePath}`);
+      // Optionally, you could send a default placeholder image from your server here
+      // For now, let the client-side onerror handle it by falling back to via.placeholder.com
+      return res.status(404).send('Image not found.');
+    }
+
+    const contentType = mime.lookup(absoluteImagePath);
+    if (!contentType) {
+      console.error(`Could not determine MIME type for: ${absoluteImagePath}`);
+      return res.status(500).send('Could not determine file type.');
+    }
+
+    res.setHeader('Content-Type', contentType);
+    const fileStream = fs.createReadStream(absoluteImagePath);
+    fileStream.pipe(res);
+
+    fileStream.on('error', (streamErr) => {
+      console.error(`Error streaming file ${absoluteImagePath}:`, streamErr);
+      if (!res.headersSent) { // Avoid sending headers twice if error occurs mid-stream
+        res.status(500).send('Error serving image.');
+      }
+    });
+  });
+});
 
 // Emulators
 // These routes handle global emulator operations if not covered by emulatorsRouter

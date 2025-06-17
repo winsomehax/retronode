@@ -116,4 +116,50 @@ app.get('*', (req, res) => {
   }
 });
 
+// Global error handlers - Add these at the end, before module.exports
+
+// Catch 404s for API routes not found and forward to error handler
+// This should come after all your API routes but before the general '*' SPA handler
+app.use('/api', (req, res, next) => {
+  const err = new Error('API Route Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// General error handler for API errors
+// This should be the last middleware for /api paths or a general one if no specific SPA handling is needed before it.
+app.use('/api', (err, req, res, next) => {
+  console.error(`[${new Date().toISOString()}] GLOBAL API ERROR HANDLER CAUGHT for ${req.method} ${req.originalUrl}:`);
+  console.error('Error Status:', err.status || 500);
+  console.error('Error Message:', err.message);
+  console.error('Error Stack:', err.stack || 'No stack available');
+
+  if (res.headersSent) {
+    console.error(`[${new Date().toISOString()}] Headers already sent. Cannot send global API error response.`);
+    return next(err); // Pass to Express default error handler
+  }
+
+  const statusCode = err.status || 500;
+  const responseJson = {
+    success: false,
+    message: err.message || 'An unexpected server error occurred.',
+  };
+
+  // Optionally include stack trace in development
+  if (process.env.NODE_ENV !== 'production' && err.stack) {
+    responseJson.stack = err.stack;
+  }
+
+  console.log(`[${new Date().toISOString()}] Attempting to send ${statusCode} global API error response:`, JSON.stringify(responseJson));
+  try {
+    res.status(statusCode).json(responseJson);
+  } catch (sendError) {
+    console.error(`[${new Date().toISOString()}] CRITICAL: FAILED TO SEND JSON FROM GLOBAL API ERROR HANDLER:`, sendError);
+    if (!res.headersSent) {
+      res.status(500).send('Internal Server Error - Global API handler response generation failed');
+    }
+  }
+});
+
+
 module.exports = app;

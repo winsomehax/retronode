@@ -152,7 +152,8 @@ router.post('/', async (req, res) => {
     
     if (await writeJsonFileAsync(PLATFORMS_FILE, platforms)) {
       res.status(201).json({
-        success: true
+        success: true,
+        data: platforms[platform_id] // Return the created platform
       });
     } else {
       res.status(500).json({
@@ -231,7 +232,8 @@ router.put('/:id', async (req, res) => {
     
     if (await writeJsonFileAsync(PLATFORMS_FILE, platforms)) {
       res.json({
-        success: true
+        success: true,
+        data: platforms[req.params.id] // Return the updated platform
       });
     } else {
       res.status(500).json({
@@ -285,7 +287,8 @@ router.delete('/:id', async (req, res) => {
     
     if (await writeJsonFileAsync(PLATFORMS_FILE, platforms)) {
       res.json({
-        success: true
+        success: true,
+        message: 'Platform deleted successfully' // Add a confirmation message
       });
     } else {
       res.status(500).json({

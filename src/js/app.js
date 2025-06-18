@@ -1028,3 +1028,5 @@ export function openEmulatorModal(platformId, emulatorId = null) {
     window.emulatorModal.show(platformId, emulatorId);
   }
 }
+window.updateStats = updateStats;
+// Adding a newline character at the end of the file

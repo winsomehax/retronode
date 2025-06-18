@@ -569,14 +569,13 @@ function renderGameCards(games, gamesGrid, platforms) {
     
     card.innerHTML = `
       <h3 class="game-card-title font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
-      <div class="game-card-image" style="position: relative; aspect-ratio: 9/16;">
+      <div class="game-card-image" style="position: relative;">
         <img src="${imageUrl}" 
              alt="${game.title || 'No title'}" 
              class="absolute inset-0 w-full h-full object-cover"
              onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
-      <div class="p-1">
-
+      <div class="p-1" style="flex-grow: 1; overflow-y: auto;">
         <p class="text-xs text-body-dim truncate mb-1 game-card-platform" title="${platformNames}">${platformNames}</p>
         <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
       </div>
@@ -1034,5 +1033,3 @@ export function openEmulatorModal(platformId, emulatorId = null) {
     window.emulatorModal.show(platformId, emulatorId);
   }
 }
-window.updateStats = updateStats;
-// Adding a newline character at the end of the file

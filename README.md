@@ -90,4 +90,4 @@ A retro game launcher and management system built with Node.js and Express.
 
 ## License
 
-MIT
+GPL3

@@ -575,7 +575,8 @@ function renderGameCards(games, gamesGrid, platforms) {
              class="absolute inset-0 w-full h-full object-cover"
              onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
-      <div class="p-2">
+      <div class="p-1">
+
         <p class="text-xs text-body-dim truncate mb-1 game-card-platform" title="${platformNames}">${platformNames}</p>
         <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
       </div>

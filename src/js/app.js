@@ -529,8 +529,7 @@ function renderGameCards(games, gamesGrid, platforms) {
   console.log(`renderGameCards: Rendering ${games.length} game(s).`);
   games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
-    // Added Tailwind classes for aspect ratio, flex layout, and base card styling
-    card.className = 'game-card bg-card border-2 border-red-500 p-2';
+    card.className = 'game-card'; // Simplified className
     
     // Get platform names
     let platformNames = 'No platform';
@@ -569,26 +568,22 @@ function renderGameCards(games, gamesGrid, platforms) {
     }
     
     card.innerHTML = `
-      <div class="relative flex-grow min-h-0"> <!-- Image container -->
+      <div class="game-card-image">
         <img src="${imageUrl}" 
              alt="${game.title || 'No title'}" 
              class="absolute inset-0 w-full h-full object-cover"
              onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
-      <div class="p-2 flex-shrink-0"> <!-- Text and actions container -->
-        <h3 class="font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
-        <p class="text-xs text-body-dim truncate mb-1" title="${platformNames}">${platformNames}</p>
-        
-        <!-- Description re-enabled, using line-clamp-2 for a bit more text -->
+      <div class="p-2 flex-shrink-0">
+        <h3 class="game-card-title font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
+        <p class="text-xs text-body-dim truncate mb-1 game-card-platform" title="${platformNames}">${platformNames}</p>
         <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
-
-        <div class="flex justify-between items-center mt-1">
+        <div class="game-card-actions">
           <button class="launch-game-btn text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary/80" data-id="${game.id}">Launch</button>
-          <div class="space-x-1">
-            <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
+          <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
               <i class="fas fa-trash-alt"></i>
             </button>
           </div>

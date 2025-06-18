@@ -27,6 +27,7 @@ const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir);
 }
+const API_KEYS_FILE_PATH = path.join(dataDir, 'api_keys.json');
 
 // Load data if exists
 try {
@@ -54,6 +55,36 @@ function saveData() {
   }
 }
 
+// Helper function to read API keys
+function readApiKeys() {
+  try {
+    if (fs.existsSync(API_KEYS_FILE_PATH)) {
+      const data = fs.readFileSync(API_KEYS_FILE_PATH, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error reading API keys file:', error);
+  }
+  // Return default empty keys if file doesn't exist or error occurs
+  return {
+    thegamesdbApiKey: '',
+    geminiApiKey: '',
+    githubPatToken: '',
+    rawgApiKey: ''
+  };
+}
+
+// Helper function to write API keys
+function writeApiKeys(keys) {
+  try {
+    fs.writeFileSync(API_KEYS_FILE_PATH, JSON.stringify(keys, null, 2), 'utf-8');
+    return true;
+  } catch (error) {
+    console.error('Error writing API keys file:', error);
+    return false;
+  }
+}
+
 // API Routes
 // Use routers
 app.use('/api/games', gamesRouter);
@@ -61,6 +92,46 @@ app.use('/api/platforms', platformsRouter);
 app.use('/api/emulators', emulatorsRouter); // Use the emulators router for /api/emulators path
 app.use('/api', scannerRouter);
 app.use('/api', thegamesdbRouter);
+
+// API Route for getting API keys
+app.get('/api/settings/api-keys', (req, res) => {
+  const apiKeys = readApiKeys();
+  res.json({
+    success: true,
+    ...apiKeys // Spread the keys into the response
+  });
+});
+
+// API Route for saving API keys
+app.post('/api/settings/api-keys', (req, res) => {
+  const {
+    thegamesdbApiKey,
+    geminiApiKey,
+    githubPatToken,
+    rawgApiKey
+  } = req.body;
+
+  // Basic validation: check if all expected keys are at least present (even if empty strings)
+  if (typeof thegamesdbApiKey === 'undefined' ||
+      typeof geminiApiKey === 'undefined' ||
+      typeof githubPatToken === 'undefined' ||
+      typeof rawgApiKey === 'undefined') {
+    return res.status(400).json({ success: false, message: 'Missing one or more API key fields in request body.' });
+  }
+
+  const newKeys = {
+    thegamesdbApiKey: req.body.thegamesdbApiKey,
+    geminiApiKey: req.body.geminiApiKey,
+    githubPatToken: req.body.githubPatToken,
+    rawgApiKey: req.body.rawgApiKey,
+  };
+
+  if (writeApiKeys(newKeys)) {
+    res.json({ success: true, message: 'API keys saved successfully.' });
+  } else {
+    res.status(500).json({ success: false, message: 'Failed to save API keys to file.' });
+  }
+});
 
 // Serve static files from Vite's build output in production
 if (process.env.NODE_ENV === 'production') {

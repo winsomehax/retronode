@@ -104,28 +104,31 @@ router.post('/', async (req, res) => {
     // Parse the emulator command into command and arguments
     const { command, args } = parseEmulatorCommand(emulator.command, romPath);
     
-    try {
-      // Execute the command safely
-      const result = await safeExecuteCommand(command, args);
+    // DEBUG: Temporarily bypass actual command execution
+    console.log(`[DEBUG] Would execute: ${command} ${args.join(' ')}`);
+    res.json({
+      success: true,
+      message: `Game launched successfully (DEBUG - execution bypassed)`,
+      command: `${command} ${args.join(' ')}`
+    });
+    // try {
+    //   // Execute the command safely
+    //   const result = await safeExecuteCommand(command, args);
       
-      res.json({
-        success: true,
-        message: `Game launched successfully`,
-        command: `${command} ${args.join(' ')}`
-      });
-    } catch (execError) { // Catch errors from safeExecuteCommand
-      console.error(`[${new Date().toISOString()}] Error executing command in ${req.method} ${req.originalUrl}:`, execError);
-      // This is an operational error, so we send a specific message
-      // The robust sending logic will be handled by the outer catch if this res.status.json fails,
-      // or we can duplicate it here for fine-grained control if needed.
-      // For now, let the outer catch handle res.json() failures.
-      if (!res.headersSent) {
-        return res.status(500).json({
-          success: false,
-          message: `Error launching game (execution failed): ${execError.message}`
-        });
-      }
-    }
+    //   res.json({
+    //     success: true,
+    //     message: `Game launched successfully`,
+    //     command: `${command} ${args.join(' ')}`
+    //   });
+    // } catch (execError) {
+    //   console.error(`[${new Date().toISOString()}] Error executing command in ${req.method} ${req.originalUrl}:`, execError);
+    //   if (!res.headersSent) {
+    //     return res.status(500).json({
+    //       success: false,
+    //       message: `Error launching game (execution failed): ${execError.message}`
+    //     });
+    //   }
+    // }
   } catch (error) { // Outer catch for general errors in the route
     console.error(`[${new Date().toISOString()}] Error in ${req.method} ${req.originalUrl}:`, error);
     let errorMessage = 'An unexpected error occurred while launching game.';

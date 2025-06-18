@@ -92,7 +92,26 @@ app.get('/api/game-media/covers', (req, res) => {
     return res.status(400).send('Invalid image path.');
   }
 
-  const absoluteImagePath = path.join(MEDIA_COVERS_BASE_PATH, normalizedPath);
+  let absoluteImagePath;
+  const projectInternalCoversPath = path.join(__dirname, 'public', 'covers'); // __dirname is <project_root>/src
+
+  if (normalizedPath === 'placeholder.webp') {
+    absoluteImagePath = path.join(projectInternalCoversPath, 'placeholder.webp');
+    console.log(`Serving placeholder image from: ${absoluteImagePath}`); // Add log for verification
+  } else if (MEDIA_COVERS_BASE_PATH && MEDIA_COVERS_BASE_PATH.trim() !== '') {
+    // Original logic for paths that are not 'placeholder.webp'
+    // and rely on MEDIA_COVERS_BASE_PATH
+    absoluteImagePath = path.join(MEDIA_COVERS_BASE_PATH, normalizedPath);
+  } else {
+    // Fallback if it's not placeholder and MEDIA_COVERS_BASE_PATH is not set
+    // (though the app exits if it's not set, this is for safety)
+    // Or, consider this an error, or try to serve from projectInternalCoversPath too.
+    // For now, let's assume MEDIA_COVERS_BASE_PATH should be used for non-placeholders if set.
+    // If MEDIA_COVERS_BASE_PATH is NOT set (and app didn't exit), this implies local dev/config issue.
+    // A safer default might be to try the internal path as a last resort.
+    console.warn(`MEDIA_COVERS_BASE_PATH is not set or empty, and requested path is not placeholder. Falling back to internal covers path for: ${normalizedPath}`);
+    absoluteImagePath = path.join(projectInternalCoversPath, normalizedPath);
+  }
 
   // Check if the file exists and is readable
   fs.access(absoluteImagePath, fs.constants.R_OK, (err) => {

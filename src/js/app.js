@@ -576,6 +576,7 @@ function renderGameCards(games, gamesGrid, platforms) {
              onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
       <div class="p-1">
+
         <p class="text-xs text-body-dim truncate mb-1 game-card-platform" title="${platformNames}">${platformNames}</p>
         <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
       </div>
@@ -1033,3 +1034,5 @@ export function openEmulatorModal(platformId, emulatorId = null) {
     window.emulatorModal.show(platformId, emulatorId);
   }
 }
+window.updateStats = updateStats;
+// Adding a newline character at the end of the file

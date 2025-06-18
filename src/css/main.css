@@ -54,8 +54,3 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 .modal-header {
   @apply border-b border-border;
 }
-
-/* Ensure #gamesGrid is always display: grid */
-#gamesGrid {
-  display: grid !important;
-}

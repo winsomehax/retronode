@@ -1,3 +1,15 @@
+// Global Image Error Logger
+window.addEventListener('error', function(event) {
+  if (event.target && event.target.tagName && event.target.tagName.toLowerCase() === 'img') {
+    console.error(
+      'GLOBAL IMG ERROR: Failed to load image.',
+      'SRC:', event.target.src,
+      'ALT:', event.target.alt,
+      'OuterHTML:', event.target.outerHTML
+    );
+  }
+}, true); // Use capture phase to catch errors early and broadly
+
 // /src/main.js
 
 // Import global styles (Tailwind CSS)

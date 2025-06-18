@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
+    publicDir: 'src/public', // Correctly placed within the returned config object
     server: {
       // Set to true to automatically open the app in the browser on server start.
       // The actual browser used is determined by the BROWSER environment variable.
@@ -16,8 +17,7 @@ export default defineConfig(({ mode }) => {
         // Proxy API requests to your Express backend
         '/api': {
           target: `http://localhost:${env.PORT || 3000}`, // Your backend server port from .env
-          changeOrigin: true,
-          secure: false,
+          changeOrigin: true
         },
       },
     },

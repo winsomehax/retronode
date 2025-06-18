@@ -519,7 +519,7 @@ function renderGameCards(games, gamesGrid, platforms) {
   games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
     // Added Tailwind classes for aspect ratio, flex layout, and base card styling
-    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col max-w-xs mx-auto';
+    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col';
     
     // Get platform names
     let platformNames = 'No platform';
@@ -538,6 +538,13 @@ function renderGameCards(games, gamesGrid, platforms) {
     const placeholderUrl = `/api/game-media/covers?path=${encodeURIComponent("placeholder.webp")}`;
     let imageUrl = placeholderUrl; // Default to placeholder
 
+    // Check for problematic numeric-only cover_image_path
+    if (game.cover_image_path && typeof game.cover_image_path === 'string' && /^\d+$/.test(game.cover_image_path)) {
+      console.warn(`Invalid cover image path '${game.cover_image_path}' for game '${game.title || game.id}'. Defaulting to placeholder.`);
+      game.cover_image_path = ""; // Force it to empty to use placeholder logic
+    }
+
+    console.log(`DEBUG: Game: '${game.title || game.id}', cover_image_path IS: `, game.cover_image_path, `TYPEOF: ${typeof game.cover_image_path}`);
     if (typeof game.cover_image_path === 'string' && game.cover_image_path.trim() !== '') {
       if (game.cover_image_path.startsWith('http://') || game.cover_image_path.startsWith('https://')) {
         // It's already a full URL, use it directly
@@ -546,6 +553,8 @@ function renderGameCards(games, gamesGrid, platforms) {
         // Assume it's a local path identifier that the server can serve via a specific endpoint
         imageUrl = `/api/game-media/covers?path=${encodeURIComponent(game.cover_image_path)}`;
       }
+    } else {
+      imageUrl = placeholderUrl;
     }
     
     card.innerHTML = `

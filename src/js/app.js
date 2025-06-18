@@ -569,7 +569,7 @@ function renderGameCards(games, gamesGrid, platforms) {
     
     card.innerHTML = `
       <h3 class="game-card-title font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
-      <div class="game-card-image" style="position: relative;">
+      <div class="game-card-image">
         <img src="${imageUrl}" 
              alt="${game.title || 'No title'}" 
              class="absolute inset-0 w-full h-full object-cover"

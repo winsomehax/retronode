@@ -132,6 +132,7 @@ body {
   height: 7rem; /* Added */
   position: relative; /* Ensured */
   overflow: hidden; /* Ensured */
+  flex-shrink: 0;       /* Add this to prevent shrinking */
 }
 
 .game-card-content {

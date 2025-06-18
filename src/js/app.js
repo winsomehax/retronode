@@ -530,7 +530,7 @@ function renderGameCards(games, gamesGrid, platforms) {
   games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
     // Added Tailwind classes for aspect ratio, flex layout, and base card styling
-    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col';
+    card.className = 'game-card bg-card border-2 border-red-500 p-2';
     
     // Get platform names
     let platformNames = 'No platform';

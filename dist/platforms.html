@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroNode - Platforms</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/output.css">
+  <link rel="stylesheet" href="css/retro-theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+  <script type="module" crossorigin src="/assets/platforms-BBGZo9WF.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-BsjPpv4N.js">
+  <link rel="stylesheet" crossorigin href="/assets/app-CSHOX-HB.css">
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Left Sidebar -->
+    <div class="w-64 sidebar flex-shrink-0">
+      <!-- Logo/Header -->
+      <div class="p-6 border-b border-border">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-primary font-heading glow-text mb-0">RetroNode</h1>
+          <p class="text-[10px] text-gray-500 -mt-2">Manage your retro games and ROMs</p>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Navigation</h2>
+        <ul class="space-y-2">
+          <li>
+            <a href="/" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-gamepad mr-3"></i>
+              <span>Games</span>
+            </a>
+          </li>
+          <li>
+            <a href="/platforms.html" class="flex items-center px-3 py-2 text-primary active rounded-md">
+              <i class="fas fa-microchip mr-3"></i>
+              <span>Platforms</span>
+            </a>
+          </li>
+          <li>
+            <a href="/settings.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-cog mr-3"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Search -->
+      <div class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Search</h2>
+        <div class="mb-4">
+          <input id="searchInput" type="text" class="form-input" placeholder="Search platforms...">
+        </div>
+      </div>
+      
+      <!-- Stats -->
+      <div class="p-4">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Stats</h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-body">Total Games:</span>
+            <span id="totalGamesCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Platforms:</span>
+            <span id="totalPlatformsCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Emulators:</span>
+            <span id="totalEmulatorsCount" class="text-primary font-medium">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-primary font-heading glow-text">Platforms</h1>
+        <button id="addPlatformBtn" class="btn-primary flex items-center">
+          <i class="fas fa-plus mr-2"></i>
+          <span>Add Platform</span>
+        </button>
+      </div>
+      
+      <div id="platformsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Platforms will be loaded here -->
+        <div class="game-card">
+          <h3 class="game-card-title font-heading">Loading...</h3>
+          <div class="p-4">
+            <div class="flex items-center mb-3">
+              <div class="w-12 h-12 bg-dark rounded-md flex items-center justify-center mr-4">
+                <i class="fas fa-microchip text-primary text-xl"></i>
+              </div>
+              <div>
+                <p class="text-body text-sm">Manufacturer: Loading...</p>
+                <p class="text-body text-sm">Released: Loading...</p>
+              </div>
+            </div>
+            <p class="text-body text-sm line-clamp-3">Loading platform description...</p>
+          </div>
+          <div class="game-card-actions">
+            <button title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button title="Delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Platform Modal -->
+  <div id="platformModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+    <div class="modal-content w-full max-w-md mx-4 glow-border">
+      <div class="modal-header flex items-center justify-between p-4">
+        <h3 id="platformModalTitle" class="text-xl font-medium font-heading">Add Platform</h3>
+        <button id="closePlatformModal" class="text-secondary hover:text-primary">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <form id="platformForm">
+          <div class="mb-4">
+            <label for="platformId" class="block text-sm font-medium text-body mb-1">Platform ID</label>
+            <input id="platformId" type="text" class="form-input" placeholder="e.g., nes, snes, genesis" required>
+          </div>
+          <div class="mb-4">
+            <label for="platformName" class="block text-sm font-medium text-body mb-1">Name</label>
+            <input id="platformName" type="text" class="form-input" placeholder="e.g., Nintendo Entertainment System" required>
+          </div>
+          <div class="mb-4">
+            <label for="platformManufacturer" class="block text-sm font-medium text-body mb-1">Manufacturer</label>
+            <input id="platformManufacturer" type="text" class="form-input" placeholder="e.g., Nintendo">
+          </div>
+          <div class="mb-4">
+            <label for="platformReleaseYear" class="block text-sm font-medium text-body mb-1">Release Year</label>
+            <input id="platformReleaseYear" type="number" class="form-input" placeholder="e.g., 1985">
+          </div>
+          <div class="mb-4">
+            <label for="platformDescription" class="block text-sm font-medium text-body mb-1">Description</label>
+            <textarea id="platformDescription" class="form-input" rows="3" placeholder="Brief description of the platform"></textarea>
+          </div>
+          <div class="mt-6">
+            <button id="searchPlatformDbBtn" type="button" class="w-full btn-primary flex items-center justify-center mb-4">
+              <i class="fas fa-database mr-2"></i>Search Platform Database
+            </button>
+          </div>
+          <div id="platformDbResults" class="mt-4 bg-card rounded-md hidden"></div>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button type="button" id="cancelPlatformBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fixed action buttons -->
+  <div class="fixed bottom-8 right-8 flex flex-col space-y-4">
+    <button id="addPlatformBtnFloat" class="w-14 h-14 bg-accent hover:bg-accent/80 text-white shadow-lg flex items-center justify-center rounded-md" title="Add Platform">
+      <i class="fas fa-plus text-xl"></i>
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+</body>
+</html>

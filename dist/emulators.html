@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroNode - Emulators</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Font and CSS links will be handled by Vite or remain if they are external CDN links not processed by Vite -->
+  <link rel="stylesheet" href="css/retro-theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+  <script type="module" crossorigin src="/assets/app-BsjPpv4N.js"></script>
+  <script type="module" crossorigin src="/assets/main-Cu5hUnQN.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/app-CSHOX-HB.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-Cim0GyvP.css">
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Left Sidebar -->
+    <div class="w-64 sidebar flex-shrink-0">
+      <!-- Logo/Header -->
+      <div class="p-6 border-b border-border">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-primary font-heading glow-text mb-0">RetroNode</h1>
+          <p class="text-[10px] text-gray-500 -mt-2">Manage your retro games and ROMs</p>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Navigation</h2>
+        <ul class="space-y-2">
+          <li>
+            <a href="/" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-gamepad mr-3"></i>
+              <span>Games</span>
+            </a>
+          </li>
+          <li>
+            <a href="/platforms.html" class="flex items-center px-3 py-2 text-body hover:text-primary rounded-md">
+              <i class="fas fa-microchip mr-3"></i>
+              <span>Platforms</span>
+            </a>
+          </li>
+          <li>
+            <a href="/emulators.html" class="flex items-center px-3 py-2 text-primary active rounded-md">
+              <i class="fas fa-desktop mr-3"></i>
+              <span>Emulators</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Platform Select -->
+      <div class="p-4 border-b border-border">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Platform</h2>
+        <div class="mb-4">
+          <select id="platformSelect" class="form-select">
+            <option value="">Select Platform</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Stats -->
+      <div class="p-4">
+        <h2 class="text-sm font-medium text-secondary uppercase tracking-wider mb-3 font-heading">Stats</h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-body">Total Games:</span>
+            <span id="totalGamesCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Platforms:</span>
+            <span id="totalPlatformsCount" class="text-primary font-medium">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-body">Emulators:</span>
+            <span id="totalEmulatorsCount" class="text-primary font-medium">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-primary font-heading glow-text">Emulators</h1>
+        <button id="addEmulatorBtn" class="btn-primary flex items-center">
+          <i class="fas fa-plus mr-2"></i>
+          <span>Add Emulator</span>
+        </button>
+      </div>
+      
+      <div id="emulatorsContainer" class="space-y-6">
+        <!-- Emulators will be loaded here -->
+        <div class="game-card">
+          <h3 class="game-card-title font-heading">Loading Platform...</h3>
+          <div class="p-4">
+            <table class="w-full">
+              <thead class="text-left">
+                <tr class="border-b border-border">
+                  <th class="pb-2 text-secondary font-medium">Name</th>
+                  <th class="pb-2 text-secondary font-medium">Command</th>
+                  <th class="pb-2 text-secondary font-medium">Description</th>
+                  <th class="pb-2 text-secondary font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-border">
+                  <td class="py-3 text-primary">Loading...</td>
+                  <td class="py-3 text-body font-mono text-sm">Loading...</td>
+                  <td class="py-3 text-body">Loading...</td>
+                  <td class="py-3 text-right">
+                    <button class="text-secondary hover:text-primary mr-2" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="text-accent hover:text-accent/80" title="Delete">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Emulator Modal -->
+  <div id="emulatorModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+    <div class="modal-content w-full max-w-md mx-4 glow-border">
+      <div class="modal-header flex items-center justify-between p-4">
+        <h3 id="emulatorModalTitle" class="text-xl font-medium font-heading">Add Emulator</h3>
+        <button id="closeEmulatorModal" class="text-secondary hover:text-primary">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <form id="emulatorForm">
+          <input type="hidden" id="emulatorPlatformId">
+          <div class="mb-4">
+            <label for="emulatorId" class="block text-sm font-medium text-body mb-1">Emulator ID</label>
+            <input id="emulatorId" type="text" class="form-input" placeholder="e.g., snes9x, mame" required>
+          </div>
+          <div class="mb-4">
+            <label for="emulatorName" class="block text-sm font-medium text-body mb-1">Name</label>
+            <input id="emulatorName" type="text" class="form-input" placeholder="e.g., SNES9x, MAME" required>
+          </div>
+          <div class="mb-4">
+            <label for="emulatorCommand" class="block text-sm font-medium text-body mb-1">Command</label>
+            <input id="emulatorCommand" type="text" class="form-input" placeholder="e.g., snes9x, mame">
+          </div>
+          <div class="mb-4">
+            <label for="emulatorArgs" class="block text-sm font-medium text-body mb-1">Arguments</label>
+            <input id="emulatorArgs" type="text" class="form-input" placeholder="e.g., -fullscreen, -rom">
+            <p class="text-xs text-secondary mt-1">Separate arguments with commas</p>
+          </div>
+          <div class="mb-4">
+            <label for="emulatorDescription" class="block text-sm font-medium text-body mb-1">Description</label>
+            <textarea id="emulatorDescription" class="form-input" rows="2" placeholder="Brief description of the emulator"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="emulatorVersion" class="block text-sm font-medium text-body mb-1">Version</label>
+            <input id="emulatorVersion" type="text" class="form-input" placeholder="e.g., 1.60">
+          </div>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button type="button" id="cancelEmulatorBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- If tw-elements is an npm dependency, import it in src/main.js instead of using a CDN link -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script> -->
+</body>
+</html>

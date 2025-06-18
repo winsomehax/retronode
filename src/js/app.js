@@ -403,6 +403,17 @@ export async function loadGames(search = '', platform = '', test = false) {
   } finally {
     isGamesLoading = false;
     console.log('loadGames: Execution finished. isGamesLoading set to false.');
+
+    // Add new logging here
+    setTimeout(() => {
+      const finalGamesGrid = document.getElementById('gamesGrid');
+      if (finalGamesGrid) {
+        console.log(`DEBUG: Post-render, gamesGrid childElementCount: ${finalGamesGrid.childElementCount}`);
+        console.log(`DEBUG: Post-render, gamesGrid className: '${finalGamesGrid.className}'`);
+      } else {
+        console.log("DEBUG: Post-render, gamesGrid element NOT FOUND!");
+      }
+    }, 200); // 200ms delay to allow potential DOM updates
   }
 }
 

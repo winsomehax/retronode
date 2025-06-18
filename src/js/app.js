@@ -544,6 +544,7 @@ function renderGameCards(games, gamesGrid, platforms) {
       game.cover_image_path = ""; // Force it to empty to use placeholder logic
     }
 
+    console.log(`DEBUG: Game: '${game.title || game.id}', cover_image_path IS: `, game.cover_image_path, `TYPEOF: ${typeof game.cover_image_path}`);
     if (typeof game.cover_image_path === 'string' && game.cover_image_path.trim() !== '') {
       if (game.cover_image_path.startsWith('http://') || game.cover_image_path.startsWith('https://')) {
         // It's already a full URL, use it directly
@@ -552,6 +553,8 @@ function renderGameCards(games, gamesGrid, platforms) {
         // Assume it's a local path identifier that the server can serve via a specific endpoint
         imageUrl = `/api/game-media/covers?path=${encodeURIComponent(game.cover_image_path)}`;
       }
+    } else {
+      imageUrl = placeholderUrl;
     }
     
     card.innerHTML = `

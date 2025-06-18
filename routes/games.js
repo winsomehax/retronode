@@ -39,7 +39,8 @@ router.get('/', async (req, res) => {
         id: `test-${i + 1}`,
         title: `Test Game ${i + 1}`,
         description: `This is test game ${i + 1}`,
-        platforms: { "test-platform": { path: "/test/path" } }
+        platforms: { "test-platform": { path: "/test/path" } },
+        cover_image_path: ""
       }));
       
       return res.json({

@@ -14,7 +14,7 @@ export default class GeminiWindow {
     }
     
     const windowHTML = `
-      <div id="geminiWindow" class="gemini-window">
+      <div id="geminiWindow" class="gemini-window hidden">
         <div class="gemini-window-header">
           <div class="gemini-window-title">Gemini Generated Content</div>
           <button class="gemini-window-close" id="geminiWindowClose">&times;</button>

@@ -7,10 +7,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    // Assets in this directory are served at the root path during development
-    // and copied to the root of the 'dist' directory on build.
-    // e.g., a file at 'src/public/images/placeholder.png' will be accessible as '/images/placeholder.png'.
-    publicDir: 'src/public',
+    publicDir: 'src/public', // Correctly placed within the returned config object
     server: {
       // Set to true to automatically open the app in the browser on server start.
       // The actual browser used is determined by the BROWSER environment variable.
@@ -29,10 +26,10 @@ export default defineConfig(({ mode }) => {
       outDir: path.resolve(process.cwd(), 'dist'),
       rollupOptions: {
         input: {
-          main: 'index.html',
-          platforms: 'platforms.html',
-          emulators: 'emulators.html',
-          settings: 'settings.html',
+          main: path.resolve(process.cwd(), 'index.html'),
+          platforms: path.resolve(process.cwd(), 'platforms.html'),
+          emulators: path.resolve(process.cwd(), 'emulators.html'),
+          settings: path.resolve(process.cwd(), 'settings.html'),
         },
       },
     },

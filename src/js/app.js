@@ -529,7 +529,7 @@ function renderGameCards(games, gamesGrid, platforms) {
   console.log(`renderGameCards: Rendering ${games.length} game(s).`);
   games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
-    card.className = 'game-card'; // Simplified className
+    card.className = 'game-card';
     
     // Get platform names
     let platformNames = 'No platform';
@@ -568,26 +568,25 @@ function renderGameCards(games, gamesGrid, platforms) {
     }
     
     card.innerHTML = `
-      <div class="game-card-image">
+      <h3 class="game-card-title font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
+      <div class="game-card-image" style="position: relative; aspect-ratio: 9/16;">
         <img src="${imageUrl}" 
              alt="${game.title || 'No title'}" 
              class="absolute inset-0 w-full h-full object-cover"
              onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
-      <div class="p-2 flex-shrink-0">
-        <h3 class="game-card-title font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
+      <div class="p-2">
         <p class="text-xs text-body-dim truncate mb-1 game-card-platform" title="${platformNames}">${platformNames}</p>
         <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
-        <div class="game-card-actions">
-          <button class="launch-game-btn text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary/80" data-id="${game.id}">Launch</button>
-          <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
-        </div>
+      </div>
+      <div class="game-card-actions">
+        <button class="launch-game-btn text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary/80" data-id="${game.id}">Launch</button>
+        <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
+          <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     `;
     

@@ -19,5 +19,11 @@
     "updated_at": "2025-06-04T21:13:43.755Z",
     "platform": "c64",
     "rom_path": ""
+  },
+  "testgame": {
+    "title": "Test Game",
+    "description": "A test game with a numeric cover_image_path.",
+    "cover_image_path": "",
+    "platforms": {}
   }
 }

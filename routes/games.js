@@ -182,6 +182,9 @@ router.post('/', async (req, res) => {
     const games = await readJsonFileAsync(GAMES_FILE);
     const id = uuidv4();
     
+    if (req.body.cover_image_path && /^\d+$/.test(req.body.cover_image_path)) {
+      req.body.cover_image_path = "";
+    }
     games[id] = req.body;
     
     if (await writeJsonFileAsync(GAMES_FILE, games)) {
@@ -254,6 +257,9 @@ router.put('/:id', async (req, res) => {
       });
     }
     
+    if (req.body.cover_image_path && /^\d+$/.test(req.body.cover_image_path)) {
+      req.body.cover_image_path = "";
+    }
     games[req.params.id] = req.body;
     
     if (await writeJsonFileAsync(GAMES_FILE, games)) {

@@ -403,6 +403,17 @@ export async function loadGames(search = '', platform = '', test = false) {
   } finally {
     isGamesLoading = false;
     console.log('loadGames: Execution finished. isGamesLoading set to false.');
+
+    // Add new logging here
+    setTimeout(() => {
+      const finalGamesGrid = document.getElementById('gamesGrid');
+      if (finalGamesGrid) {
+        console.log(`DEBUG: Post-render, gamesGrid childElementCount: ${finalGamesGrid.childElementCount}`);
+        console.log(`DEBUG: Post-render, gamesGrid className: '${finalGamesGrid.className}'`);
+      } else {
+        console.log("DEBUG: Post-render, gamesGrid element NOT FOUND!");
+      }
+    }, 200); // 200ms delay to allow potential DOM updates
   }
 }
 
@@ -518,8 +529,7 @@ function renderGameCards(games, gamesGrid, platforms) {
   console.log(`renderGameCards: Rendering ${games.length} game(s).`);
   games.forEach((game, index) => { // Add index here
     const card = document.createElement('div');
-    // Added Tailwind classes for aspect ratio, flex layout, and base card styling
-    card.className = 'game-card bg-card rounded-lg shadow-glow overflow-hidden transform transition-all duration-300 hover:scale-105 aspect-[9/16] flex flex-col max-w-xs mx-auto';
+    card.className = 'game-card';
     
     // Get platform names
     let platformNames = 'No platform';
@@ -538,6 +548,13 @@ function renderGameCards(games, gamesGrid, platforms) {
     const placeholderUrl = `/api/game-media/covers?path=${encodeURIComponent("placeholder.webp")}`;
     let imageUrl = placeholderUrl; // Default to placeholder
 
+    // Check for problematic numeric-only cover_image_path
+    if (game.cover_image_path && typeof game.cover_image_path === 'string' && /^\d+$/.test(game.cover_image_path)) {
+      console.warn(`Invalid cover image path '${game.cover_image_path}' for game '${game.title || game.id}'. Defaulting to placeholder.`);
+      game.cover_image_path = ""; // Force it to empty to use placeholder logic
+    }
+
+    console.log(`DEBUG: Game: '${game.title || game.id}', cover_image_path IS: `, game.cover_image_path, `TYPEOF: ${typeof game.cover_image_path}`);
     if (typeof game.cover_image_path === 'string' && game.cover_image_path.trim() !== '') {
       if (game.cover_image_path.startsWith('http://') || game.cover_image_path.startsWith('https://')) {
         // It's already a full URL, use it directly
@@ -546,33 +563,30 @@ function renderGameCards(games, gamesGrid, platforms) {
         // Assume it's a local path identifier that the server can serve via a specific endpoint
         imageUrl = `/api/game-media/covers?path=${encodeURIComponent(game.cover_image_path)}`;
       }
+    } else {
+      imageUrl = placeholderUrl;
     }
     
     card.innerHTML = `
-      <div class="relative flex-grow min-h-0"> <!-- Image container -->
+      <h3 class="game-card-title font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
+      <div class="game-card-image" style="position: relative; aspect-ratio: 9/16;">
         <img src="${imageUrl}" 
              alt="${game.title || 'No title'}" 
              class="absolute inset-0 w-full h-full object-cover"
              onerror="this.onerror=null; this.src='${placeholderUrl}';">
       </div>
-      <div class="p-2 flex-shrink-0"> <!-- Text and actions container -->
-        <h3 class="font-heading text-sm truncate" title="${game.title || 'No title'}">${game.title || 'No title'}</h3>
-        <p class="text-xs text-body-dim truncate mb-1" title="${platformNames}">${platformNames}</p>
-        
-        <!-- Description re-enabled, using line-clamp-2 for a bit more text -->
+      <div class="p-1">
+        <p class="text-xs text-body-dim truncate mb-1 game-card-platform" title="${platformNames}">${platformNames}</p>
         <p class="text-xs text-body-dim line-clamp-2 mb-1" title="${game.description || ''}">${game.description || 'No description available.'}</p>
-
-        <div class="flex justify-between items-center mt-1">
-          <button class="launch-game-btn text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary/80" data-id="${game.id}">Launch</button>
-          <div class="space-x-1">
-            <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
-        </div>
+      </div>
+      <div class="game-card-actions">
+        <button class="launch-game-btn text-xs py-1 px-2 bg-primary text-white rounded hover:bg-primary/80" data-id="${game.id}">Launch</button>
+        <button class="edit-game-btn text-secondary hover:text-primary text-xs" data-id="${game.id}" title="Edit">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="delete-game-btn text-accent hover:text-accent/80 text-xs" data-id="${game.id}" title="Delete">
+          <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     `;
     

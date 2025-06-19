@@ -173,9 +173,15 @@ router.post('/', async (req, res) => {
     });
     
     if (!validation.isValid) {
+      let message = 'Invalid input';
+      if (validation.errors.length > 0) {
+        const firstError = validation.errors[0];
+        // Correctly capitalize "Title" and add a period if the error is specifically "title is required"
+        message = `Invalid input: ${firstError.toLowerCase() === 'title is required' ? 'Title is required.' : firstError}`;
+      }
       return res.status(400).json({
         success: false,
-        message: 'Invalid input',
+        message: message,
         errors: validation.errors
       });
     }
@@ -266,6 +272,7 @@ router.put('/:id', async (req, res) => {
     if (await writeJsonFileAsync(GAMES_FILE, games)) {
       res.json({
         success: true
+        // message: 'Game deleted successfully' // This was incorrectly added here
       });
     } else {
       res.status(500).json({
@@ -319,7 +326,8 @@ router.delete('/:id', async (req, res) => {
     
     if (await writeJsonFileAsync(GAMES_FILE, games)) {
       res.json({
-        success: true
+        success: true,
+        message: 'Game deleted successfully' // Correctly add the message here
       });
     } else {
       res.status(500).json({

@@ -97,18 +97,21 @@ function validateInput(input, schema) {
     if (input[field] === undefined || input[field] === null) {
       continue;
     }
-    
-    // Check type
-    if (requirements.type && typeof input[field] !== requirements.type) {
+
+    // Check if array (priority if isArray is specified)
+    if (requirements.isArray) {
+      if (!Array.isArray(input[field])) {
+        errors.push(`${field} must be an array`);
+      }
+      // If it's an array, then minLength check for arrays will apply later
+    } else if (requirements.type && typeof input[field] !== requirements.type) {
+      // Check type only if not an array requirement or if array check passed (implicitly)
       errors.push(`${field} must be a ${requirements.type}`);
     }
     
-    // Check if array
-    if (requirements.isArray && !Array.isArray(input[field])) {
-      errors.push(`${field} must be an array`);
-    }
-    
-    // Check minimum length
+    // Check minimum length (this existing block can remain, but ensure it works correctly for arrays vs strings)
+    // The current minLength check will apply to arrays (number of elements)
+    // and strings (number of characters). This seems okay.
     if (requirements.minLength !== undefined && 
         (input[field].length === undefined || input[field].length < requirements.minLength)) {
       errors.push(`${field} must have a minimum length of ${requirements.minLength}`);

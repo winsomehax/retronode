@@ -1,5 +1,6 @@
 const request = require('supertest');
 const express = require('express');
+const { v4: uuidv4 } = require('uuid'); // Import uuidv4
 const gamesRouter = require('../routes/games');
 const path = require('path');
 const fs = require('fs').promises;
@@ -11,7 +12,7 @@ jest.mock('../utils/fileUtils', () => ({
 }));
 
 // Import the mocked module
-const { readJsonFileAsync } = require('../utils/fileUtils');
+const { readJsonFileAsync, writeJsonFileAsync } = require('../utils/fileUtils'); // Updated to import writeJsonFileAsync
 
 // Create a test Express app
 const app = express();
@@ -207,5 +208,142 @@ describe('Games API Tests', () => {
     expect(response.status).toBe(404);
     expect(response.body.success).toBe(false);
     expect(response.body.message).toBe(`Game with ID ${nonExistentId} not found`);
+  });
+
+  // Test POST to create a new game
+  describe('POST /api/games', () => {
+    beforeEach(() => {
+      // Reset mocks before each test in this describe block
+      readJsonFileAsync.mockReset();
+      writeJsonFileAsync.mockReset();
+      // Default mock for writeJsonFileAsync to resolve true
+      writeJsonFileAsync.mockResolvedValue(true);
+    });
+
+    test('should create a new game successfully', async () => {
+      // Mock readJsonFileAsync to return an empty object (no existing games)
+      readJsonFileAsync.mockResolvedValue({});
+
+      const newGameData = {
+        title: 'New Awesome Game',
+        description: 'The most awesome game ever.',
+        platforms: { 'pc': { path: '/games/pc/awesome.exe' } }
+      };
+
+      const response = await request(app)
+        .post('/api/games')
+        .send(newGameData);
+
+      expect(response.status).toBe(201);
+      expect(response.body.success).toBe(true);
+      expect(response.body).toHaveProperty('id');
+      expect(typeof response.body.id).toBe('string'); // Check if ID is a string (UUID)
+
+      // Assert that writeJsonFileAsync was called correctly
+      expect(writeJsonFileAsync).toHaveBeenCalledTimes(1);
+      expect(writeJsonFileAsync).toHaveBeenCalledWith(
+        expect.stringContaining(path.join('data', 'games.json')), // Check for correct file path
+        expect.objectContaining({
+          [response.body.id]: { // The key should be the new game's ID
+            ...newGameData,
+            // No need to include 'id' inside the game object itself if the router doesn't add it
+          }
+        })
+      );
+    });
+
+    test('should return 400 if title is missing', async () => {
+      const newGameData = {
+        // title is missing
+        description: 'A game without a title.',
+        platforms: { 'pc': { path: '/games/pc/notitle.exe' } }
+      };
+
+      const response = await request(app)
+        .post('/api/games')
+        .send(newGameData);
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe('Invalid input: Title is required.');
+      expect(writeJsonFileAsync).not.toHaveBeenCalled(); // Ensure file write was not attempted
+    });
+  });
+
+  // Test DELETE to remove a game
+  describe('DELETE /api/games/:id', () => {
+    beforeEach(() => {
+      // Reset mocks before each test in this describe block
+      readJsonFileAsync.mockReset();
+      writeJsonFileAsync.mockReset();
+      // Default mock for writeJsonFileAsync to resolve true
+      writeJsonFileAsync.mockResolvedValue(true);
+    });
+
+    test('should delete an existing game successfully', async () => {
+      // Explicitly mock writeJsonFileAsync for this test to ensure it resolves true
+      const { writeJsonFileAsync: localWriteMock } = require('../utils/fileUtils');
+      localWriteMock.mockResolvedValue(true);
+
+      const gameIdToDelete = 'game-to-delete';
+      const mockGames = {
+        [gameIdToDelete]: { title: 'Test Game to Delete', description: 'This game will be deleted.' },
+        'other-game': { title: 'Another Game', description: 'This game should remain.' }
+      };
+      // Mock readJsonFileAsync to return our predefined set of games
+      readJsonFileAsync.mockResolvedValue(mockGames);
+
+      const response = await request(app)
+        .delete(`/api/games/${gameIdToDelete}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.message).toBe('Game deleted successfully');
+
+
+      // Assert that writeJsonFileAsync was called with the games.json path
+      // and an object that no longer contains game-to-delete but still contains other-game
+      const expectedGamesAfterDelete = {
+        'other-game': { title: 'Another Game', description: 'This game should remain.' }
+      };
+      expect(writeJsonFileAsync).toHaveBeenCalledTimes(1);
+      expect(writeJsonFileAsync).toHaveBeenCalledWith(
+        expect.stringContaining(path.join('data', 'games.json')),
+        expectedGamesAfterDelete
+      );
+    });
+
+    test('should return 404 when trying to delete a non-existent game', async () => {
+      const nonExistentId = 'non-existent-id';
+      const mockGames = {
+        'other-game': { title: 'Another Game', description: 'This game exists.' }
+      };
+      // Mock readJsonFileAsync to return some games, but not the one we're trying to delete
+      readJsonFileAsync.mockResolvedValue(mockGames);
+
+      const response = await request(app)
+        .delete(`/api/games/${nonExistentId}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe(`Game with ID ${nonExistentId} not found`);
+
+      // Assert that writeJsonFileAsync was not called
+      expect(writeJsonFileAsync).not.toHaveBeenCalled();
+    });
+
+    test('should return 404 when trying to delete from an empty games list', async () => {
+      const nonExistentId = 'non-existent-id';
+      // Mock readJsonFileAsync to return an empty object
+      readJsonFileAsync.mockResolvedValue({});
+
+      const response = await request(app)
+        .delete(`/api/games/${nonExistentId}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe(`Game with ID ${nonExistentId} not found`);
+      expect(writeJsonFileAsync).not.toHaveBeenCalled();
+    });
   });
 });

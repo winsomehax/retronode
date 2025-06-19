@@ -1,0 +1,25 @@
+* Host localhost:5173 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:5173...
+* Connected to localhost (127.0.0.1) port 5173
+> GET / HTTP/1.1
+> Host: localhost:5173
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Vary: Origin
+< Content-Type: text/html
+< Cache-Control: no-cache
+< Etag: W/"15a-XPCNfha5XB+MlO9QFpnC6+Uw6aU"
+< Date: Thu, 19 Jun 2025 09:58:26 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Content-Length: 346
+<
+{ [346 bytes data]
+100   346  100   346    0     0  17536      0 --:--:-- --:--:-- --:--:-- 18210
+* Connection #0 to host localhost left intact

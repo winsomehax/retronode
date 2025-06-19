@@ -196,13 +196,13 @@ app.get('/api/thegamesdb/search', (req, res) => {
 
 // Serve frontend for all other routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 // Export the app for testing
 // (Catch-all route must be last)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 module.exports = app;

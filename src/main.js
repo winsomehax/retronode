@@ -14,6 +14,8 @@ window.addEventListener('error', function(event) {
 
 // Import global styles (Tailwind CSS)
 import './css/tailwind.css';
+import './css/retro-theme.css';
+import './css/gemini-window.css';
 
 // Import and initialize your main application logic
 // This will execute app.js, including its DOMContentLoaded listener which calls initApp

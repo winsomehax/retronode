@@ -64,11 +64,23 @@ describe('Platforms API', () => {
     });
 
     it('should return 500 if there is an error reading platforms file', async () => {
-      readJsonFileAsync.mockRejectedValue(new Error('File read error'));
-      const response = await request(app).get('/api/platforms');
-      expect(response.status).toBe(500);
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toBe('Error getting platforms: File read error');
+      let originalConsoleError;
+      let originalConsoleLog;
+      try {
+        originalConsoleError = console.error;
+        originalConsoleLog = console.log;
+        console.error = jest.fn();
+        console.log = jest.fn();
+
+        readJsonFileAsync.mockRejectedValue(new Error('File read error'));
+        const response = await request(app).get('/api/platforms');
+        expect(response.status).toBe(500);
+        expect(response.body.success).toBe(false);
+        expect(response.body.message).toBe('Error getting platforms: File read error');
+      } finally {
+        console.error = originalConsoleError;
+        console.log = originalConsoleLog;
+      }
     });
   });
 
@@ -98,11 +110,23 @@ describe('Platforms API', () => {
     });
 
     it('should return 500 if there is an error reading platforms file', async () => {
-      readJsonFileAsync.mockRejectedValue(new Error('File read error'));
-      const response = await request(app).get('/api/platforms/p1');
-      expect(response.status).toBe(500);
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toBe('Error getting platform: File read error');
+      let originalConsoleError;
+      let originalConsoleLog;
+      try {
+        originalConsoleError = console.error;
+        originalConsoleLog = console.log;
+        console.error = jest.fn();
+        console.log = jest.fn();
+
+        readJsonFileAsync.mockRejectedValue(new Error('File read error'));
+        const response = await request(app).get('/api/platforms/p1');
+        expect(response.status).toBe(500);
+        expect(response.body.success).toBe(false);
+        expect(response.body.message).toBe('Error getting platform: File read error');
+      } finally {
+        console.error = originalConsoleError;
+        console.log = originalConsoleLog;
+      }
     });
   });
 
@@ -177,14 +201,26 @@ describe('Platforms API', () => {
     });
 
     it('should return 500 if there is an error writing to platforms file', async () => {
-        writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
-        const newPlatformData = { platform_id: "pfail", name: "Fail Platform", description: "Will fail" };
-        const response = await request(app)
-            .post('/api/platforms')
-            .send(newPlatformData);
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('Error creating platform: File write error');
+        let originalConsoleError;
+        let originalConsoleLog;
+        try {
+          originalConsoleError = console.error;
+          originalConsoleLog = console.log;
+          console.error = jest.fn();
+          console.log = jest.fn();
+
+          writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+          const newPlatformData = { platform_id: "pfail", name: "Fail Platform", description: "Will fail" };
+          const response = await request(app)
+              .post('/api/platforms')
+              .send(newPlatformData);
+          expect(response.status).toBe(500);
+          expect(response.body.success).toBe(false);
+          expect(response.body.message).toBe('Error creating platform: File write error');
+        } finally {
+          console.error = originalConsoleError;
+          console.log = originalConsoleLog;
+        }
     });
   });
 
@@ -244,15 +280,27 @@ describe('Platforms API', () => {
     });
 
     it('should return 500 if there is an error writing to platforms file during update', async () => {
-        // readJsonFileAsync uses default mock from beforeEach
-        writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
-        const updatedData = { name: "Update Fail Platform", description: "This update will fail" };
-        const response = await request(app)
-            .put('/api/platforms/p1')
-            .send(updatedData);
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('Error updating platform: File write error');
+        let originalConsoleError;
+        let originalConsoleLog;
+        try {
+          originalConsoleError = console.error;
+          originalConsoleLog = console.log;
+          console.error = jest.fn();
+          console.log = jest.fn();
+
+          // readJsonFileAsync uses default mock from beforeEach
+          writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+          const updatedData = { name: "Update Fail Platform", description: "This update will fail" };
+          const response = await request(app)
+              .put('/api/platforms/p1')
+              .send(updatedData);
+          expect(response.status).toBe(500);
+          expect(response.body.success).toBe(false);
+          expect(response.body.message).toBe('Error updating platform: File write error');
+        } finally {
+          console.error = originalConsoleError;
+          console.log = originalConsoleLog;
+        }
     });
   });
 
@@ -280,12 +328,24 @@ describe('Platforms API', () => {
     });
 
     it('should return 500 if there is an error writing to platforms file during delete', async () => {
-        // readJsonFileAsync uses default mock from beforeEach
-        writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
-        const response = await request(app).delete('/api/platforms/p1');
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('Error deleting platform: File write error');
+        let originalConsoleError;
+        let originalConsoleLog;
+        try {
+          originalConsoleError = console.error;
+          originalConsoleLog = console.log;
+          console.error = jest.fn();
+          console.log = jest.fn();
+
+          // readJsonFileAsync uses default mock from beforeEach
+          writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+          const response = await request(app).delete('/api/platforms/p1');
+          expect(response.status).toBe(500);
+          expect(response.body.success).toBe(false);
+          expect(response.body.message).toBe('Error deleting platform: File write error');
+        } finally {
+          console.error = originalConsoleError;
+          console.log = originalConsoleLog;
+        }
     });
   });
 });

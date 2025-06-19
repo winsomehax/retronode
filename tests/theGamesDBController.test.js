@@ -92,7 +92,7 @@ describe('TheGamesDB Platform Search Tests', () => {
 
     expect(response.status).toBe(500);
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toBe('Invalid response from TheGamesDB API');
+    expect(response.body.message).toBe('Failed to parse TheGamesDB response: Invalid JSON');
   });
 
   test('Search platforms handles API service errors', async () => {
@@ -130,9 +130,9 @@ describe('TheGamesDB Platform Search Tests', () => {
       .get('/api/thegamesdb/platforms/search')
       .query({ name: 'Nintendo' });
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(503);
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toBe('Error searching TheGamesDB platforms');
+    expect(response.body.message).toBe('Error searching TheGamesDB platforms due to a network issue.');
   });
 
   // Tests for the new /api/thegamesdb/platforms endpoint

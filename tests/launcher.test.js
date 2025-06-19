@@ -20,9 +20,11 @@ jest.mock('../utils/fileUtils', () => ({
   ensureDirectoryExists: jest.fn().mockResolvedValue(undefined),
 }));
 const { readJsonFileAsync, ensureDirectoryExists: mockEnsureDir } = require('../utils/fileUtils');
-const { promises: fsPromisesMod } = require('fs');
-const mockedFsAccess = fsPromisesMod.access;
-const mockedFsMkdir = fsPromisesMod.mkdir;
+
+// fs.promises is not available due to jest.mock('fs') at the top.
+// Define these as jest.fn() directly if they are to be used as mocks.
+const mockedFsAccess = jest.fn();
+const mockedFsMkdir = jest.fn();
 
 
 // --- Config ---

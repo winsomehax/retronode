@@ -92,12 +92,24 @@ describe('Emulators API (within Platforms)', () => {
     });
 
     it('should return 500 if there is an error reading the platforms file', async () => {
-      readJsonFileAsync.mockRejectedValue(new Error('File read error'));
-      const response = await request(app).get('/api/emulators/platform1');
-      expect(response.status).toBe(500);
-      expect(response.body.success).toBe(false);
-      // Updated to match the actual error message format from the router
-      expect(response.body.message).toBe('Error getting emulators: File read error');
+      let originalConsoleError;
+      let originalConsoleLog;
+      try {
+        originalConsoleError = console.error;
+        originalConsoleLog = console.log;
+        console.error = jest.fn();
+        console.log = jest.fn();
+
+        readJsonFileAsync.mockRejectedValue(new Error('File read error'));
+        const response = await request(app).get('/api/emulators/platform1');
+        expect(response.status).toBe(500);
+        expect(response.body.success).toBe(false);
+        // Updated to match the actual error message format from the router
+        expect(response.body.message).toBe('Error getting emulators: File read error');
+      } finally {
+        console.error = originalConsoleError;
+        console.log = originalConsoleLog;
+      }
     });
   });
 
@@ -168,16 +180,28 @@ describe('Emulators API (within Platforms)', () => {
     });
 
     it('should return 500 if there is an error writing to platforms file', async () => {
-        // readJsonFileAsync will use default mock from resetMocksAndData
-        writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+        let originalConsoleError;
+        let originalConsoleLog;
+        try {
+          originalConsoleError = console.error;
+          originalConsoleLog = console.log;
+          console.error = jest.fn();
+          console.log = jest.fn();
 
-        const newEmulatorData = { name: "FailEmu", command: "fail %ROM%" };
-        const response = await request(app)
-            .post('/api/emulators/platform1')
-            .send(newEmulatorData);
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('Error adding emulator: File write error');
+          // readJsonFileAsync will use default mock from resetMocksAndData
+          writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+
+          const newEmulatorData = { name: "FailEmu", command: "fail %ROM%" };
+          const response = await request(app)
+              .post('/api/emulators/platform1')
+              .send(newEmulatorData);
+          expect(response.status).toBe(500);
+          expect(response.body.success).toBe(false);
+          expect(response.body.message).toBe('Error adding emulator: File write error');
+        } finally {
+          console.error = originalConsoleError;
+          console.log = originalConsoleLog;
+        }
     });
   });
 
@@ -238,16 +262,28 @@ describe('Emulators API (within Platforms)', () => {
     });
 
     it('should return 500 if there is an error writing to platforms file during update', async () => {
-        // readJsonFileAsync will use default mock from resetMocksAndData
-        writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+        let originalConsoleError;
+        let originalConsoleLog;
+        try {
+          originalConsoleError = console.error;
+          originalConsoleLog = console.log;
+          console.error = jest.fn();
+          console.log = jest.fn();
 
-        const updatedData = { name: "Update Fail Emu", command: "fail_update %ROM%" };
-        const response = await request(app)
-            .put('/api/emulators/platform1/emu1')
-            .send(updatedData);
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('Error updating emulator: File write error');
+          // readJsonFileAsync will use default mock from resetMocksAndData
+          writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+
+          const updatedData = { name: "Update Fail Emu", command: "fail_update %ROM%" };
+          const response = await request(app)
+              .put('/api/emulators/platform1/emu1')
+              .send(updatedData);
+          expect(response.status).toBe(500);
+          expect(response.body.success).toBe(false);
+          expect(response.body.message).toBe('Error updating emulator: File write error');
+        } finally {
+          console.error = originalConsoleError;
+          console.log = originalConsoleLog;
+        }
     });
   });
 
@@ -282,13 +318,25 @@ describe('Emulators API (within Platforms)', () => {
     });
 
     it('should return 500 if there is an error writing to platforms file during delete', async () => {
-        // readJsonFileAsync will use default mock from resetMocksAndData
-        writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+        let originalConsoleError;
+        let originalConsoleLog;
+        try {
+          originalConsoleError = console.error;
+          originalConsoleLog = console.log;
+          console.error = jest.fn();
+          console.log = jest.fn();
 
-        const response = await request(app).delete('/api/emulators/platform1/emu1');
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('Error deleting emulator: File write error');
+          // readJsonFileAsync will use default mock from resetMocksAndData
+          writeJsonFileAsync.mockRejectedValue(new Error('File write error'));
+
+          const response = await request(app).delete('/api/emulators/platform1/emu1');
+          expect(response.status).toBe(500);
+          expect(response.body.success).toBe(false);
+          expect(response.body.message).toBe('Error deleting emulator: File write error');
+        } finally {
+          console.error = originalConsoleError;
+          console.log = originalConsoleLog;
+        }
     });
   });
 });

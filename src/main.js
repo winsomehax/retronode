@@ -14,7 +14,7 @@ window.addEventListener('error', function(event) {
 
 // Import global styles (Tailwind CSS)
 import './css/tailwind.css';
-import './css/retro-theme.css';
+import './css/main.css'; // Purple theme
 import './css/gemini-window.css';
 
 // Import and initialize your main application logic

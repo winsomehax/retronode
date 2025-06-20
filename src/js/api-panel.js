@@ -16,9 +16,7 @@ export default class ApiPanel {
     }
     
     const panelHTML = `
-
       <div id="${this.id}" class="bg-card modal-content glow-border rounded-lg shadow-md flex flex-col overflow-hidden fixed top-0 right-0 bottom-0 w-full max-w-md transform transition-transform duration-300 ease-in-out translate-x-full">
-
         <div class="p-4 border-b border-border flex justify-between items-center">
           <h3 class="text-xl font-heading text-primary">${this.title}</h3>
           <button class="api-panel-close text-secondary hover:text-primary">

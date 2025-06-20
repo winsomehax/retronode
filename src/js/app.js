@@ -97,6 +97,34 @@ function setupEventListeners() {
     });
   }
 
+  // Close platform modal button
+  const closePlatformModalBtn = document.getElementById('closePlatformModal');
+  if (closePlatformModalBtn) {
+    closePlatformModalBtn.addEventListener('click', function() {
+      document.getElementById('platformModal').classList.add('hidden');
+      // Also clear any form errors when closing
+      const errorDiv = document.getElementById('platformModalFormError');
+      if (errorDiv) {
+        errorDiv.classList.add('hidden');
+        errorDiv.textContent = '';
+      }
+    });
+  }
+
+  // Cancel platform button in modal
+  const cancelPlatformBtn = document.getElementById('cancelPlatformBtn');
+  if (cancelPlatformBtn) {
+    cancelPlatformBtn.addEventListener('click', function() {
+      document.getElementById('platformModal').classList.add('hidden');
+      // Also clear any form errors when cancelling
+      const errorDiv = document.getElementById('platformModalFormError');
+      if (errorDiv) {
+        errorDiv.classList.add('hidden');
+        errorDiv.textContent = '';
+      }
+    });
+  }
+
   const platformSearchInput = document.getElementById('platformSearchInput'); // For platforms page
   if (platformSearchInput && document.getElementById('platformsContainer')) { // Only attach if on platforms page
     platformSearchInput.addEventListener('input', function() {
@@ -309,6 +337,167 @@ function setupEventListeners() {
           console.error('Error searching game database:', error);
           resultsContainer.innerHTML = '<div class="p-4 text-center text-accent">Error searching game database</div>';
         });
+    });
+  }
+
+  // Search Platform Database button in Platform Modal
+  const searchPlatformDbBtn = document.getElementById('searchPlatformDbBtn');
+  if (searchPlatformDbBtn) {
+    searchPlatformDbBtn.addEventListener('click', async function() {
+      const platformNameInput = document.getElementById('platformName');
+      const platformName = platformNameInput?.value.trim();
+      const resultsContainer = document.getElementById('platformDbResults');
+
+      if (!resultsContainer) {
+        console.error('#platformDbResults container not found.');
+        return;
+      }
+
+      if (!platformName) {
+        resultsContainer.innerHTML = '<div class="p-3 text-body-dim text-center">Please enter a platform name to search.</div>'; // Refined
+        resultsContainer.classList.remove('hidden');
+        return;
+      }
+
+      resultsContainer.innerHTML = '<div class="p-4 text-center text-body"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</div>';
+      resultsContainer.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`/api/thegamesdb/platforms?name=${encodeURIComponent(platformName)}`);
+        const data = await response.json();
+
+        if (data.success && data.results && data.results.length > 0) {
+          let html = '<div class="p-4 space-y-3">';
+          data.results.forEach(platform => {
+            // Prepare platform info for data attribute
+            const platformInfo = {
+              name: platform.name,
+              manufacturer: platform.manufacturer || '',
+              description: platform.overview || '',
+              // Generate a simple ID from the name if not provided or not suitable
+              platform_id: platform.id || platform.name.toLowerCase().replace(/[^a-z0-9]/g, '')
+            };
+            const platformInfoJson = JSON.stringify(platformInfo).replace(/"/g, '&quot;');
+
+            html += `
+              <div class="bg-dark p-3 rounded-md border border-border">
+                <div class="flex">
+                  <div class="w-10 h-10 bg-card rounded-md flex items-center justify-center mr-3 flex-shrink-0">
+                    <i class="fas fa-microchip text-primary text-lg"></i>
+                  </div>
+                  <div class="flex-1 min-w-0"> {/* Added min-w-0 for proper truncation */}
+                    <h4 class="text-primary font-medium font-heading truncate" title="${platform.name}">${platform.name}</h4>
+                    <p class="text-secondary text-xs truncate" title="Manufacturer: ${platform.manufacturer || 'Unknown'}">Manufacturer: ${platform.manufacturer || 'Unknown'}</p>
+                  </div>
+                </div>
+                <p class="text-body-dim text-xs mt-2 line-clamp-2">${platform.overview || 'No description available'}</p>
+                <div class="mt-3 flex justify-end">
+                  <button class="btn-primary btn-sm import-platform-btn" data-platform-info="${platformInfoJson}">Import</button>
+                </div>
+              </div>
+            `;
+          });
+          html += '</div>';
+          resultsContainer.innerHTML = html;
+
+          // Add event listeners to import buttons
+          resultsContainer.querySelectorAll('.import-platform-btn').forEach(button => {
+            button.addEventListener('click', function() {
+              try {
+                const info = JSON.parse(this.getAttribute('data-platform-info').replace(/&quot;/g, '"'));
+                document.getElementById('platformId').value = info.platform_id;
+                document.getElementById('platformName').value = info.name;
+                document.getElementById('platformManufacturer').value = info.manufacturer;
+                document.getElementById('platformDescription').value = info.description;
+                resultsContainer.classList.add('hidden');
+              } catch (e) {
+                console.error("Error parsing platform info from data attribute:", e);
+                // Display error in a more user-friendly way if possible, for now, keeping alert for this specific error
+                alert("Error importing platform data.");
+              }
+            });
+          });
+
+        } else if (data.success && (!data.results || data.results.length === 0)) {
+          resultsContainer.innerHTML = '<div class="p-3 text-body-dim text-center">No results found.</div>'; // Refined
+        } else {
+          resultsContainer.innerHTML = `<div class="p-3 text-accent text-center">Error: ${data.message || 'Failed to search platform database.'}</div>`; // Refined
+        }
+      } catch (error) {
+        console.error('Error searching platform database:', error);
+        resultsContainer.innerHTML = '<div class="p-3 text-accent text-center">Error searching. Please try again.</div>'; // Refined
+      }
+    });
+  }
+
+  // Platform Form submission handler
+  const platformForm = document.getElementById('platformForm');
+  if (platformForm) {
+    platformForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const errorDiv = document.getElementById('platformModalFormError');
+      if(errorDiv) errorDiv.classList.add('hidden'); // Hide error on new submission
+
+      const platformId = document.getElementById('platformId').value.trim();
+      const name = document.getElementById('platformName').value.trim();
+      const manufacturer = document.getElementById('platformManufacturer').value.trim();
+      const releaseYear = document.getElementById('platformReleaseYear').value.trim();
+      const description = document.getElementById('platformDescription').value.trim();
+
+      if (!platformId || !name) {
+        if(errorDiv) {
+          errorDiv.textContent = 'Platform ID and Name are required.';
+          errorDiv.classList.remove('hidden');
+        } else {
+          alert('Platform ID and Name are required');
+        }
+        return;
+      }
+
+      const platformData = {
+        platform_id: platformId,
+        name,
+        manufacturer,
+        release_year: releaseYear ? parseInt(releaseYear) : null,
+        description
+      };
+
+      const modalTitle = document.getElementById('platformModalTitle')?.textContent || '';
+      const isEdit = modalTitle === 'Edit Platform';
+      const method = isEdit ? 'PUT' : 'POST';
+      const url = isEdit ? `/api/platforms/${platformId}` : '/api/platforms';
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(platformData)
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('platformModal').classList.add('hidden');
+          const searchTerm = document.getElementById('platformSearchInput')?.value.trim() || '';
+          const sortOrder = document.getElementById('platformSortOption')?.value || '';
+          loadPlatforms(searchTerm, sortOrder, window.renderPlatformsFunction || renderPlatforms);
+          updateStats();
+        } else {
+          if(errorDiv) {
+            errorDiv.textContent = data.message || 'Failed to save platform.';
+            errorDiv.classList.remove('hidden');
+          } else {
+            alert(data.message || 'Failed to save platform');
+          }
+        }
+      } catch (error) {
+        console.error('Error saving platform:', error);
+        if(errorDiv) {
+          errorDiv.textContent = 'An unexpected error occurred. Please try again.';
+          errorDiv.classList.remove('hidden');
+        } else {
+          alert('An unexpected error occurred. Please try again.');
+        }
+      }
     });
   }
 }
@@ -1066,17 +1255,22 @@ export function openPlatformModal(platformId = null) {
   const modalTitle = document.getElementById('platformModalTitle');
   const platformIdInput = document.getElementById('platformId');
   const platformDbResults = document.getElementById('platformDbResults');
+  const errorDiv = document.getElementById('platformModalFormError');
 
   if (!platformModal || !platformForm || !modalTitle || !platformIdInput) {
     console.error('Platform modal elements not found');
     return;
   }
 
-  // Reset form
+  // Reset form and clear previous errors/results
   platformForm.reset();
   if (platformDbResults) {
     platformDbResults.classList.add('hidden');
     platformDbResults.innerHTML = '';
+  }
+  if (errorDiv) {
+    errorDiv.classList.add('hidden');
+    errorDiv.textContent = '';
   }
 
   if (platformId) {
@@ -1096,12 +1290,22 @@ export function openPlatformModal(platformId = null) {
           document.getElementById('platformReleaseYear').value = platform.release_year || '';
           document.getElementById('platformDescription').value = platform.description || '';
         } else {
-          alert(`Error loading platform: ${data.message}`);
+          if (errorDiv) {
+            errorDiv.textContent = `Error loading platform: ${data.message}`;
+            errorDiv.classList.remove('hidden');
+          } else {
+            alert(`Error loading platform: ${data.message}`);
+          }
         }
       })
       .catch(err => {
         console.error('Error fetching platform data:', err);
-        alert('Failed to fetch platform data.');
+        if (errorDiv) {
+            errorDiv.textContent = 'Failed to fetch platform data for editing.';
+            errorDiv.classList.remove('hidden');
+          } else {
+            alert('Failed to fetch platform data for editing.');
+          }
       });
   } else {
     // Add mode
@@ -1134,12 +1338,24 @@ export function deletePlatform(platformId) {
         loadPlatforms(searchTerm, sortOrder, window.renderPlatformsFunction || renderPlatforms);
         updateStats(); // Also update stats as platform count changes
       } else {
-        alert(data.message || 'Failed to delete platform');
+        const errorDiv = document.getElementById('platformModalFormError'); // Attempt to show in modal if open
+        if (errorDiv && !errorDiv.classList.contains('hidden')) {
+            errorDiv.textContent = data.message || 'Failed to delete platform.';
+            errorDiv.classList.remove('hidden');
+        } else {
+            alert(data.message || 'Failed to delete platform'); // Fallback if modal context is lost
+        }
       }
     })
     .catch(error => {
       console.error('Error deleting platform:', error);
-      alert('Error deleting platform');
+      const errorDiv = document.getElementById('platformModalFormError');
+       if (errorDiv && !errorDiv.classList.contains('hidden')) {
+            errorDiv.textContent = 'An unexpected error occurred during deletion.';
+            errorDiv.classList.remove('hidden');
+        } else {
+            alert('An unexpected error occurred during deletion.');
+        }
     });
   }
 }

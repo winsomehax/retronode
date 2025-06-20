@@ -60,22 +60,24 @@ export default class GamesDBPanel extends ApiPanel {
       }
       
       const card = document.createElement('div');
-      card.className = 'games-db-card';
+      // Card Container: Apply Tailwind classes
+      card.className = 'bg-dark rounded-lg shadow-sm overflow-hidden border border-border';
       
       card.innerHTML = `
-        <h3 class="games-db-card-title">${game.game_title || game.name || 'Unknown Title'}</h3>
-        <div class="games-db-card-content">
-          <img src="${boxartUrl}" alt="${game.game_title || game.name || 'Unknown Title'}" class="games-db-card-image" onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
-          <div class="games-db-card-details">
-            <div class="games-db-card-platform">${platformName}</div>
-            <div class="games-db-card-release">${game.release_date || 'Unknown release date'}</div>
-            <div class="games-db-card-overview">${game.overview || 'No description available'}</div>
+        <h3 class="p-3 border-b border-border text-primary font-heading text-lg">${game.game_title || game.name || 'Unknown Title'}</h3>
+        <div class="flex p-3 space-x-3 items-start">
+          <img src="${boxartUrl}" alt="${game.game_title || game.name || 'Unknown Title'}" class="w-20 h-[110px] object-cover rounded-sm bg-slate-700 flex-shrink-0" onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
+          <div class="flex-1 space-y-1">
+            <div class="text-xs text-secondary uppercase tracking-wider">${platformName}</div>
+            <div class="text-sm text-body-dim">${game.release_date || 'Unknown release date'}</div>
+            <div class="text-sm text-body line-clamp-3">${game.overview || 'No description available'}</div>
           </div>
         </div>
-        <button class="games-db-card-select" data-game-id="${gameId}">Select This Game</button>
+        <button class="btn btn-primary w-full mt-3 text-sm py-2 games-db-card-select" data-game-id="${gameId}">Select This Game</button>
       `;
       
       // Add event listener to select button
+      // Query by the specific class that is still present for the button
       card.querySelector('.games-db-card-select').addEventListener('click', () => {
         this.selectGame(gameId);
       });

@@ -12,7 +12,8 @@ h1, h2, h3.card-title {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* Form elements */
+/* Form elements - Commented out as Tailwind utilities and retro-theme.css should handle these. */
+/*
 .form-input {
   width: 100%;
   padding: 0.75rem;
@@ -53,6 +54,7 @@ h1, h2, h3.card-title {
   color: #94a3b8;
   font-family: 'Roboto', sans-serif;
 }
+*/
 
 /* Cover image styling */
 .cover-thumb { 
@@ -66,76 +68,12 @@ h1, h2, h3.card-title {
   transform: scale(1.05);
 }
 
-/* Line clamp utilities */
-.line-clamp-1 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-}
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
+/* Line clamp utilities - Removed as Tailwind provides these (e.g., line-clamp-1, line-clamp-2, line-clamp-3) */
 
-/* Modal styling */
-.modal {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* Modal styling - Removed as modals are now styled with Tailwind utility classes directly in JS/HTML */
 
-.modal-content {
-  background-color: #1e293b;
-  border-radius: 0.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: 32rem;
-  margin: 1rem;
-  font-family: 'Roboto', sans-serif;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid #475569;
-  border-radius: 8px 8px 0 0;
-}
-
-.modal-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #3b82f6;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.modal-body {
-  padding: 1rem;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-top: 1px solid #475569;
-}
-
-/* Button styling */
+/* Button styling - Commented out as retro-theme.css should provide these, or they are applied via Tailwind. */
+/*
 .btn {
   display: inline-flex;
   align-items: center;
@@ -173,8 +111,10 @@ h1, h2, h3.card-title {
 .btn-danger:hover {
   background-color: #dc2626;
 }
+*/
 
-/* Card styling */
+/* Card styling - Commented out as cards are now styled with Tailwind utility classes or specific component styles. */
+/*
 .card {
   background-color: #334155;
   border-radius: 0.5rem;
@@ -202,6 +142,7 @@ h1, h2, h3.card-title {
   padding: 1rem;
   border-top: 1px solid #475569;
 }
+*/
 
 /* Table styling */
 .table {

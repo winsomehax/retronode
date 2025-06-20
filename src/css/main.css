@@ -84,7 +84,7 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 
 .game-card-image {
   @apply relative w-full bg-dark; /* width: 100% is crucial for padding-top aspect ratio */
-  padding-top: 177.77%; /* For a 9:16 aspect ratio (16/9 * 100) */
+  padding-top: 133.33%; /* Changed to ~3:4 aspect ratio */
   flex-shrink: 0; /* Prevent shrinking */
   /* bg-dark as a fallback if image fails and img tag doesn't cover */
 }

@@ -101,8 +101,9 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 /* .game-card-platform, .game-card-description, etc. are styled with Tailwind in app.js */
 
 .game-card-actions {
-  @apply p-2 border-t border-border flex justify-end space-x-2 bg-dark bg-opacity-50;
-  /* Buttons inside are styled with Tailwind in app.js or use btn classes */
+  @apply p-2 border-t border-border bg-card bg-opacity-50 flex justify-end space-x-2;
+  /* Ensures padding, a top border, themed semi-transparent background,
+     and right-aligns buttons with spacing. */
 }
 
 /* Specific button styling if not fully covered by Tailwind in JS */

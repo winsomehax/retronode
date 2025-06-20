@@ -68,12 +68,11 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 
 /* Game Card Styles (Adapted from retro-theme.css and new requirements) */
 .game-card {
-  @apply bg-card rounded-lg overflow-hidden shadow-md; /* Use theme variables via @apply */
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-  display: flex;
-  flex-direction: column;
-  position: relative; /* For absolute positioning of image or actions if needed */
-  border: 1px solid var(--color-border); /* Adding a subtle border */
+  @apply bg-card rounded-lg shadow-xl border border-border overflow-hidden flex flex-col h-full;
+  /* h-full assumes parent grid/container defines height.
+     flex flex-col is critical. overflow-hidden is standard. */
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; /* Keep existing transitions */
+  position: relative; /* Keep for potential absolute children if any */
 }
 
 .game-card:hover {
@@ -82,14 +81,12 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 }
 
 /* .game-card-title is mostly handled by Tailwind classes in app.js (font-heading, text-sm, truncate) */
-/* Additional base styling if necessary (e.g., consistent padding/margin if not in JS) */
-/* For platform cards, .game-card-title is used directly in app.js's renderPlatforms */
-/* For game cards, .game-card-title is also used directly in app.js's renderGameCards */
-/* No specific CSS needed here if JS handles it sufficiently with Tailwind. */
 
 .game-card-image {
-  @apply relative overflow-hidden h-28 bg-dark; /* h-28 is 7rem. bg-dark as a fallback if image fails */
-  /* The inner <img> is styled with 'absolute inset-0 w-full h-full object-cover' */
+  @apply relative w-full bg-dark; /* width: 100% is crucial for padding-top aspect ratio */
+  padding-top: 177.77%; /* For a 9:16 aspect ratio (16/9 * 100) */
+  flex-shrink: 0; /* Prevent shrinking */
+  /* bg-dark as a fallback if image fails and img tag doesn't cover */
 }
 
 .game-card-image img {
@@ -97,9 +94,11 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 }
 
 /* .game-card-platform, .game-card-description, etc. are styled with Tailwind in app.js */
+/* The description container itself in app.js should have flex-grow: 1; overflow-y: auto; min-height: 0; */
 
 .game-card-actions {
   @apply p-2 border-t border-border bg-card bg-opacity-50 flex justify-end space-x-2;
+  flex-shrink: 0; /* Ensure it doesn't shrink */
   /* Ensures padding, a top border, themed semi-transparent background,
      and right-aligns buttons with spacing. */
 }

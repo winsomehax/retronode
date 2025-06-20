@@ -7,7 +7,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/output.css">
-  <link rel="stylesheet" href="css/retro-theme.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 </head>
 <body>
@@ -82,7 +81,7 @@
             <!-- ROM Identification Model -->
             <div class="mb-4">
               <label for="romIdentificationModel" class="block text-sm font-medium text-body mb-1">ROM Identification Model</label>
-              <select id="romIdentificationModel" class="form-select">
+              <select id="romIdentificationModel" class="form-select w-full p-2 bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-md shadow-sm appearance-none">
                 <option value="github">GitHub Models (GPT-4.1)</option>
                 <option value="gemini">Google Gemini</option>
                   <option value="mock">Mock AI (for testing)</option> <!-- Add this line -->
@@ -114,54 +113,54 @@
 
   <!-- API Keys Modal -->
   <div id="apiKeysModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
-    <div class="modal-content w-full max-w-md mx-4 glow-border">
-      <div class="modal-header flex items-center justify-between p-4">
-        <h3 class="text-xl font-medium font-heading">API Keys</h3>
+    <div class="bg-card modal-content glow-border rounded-lg shadow-md flex flex-col max-h-[80vh] overflow-y-auto w-full max-w-md mx-4">
+      <div class="p-4 border-b border-border flex justify-between items-center">
+        <h3 class="text-xl font-heading text-primary">API Keys</h3>
         <button id="closeApiKeysModal" class="text-secondary hover:text-primary">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times text-xl"></i>
         </button>
       </div>
-      <div class="p-4">
+      <div class="p-4 space-y-6">
         <form id="apiKeysForm">
-          <div class="mb-6">
+          <div>
             <label for="thegamesdbApiKey" class="block text-sm font-medium text-body mb-1">TheGamesDB API Key</label>
             <div class="flex">
-              <input id="thegamesdbApiKey" type="password" class="form-input rounded-r-none" placeholder="Enter API key">
+              <input id="thegamesdbApiKey" type="password" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-l-md p-2 form-input rounded-r-none" placeholder="Enter API key">
               <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
           </div>
-          <div class="mb-6">
+          <div>
             <label for="geminiApiKey" class="block text-sm font-medium text-body mb-1">Gemini API Key</label>
             <div class="flex">
-              <input id="geminiApiKey" type="password" class="form-input rounded-r-none" placeholder="Enter API key">
+              <input id="geminiApiKey" type="password" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-l-md p-2 form-input rounded-r-none" placeholder="Enter API key">
               <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
           </div>
-          <div class="mb-6">
+          <div>
             <label for="githubPatToken" class="block text-sm font-medium text-body mb-1">GitHub PAT Token</label>
             <div class="flex">
-              <input id="githubPatToken" type="password" class="form-input rounded-r-none" placeholder="Enter GitHub PAT token">
+              <input id="githubPatToken" type="password" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-l-md p-2 form-input rounded-r-none" placeholder="Enter GitHub PAT token">
               <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
           </div>
-          <div class="mb-6">
+          <div>
             <label for="rawgApiKey" class="block text-sm font-medium text-body mb-1">RAWG.io API Key</label>
             <div class="flex">
-              <input id="rawgApiKey" type="password" class="form-input rounded-r-none" placeholder="Enter RAWG.io API key">
+              <input id="rawgApiKey" type="password" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-l-md p-2 form-input rounded-r-none" placeholder="Enter RAWG.io API key">
               <button type="button" class="toggle-password px-3 bg-dark border border-l-0 border-border rounded-r-md text-secondary hover:text-primary">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
           </div>
-          <div class="flex justify-end space-x-2 mt-6">
-            <button type="button" id="cancelApiKeysBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
-            <button type="submit" class="btn-primary">Save</button>
+          <div class="p-4 border-t border-border flex justify-end space-x-2">
+            <button type="button" id="cancelApiKeysBtn" class="btn btn-secondary px-4 py-2 rounded-md">Cancel</button>
+            <button type="submit" class="btn-primary px-4 py-2 rounded-md">Save</button>
           </div>
         </form>
       </div>

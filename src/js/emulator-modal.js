@@ -18,41 +18,41 @@ export default class EmulatorModal {
     
     const modalHTML = `
       <div id="emulatorModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
-        <div class="modal-content w-full max-w-md mx-4 glow-border">
-          <div class="modal-header flex items-center justify-between p-4">
-            <h3 id="emulatorModalTitle" class="text-xl font-medium font-heading">Add Emulator</h3>
+        <div class="bg-card modal-content glow-border rounded-lg shadow-md flex flex-col max-h-[80vh] overflow-y-auto w-full max-w-md mx-4">
+          <div class="p-4 border-b border-border flex justify-between items-center">
+            <h3 id="emulatorModalTitle" class="text-xl font-heading text-primary">Add Emulator</h3>
             <button id="closeEmulatorModal" class="text-secondary hover:text-primary">
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times text-xl"></i>
             </button>
           </div>
-          <div class="p-4">
+          <div class="p-4 space-y-4">
             <form id="emulatorForm">
               <input type="hidden" id="emulatorPlatformId">
               <input type="hidden" id="emulatorId">
               
-              <div class="mb-4">
+              <div>
                 <label for="emulatorName" class="block text-sm font-medium text-body mb-1">Name</label>
-                <input id="emulatorName" type="text" class="form-input" placeholder="e.g., VICE, Nestopia" required>
+                <input id="emulatorName" type="text" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-md p-2 form-input" placeholder="e.g., VICE, Nestopia" required>
               </div>
               
-              <div class="mb-4">
+              <div>
                 <label for="emulatorCommand" class="block text-sm font-medium text-body mb-1">Command</label>
-                <input id="emulatorCommand" type="text" class="form-input" placeholder="e.g., vice %ROM%" required>
+                <input id="emulatorCommand" type="text" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-md p-2 form-input" placeholder="e.g., vice %ROM%" required>
               </div>
               
-              <div class="mb-4">
+              <div>
                 <label for="emulatorDescription" class="block text-sm font-medium text-body mb-1">Description</label>
-                <textarea id="emulatorDescription" class="form-input" rows="3" placeholder="Brief description of the emulator"></textarea>
+                <textarea id="emulatorDescription" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-md p-2 form-input" rows="3" placeholder="Brief description of the emulator"></textarea>
               </div>
               
-              <div class="mb-4">
+              <div>
                 <label for="emulatorWebsite" class="block text-sm font-medium text-body mb-1">Website</label>
-                <input id="emulatorWebsite" type="url" class="form-input" placeholder="e.g., https://vice-emu.sourceforge.io/">
+                <input id="emulatorWebsite" type="url" class="w-full bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-md p-2 form-input" placeholder="e.g., https://vice-emu.sourceforge.io/">
               </div>
               
-              <div class="flex justify-end space-x-2 mt-6">
-                <button type="button" id="cancelEmulatorBtn" class="px-4 py-2 bg-dark hover:bg-dark/80 text-body rounded-md">Cancel</button>
-                <button type="submit" class="btn-primary">Save</button>
+              <div class="p-4 border-t border-border flex justify-end space-x-2">
+                <button type="button" id="cancelEmulatorBtn" class="btn btn-secondary px-4 py-2 rounded-md">Cancel</button>
+                <button type="submit" class="btn btn-primary px-4 py-2 rounded-md">Save</button>
               </div>
             </form>
           </div>

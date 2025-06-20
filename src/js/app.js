@@ -89,17 +89,27 @@ function initApp() {
 
 function setupEventListeners() {
   // Search input handler
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
+  const searchInput = document.getElementById('searchInput'); // For games page
+  if (searchInput && document.getElementById('gamesGrid')) { // Only attach if on games page
     searchInput.addEventListener('input', function() {
       const searchTerm = this.value.trim();
       loadGames(searchTerm, document.getElementById('platformFilter')?.value, false);
     });
   }
+
+  const platformSearchInput = document.getElementById('platformSearchInput'); // For platforms page
+  if (platformSearchInput && document.getElementById('platformsContainer')) { // Only attach if on platforms page
+    platformSearchInput.addEventListener('input', function() {
+      const searchTerm = this.value.trim();
+      const sortOrder = document.getElementById('platformSortOption')?.value || '';
+      // Assuming renderPlatforms is globally available or passed correctly
+      loadPlatforms(searchTerm, sortOrder, window.renderPlatformsFunction || renderPlatforms);
+    });
+  }
   
   // Platform filter handler
-  const platformFilter = document.getElementById('platformFilter');
-  if (platformFilter) {
+  const platformFilter = document.getElementById('platformFilter'); // For games page
+  if (platformFilter && document.getElementById('gamesGrid')) { // Only attach if on games page
     platformFilter.addEventListener('change', function() {
       const platformId = this.value;
       const searchTerm = document.getElementById('searchInput')?.value.trim() || '';
@@ -108,11 +118,21 @@ function setupEventListeners() {
   }
   
   // Sort option handler
-  const sortOption = document.getElementById('sortOption');
-  if (sortOption) {
+  const sortOption = document.getElementById('sortOption'); // For games page
+  if (sortOption && document.getElementById('gamesGrid')) { // Only attach if on games page
     sortOption.addEventListener('change', function() {
       const [field, direction] = this.value.split('_');
       sortGames(field, direction);
+    });
+  }
+
+  const platformSortOption = document.getElementById('platformSortOption'); // For platforms page
+  if (platformSortOption && document.getElementById('platformsContainer')) { // Only attach if on platforms page
+    platformSortOption.addEventListener('change', function() {
+      const sortOrder = this.value;
+      const searchTerm = document.getElementById('platformSearchInput')?.value.trim() || '';
+      // Assuming renderPlatforms is globally available or passed correctly
+      loadPlatforms(searchTerm, sortOrder, window.renderPlatformsFunction || renderPlatforms);
     });
   }
   
@@ -418,12 +438,17 @@ export async function loadGames(search = '', platform = '', test = false) {
 }
 
 // Load platforms from API
-export async function loadPlatforms(renderer) { // Added renderer parameter
-  const platformFilter = document.getElementById('platformFilter');
-  const platformsContainer = document.getElementById('platformsContainer');
+export async function loadPlatforms(search = '', sort = '', renderer) {
+  const platformFilter = document.getElementById('platformFilter'); // For game filtering dropdown
+  const platformsContainer = document.getElementById('platformsContainer'); // For displaying platform cards
   
   try {
-    const response = await fetch('/api/platforms');
+    const queryParams = new URLSearchParams();
+    if (search) queryParams.append('search', search);
+    if (sort) queryParams.append('sort', sort);
+    let url = `/api/platforms${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+
+    const response = await fetch(url);
     const data = await response.json();
     
     if (data.success) {
@@ -668,10 +693,10 @@ function renderPlatforms(platforms) {
         </div>
       </div>
       <div class="game-card-actions">
-        <button class="edit-platform-btn" data-id="${id}" title="Edit">
+        <button class="edit-platform-btn p-1 text-secondary hover:text-primary" data-id="${id}" title="Edit">
           <i class="fas fa-edit"></i>
         </button>
-        <button class="delete-platform-btn" data-id="${id}" title="Delete">
+        <button class="delete-platform-btn p-1 text-accent hover:text-red-500" data-id="${id}" title="Delete">
           <i class="fas fa-trash-alt"></i>
         </button>
       </div>
@@ -1031,5 +1056,90 @@ export function updateStats() {
 export function openEmulatorModal(platformId, emulatorId = null) {
   if (window.emulatorModal) {
     window.emulatorModal.show(platformId, emulatorId);
+  }
+}
+
+// Open platform modal for adding/editing
+export function openPlatformModal(platformId = null) {
+  const platformModal = document.getElementById('platformModal');
+  const platformForm = document.getElementById('platformForm');
+  const modalTitle = document.getElementById('platformModalTitle');
+  const platformIdInput = document.getElementById('platformId');
+  const platformDbResults = document.getElementById('platformDbResults');
+
+  if (!platformModal || !platformForm || !modalTitle || !platformIdInput) {
+    console.error('Platform modal elements not found');
+    return;
+  }
+
+  // Reset form
+  platformForm.reset();
+  if (platformDbResults) {
+    platformDbResults.classList.add('hidden');
+    platformDbResults.innerHTML = '';
+  }
+
+  if (platformId) {
+    // Edit mode
+    modalTitle.textContent = 'Edit Platform';
+
+    // Load platform data
+    fetch(`/api/platforms/${platformId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const platform = data.data;
+          platformIdInput.value = platformId;
+          platformIdInput.readOnly = true; // Can't change ID in edit mode
+          document.getElementById('platformName').value = platform.name || '';
+          document.getElementById('platformManufacturer').value = platform.manufacturer || '';
+          document.getElementById('platformReleaseYear').value = platform.release_year || '';
+          document.getElementById('platformDescription').value = platform.description || '';
+        } else {
+          alert(`Error loading platform: ${data.message}`);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching platform data:', err);
+        alert('Failed to fetch platform data.');
+      });
+  } else {
+    // Add mode
+    modalTitle.textContent = 'Add Platform';
+    platformIdInput.value = '';
+    platformIdInput.readOnly = false;
+  }
+
+  // Show modal
+  platformModal.classList.remove('hidden');
+}
+
+// Edit platform
+export function editPlatform(platformId) {
+  openPlatformModal(platformId);
+}
+
+// Delete platform
+export function deletePlatform(platformId) {
+  if (confirm('Are you sure you want to delete this platform? This will also delete associated emulators and update games.')) {
+    fetch(`/api/platforms/${platformId}`, {
+      method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Reload platforms
+        const searchTerm = document.getElementById('platformSearchInput')?.value.trim() || '';
+        const sortOrder = document.getElementById('platformSortOption')?.value || '';
+        loadPlatforms(searchTerm, sortOrder, window.renderPlatformsFunction || renderPlatforms);
+        updateStats(); // Also update stats as platform count changes
+      } else {
+        alert(data.message || 'Failed to delete platform');
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting platform:', error);
+      alert('Error deleting platform');
+    });
   }
 }

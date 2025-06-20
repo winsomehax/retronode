@@ -1,260 +1,62 @@
-/* RetroNode Styles */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
-
-body { 
-  font-family: 'Roboto', sans-serif; 
-  font-size: 1.05rem;
-  background-color: #1e293b;
-  color: #f1f5f9;
+/* Existing styles */
+.some-existing-style {
+  color: #333;
 }
 
-h1, h2, h3.card-title {
-  font-family: 'Orbitron', sans-serif;
+/* === Shared Sidebar Styling === */
+/* This new class will be used across games.html, platforms.html, and settings.html,
+   adopting the desired look from the games.html sidebar. */
+.shared-sidebar {
+  width: 280px; /* Adjust as per games.html */
+  background-color: #343a40; /* Example: Dark grey background */
+  color: #f8f9fa; /* Example: Light text color */
+  padding: 25px;
+  height: 100vh; /* Full viewport height */
+  box-sizing: border-box;
+  border-right: 3px solid #007bff; /* Example: Accent color border */
+  display: flex;
+  flex-direction: column;
+  /* Add other styles from games.html sidebar: font, box-shadow, etc. */
 }
 
-/* Form elements */
-.form-input {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-  font-family: 'Roboto', sans-serif;
+.shared-sidebar h2 {
+  color: #ffffff; /* Example: White heading */
+  font-size: 1.5em;
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #495057; /* Example: Subtle separator */
+  padding-bottom: 10px;
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+.shared-sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Allows footer to stick to bottom if used with flex */
 }
 
-.form-select {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  font-family: 'Roboto', sans-serif;
-}
-
-.form-label {
+.shared-sidebar ul li a {
+  color: #adb5bd; /* Example: Muted link color */
+  text-decoration: none;
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #94a3b8;
-  font-family: 'Roboto', sans-serif;
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
-/* Cover image styling */
-.cover-thumb { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-  background: #1e293b;
-  transition: all 0.2s ease-out;
-}
-.cover-thumb:hover {
-  transform: scale(1.05);
+.shared-sidebar ul li a:hover,
+.shared-sidebar ul li a.active { /* For highlighting the current page link */
+  background-color: #007bff; /* Example: Hover/active background */
+  color: #ffffff; /* Example: Hover/active text color */
 }
 
-/* Line clamp utilities */
-.line-clamp-1 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-}
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+.shared-sidebar .sidebar-footer { /* Optional footer styling */
+  margin-top: auto; /* Pushes footer to the bottom */
+  padding-top: 15px;
+  border-top: 1px solid #495057;
+  font-size: 0.9em;
+  color: #6c757d; /* Example: Muted footer text */
 }
 
-/* Modal styling */
-.modal {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background-color: #1e293b;
-  border-radius: 0.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: 32rem;
-  margin: 1rem;
-  font-family: 'Roboto', sans-serif;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid #475569;
-  border-radius: 8px 8px 0 0;
-}
-
-.modal-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #3b82f6;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.modal-body {
-  padding: 1rem;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-top: 1px solid #475569;
-}
-
-/* Button styling */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-  font-family: 'Roboto', sans-serif;
-}
-
-.btn-primary {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #2563eb;
-}
-
-.btn-secondary {
-  background-color: #475569;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #334155;
-}
-
-.btn-danger {
-  background-color: #ef4444;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #dc2626;
-}
-
-/* Card styling */
-.card {
-  background-color: #334155;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid #475569;
-  font-family: 'Roboto', sans-serif;
-}
-
-.card-header {
-  background-color: #1e293b;
-  padding: 1rem;
-  border-bottom: 1px solid #475569;
-}
-
-.card-title {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 500;
-}
-
-.card-body {
-  padding: 1rem;
-}
-
-.card-footer {
-  padding: 1rem;
-  border-top: 1px solid #475569;
-}
-
-/* Table styling */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: 'Roboto', sans-serif;
-}
-
-.table th {
-  text-align: left;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #475569;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #475569;
-}
-
-/* Utility classes */
-.text-primary {
-  color: #3b82f6;
-}
-
-.text-secondary {
-  color: #94a3b8;
-}
-
-.text-danger {
-  color: #ef4444;
-}
-
-.bg-primary {
-  background-color: #3b82f6;
-}
-
-.bg-secondary {
-  background-color: #475569;
-}
-
-.bg-danger {
-  background-color: #ef4444;
-}
-
-.font-heading {
-  font-family: 'Orbitron', sans-serif;
-}
-
-/* Limit game database results height in modal and make scrollable */
-#gameDbResults {
-  max-height: 300px;
-  overflow-y: auto;
-  padding: 1rem;
-}
+/* Other existing styles */

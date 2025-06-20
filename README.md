@@ -23,7 +23,7 @@ A retro game launcher and management system built with Node.js and Express.
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/retronode.git
+   git clone https://github.com/winsomehax/retronode.git
    cd retronode
    ```
 

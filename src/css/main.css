@@ -88,10 +88,8 @@ h1, h2, h3, h4, h5, h6, .font-heading { /* Added .font-heading for flexibility *
 /* No specific CSS needed here if JS handles it sufficiently with Tailwind. */
 
 .game-card-image {
-  @apply relative w-full bg-dark; /* Aspect ratio will be controlled by padding-top hack or specific height */
-  padding-top: 133.33%; /* Aspect ratio for typical game covers (e.g., 3:4 like SNES boxes, or DVD cases) */
-                               /* For 8rem max-width card, if height was 10rem, this would be 125% */
-                               /* For a responsive square image, it would be 100% */
+  @apply relative overflow-hidden h-28 bg-dark; /* h-28 is 7rem. bg-dark as a fallback if image fails */
+  /* The inner <img> is styled with 'absolute inset-0 w-full h-full object-cover' */
 }
 
 .game-card-image img {

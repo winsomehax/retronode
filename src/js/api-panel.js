@@ -16,29 +16,29 @@ export default class ApiPanel {
     }
     
     const panelHTML = `
-      <div id="${this.id}" class="api-panel hidden">
-        <div class="api-panel-header">
-          <h3>${this.title}</h3>
-          <button class="api-panel-close">
-            <i class="fas fa-times"></i>
+      <div id="${this.id}" class="bg-card rounded-lg shadow-md flex flex-col overflow-hidden fixed top-0 right-0 bottom-0 w-full max-w-md transform transition-transform duration-300 ease-in-out translate-x-full">
+        <div class="p-4 border-b border-border flex justify-between items-center">
+          <h3 class="text-xl font-heading text-primary">${this.title}</h3>
+          <button class="api-panel-close text-secondary hover:text-primary">
+            <i class="fas fa-times text-xl"></i>
           </button>
         </div>
-        <div class="api-panel-body">
-          <div class="api-panel-search">
-            <input type="text" id="${this.id}Search" placeholder="Search games..." class="api-panel-search-input">
-            <button id="${this.id}SearchBtn" class="api-panel-search-button">
+        <div class="p-4 space-y-4 flex-1 overflow-y-auto">
+          <div class="flex space-x-2 mb-4">
+            <input type="text" id="${this.id}Search" placeholder="Search games..." class="form-input flex-grow bg-dark border-border text-body focus:ring-primary focus:border-primary rounded-md">
+            <button id="${this.id}SearchBtn" class="btn-primary flex-shrink-0">
               <i class="fas fa-search"></i>
             </button>
           </div>
-          <div id="${this.id}Loading" class="api-panel-loading hidden">
+          <div id="${this.id}Loading" class="hidden flex flex-col items-center justify-center p-6 space-y-2">
             <div class="spinner"></div>
-            <p>Loading results...</p>
+            <p class="text-body-dim">Loading results...</p>
           </div>
-          <div id="${this.id}Error" class="api-panel-error hidden"></div>
-          <div id="${this.id}NoResults" class="api-panel-no-results hidden">
+          <div id="${this.id}Error" class="hidden p-4 rounded-md bg-red-500/10 border border-red-500/30 text-red-400"></div>
+          <div id="${this.id}NoResults" class="hidden p-4 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-400 text-center">
             <p>No results found. Try a different search term.</p>
           </div>
-          <div id="${this.id}Results" class="api-panel-results"></div>
+          <div id="${this.id}Results" class="space-y-4"></div>
         </div>
       </div>
     `;
@@ -68,11 +68,11 @@ export default class ApiPanel {
   }
   
   show() {
-    document.getElementById(this.id).classList.remove('hidden');
+    document.getElementById(this.id).classList.remove('translate-x-full');
   }
   
   hide() {
-    document.getElementById(this.id).classList.add('hidden');
+    document.getElementById(this.id).classList.add('translate-x-full');
   }
   
   showLoading() {
@@ -91,6 +91,8 @@ export default class ApiPanel {
     const errorElement = document.getElementById(`${this.id}Error`);
     errorElement.textContent = message;
     errorElement.classList.remove('hidden');
+    document.getElementById(`${this.id}NoResults`).classList.add('hidden'); // Ensure no results is hidden
+    document.getElementById(`${this.id}Results`).innerHTML = ''; // Clear results
   }
   
   clearError() {
@@ -100,6 +102,8 @@ export default class ApiPanel {
   showNoResults() {
     this.hideLoading();
     document.getElementById(`${this.id}NoResults`).classList.remove('hidden');
+    document.getElementById(`${this.id}Error`).classList.add('hidden'); // Ensure error is hidden
+    document.getElementById(`${this.id}Results`).innerHTML = ''; // Clear results
   }
   
   updateFormFields(gameData) {

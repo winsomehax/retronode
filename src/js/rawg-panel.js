@@ -31,25 +31,39 @@ export default class RawgPanel extends ApiPanel {
     
     games.forEach(game => {
       const card = document.createElement('div');
-      card.className = 'games-db-card';
+      // Card Container: Apply Tailwind classes
+      card.className = 'bg-dark rounded-lg shadow-sm overflow-hidden border border-border';
       
+      // Extract platform names, similar to how it might be done in games-db-panel if platforms is an array
+      const platformNames = game.platforms && Array.isArray(game.platforms)
+        ? game.platforms.map(p => p.platform.name).join(', ')
+        : (game.platform_name || 'Unknown Platform');
+
+      // For RAWG, description is often HTML. A simple text extraction or sanitization might be needed.
+      // For now, let's assume it can be directly used or will be handled by browser's default stripping if innerHTML is used.
+      // A safer approach would be to set textContent or use a sanitizer if description were to be put into arbitrary HTML.
+      // However, since it's inside a div, standard line-clamp should work.
+      const overviewText = game.description_raw || game.description || 'No description available';
+
+
       card.innerHTML = `
-        <h3 class="games-db-card-title">${game.name || 'Unknown Title'}</h3>
-        <div class="games-db-card-content">
+        <h3 class="p-3 border-b border-border text-primary font-heading text-lg">${game.name || 'Unknown Title'}</h3>
+        <div class="flex p-3 space-x-3 items-start">
           <img src="${game.background_image || 'https://via.placeholder.com/80x120?text=No+Image'}" 
                alt="${game.name || 'Unknown Title'}" 
-               class="games-db-card-image" 
+               class="w-20 h-[110px] object-cover rounded-sm bg-slate-700 flex-shrink-0"
                onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
-          <div class="games-db-card-details">
-            <div class="games-db-card-platform">${game.platform_name || 'Unknown Platform'}</div>
-            <div class="games-db-card-release">${game.released || 'Unknown release date'}</div>
-            <div class="games-db-card-overview">${game.description || 'No description available'}</div>
+          <div class="flex-1 space-y-1">
+            <div class="text-xs text-secondary uppercase tracking-wider">${platformNames}</div>
+            <div class="text-sm text-body-dim">${game.released || 'Unknown release date'}</div>
+            <div class="text-sm text-body line-clamp-3">${overviewText}</div>
           </div>
         </div>
-        <button class="games-db-card-select" data-game-id="${game.id}">Select This Game</button>
+        <button class="btn btn-primary w-full mt-3 text-sm py-2 games-db-card-select" data-game-id="${game.id}">Select This Game</button>
       `;
       
       // Add event listener to select button
+      // Query by the specific class that is still present for the button
       card.querySelector('.games-db-card-select').addEventListener('click', () => {
         this.selectGame(game.id);
       });

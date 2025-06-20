@@ -18,7 +18,9 @@ export default class EmulatorModal {
     
     const modalHTML = `
       <div id="emulatorModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+
         <div class="bg-card modal-content glow-border rounded-lg shadow-md flex flex-col max-h-[80vh] overflow-y-auto w-full max-w-md mx-4">
+
           <div class="p-4 border-b border-border flex justify-between items-center">
             <h3 id="emulatorModalTitle" class="text-xl font-heading text-primary">Add Emulator</h3>
             <button id="closeEmulatorModal" class="text-secondary hover:text-primary">
